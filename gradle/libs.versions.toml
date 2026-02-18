@@ -1,0 +1,15 @@
+[versions]
+agp = "9.0.0"
+androidTool = "32.0.0"
+kotlin = "2.3.0"
+task-tree = "4.0.0"
+
+[libraries]
+# used in build-logic
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+android-tool-common = { group = "com.android.tools", name = "common", version.ref = "androidTool" }
+android-kmp-library-gradlePlugin = { group = "com.android.kotlin.multiplatform.library", name = "com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "agp" }
+
+[plugins]
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+task-tree = { id = "com.dorongold.task-tree", version.ref = "task-tree" }
