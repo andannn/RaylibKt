@@ -8,16 +8,11 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.FloatVar
 import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.UByteVar
-import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.cstr
 import kotlinx.cinterop.toKString
 import platform.posix.va_list
 import raylib.interop.AudioCallback
-import raylib.math.Matrix
-import raylib.math.Vector2
-import raylib.math.Vector3
-import raylib.math.Vector4
 
 typealias Color = raylib.interop.Color
 

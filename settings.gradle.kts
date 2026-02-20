@@ -29,6 +29,7 @@ dependencyResolutionManagement {
     }
 }
 
-include(":raylib")
+include(":raylib-core")
+include(":raylib-core-ktx")
 include(":sample")
 include(":sample-android-app")
