@@ -5,7 +5,8 @@ import raylib.core.Colors.LIGHTGRAY
 import raylib.core.RlTiming
 import raylib.core.RlWindow
 import raylib.core.drawScope
-import raylib.core.text
+import raylib.core.textDrawScope
+import raylib.core.mainGameLoop
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
@@ -13,13 +14,13 @@ import kotlin.experimental.ExperimentalNativeApi
 fun main() {
     RlWindow.init(800, 450, "raylib [core] example - basic window")
     RlTiming.setTargetFPS(60)
-    while (!RlWindow.shouldClose()) {
+
+    mainGameLoop {
         drawScope {
             clearBackground(Colors.RAYWHITE)
-            text {
+            textDrawScope {
                 draw("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
             }
         }
     }
-    RlWindow.close()
 }

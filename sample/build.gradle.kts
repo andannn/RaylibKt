@@ -59,7 +59,7 @@ kotlin {
     }
     sourceSets {
         nativeMain.dependencies {
-            implementation(project(":raylib"))
+            implementation(project(":raylib-core-ktx"))
         }
     }
 }
