@@ -16,4 +16,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "build-logic"
-include(":kmp-library")
+include(":kmp-native-compile")
+include(":kmp-ext")
+include(":common")

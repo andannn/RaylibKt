@@ -7,7 +7,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 
-class KmpLibraryPlugin : Plugin<Project> {
+class KmpNativeCompileLibraryPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val kmpExtension =
             project.extensions.create<KMPExtension>(
@@ -33,8 +33,3 @@ class KmpLibraryPlugin : Plugin<Project> {
         }
     }
 }
-
-internal val Project.androidExtension: AndroidComponentsExtension<*, *, *>
-    get() =
-        extensions.findByType<KotlinMultiplatformAndroidComponentsExtension>()
-            ?: throw IllegalArgumentException("Failed to find any registered Android extension")

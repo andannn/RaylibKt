@@ -12,4 +12,6 @@ android-kmp-library-gradlePlugin = { group = "com.android.kotlin.multiplatform.l
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+android-application = { id = "com.android.application", version.ref = "agp" }
 task-tree = { id = "com.dorongold.task-tree", version.ref = "task-tree" }

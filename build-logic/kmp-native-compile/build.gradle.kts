@@ -4,15 +4,15 @@ plugins {
 
 dependencies {
     compileOnly(libs.kotlin.gradle.plugin)
+    api(project(":common"))
     implementation(libs.android.kmp.library.gradlePlugin)
-    implementation(libs.android.tool.common)
 }
 
 gradlePlugin {
     plugins {
-        register("KmpLibraryPlugin") {
+        register("KmpNativeCompileLibraryPlugin") {
             id = "kmp.library"
-            implementationClass = "KmpLibraryPlugin"
+            implementationClass = "KmpNativeCompileLibraryPlugin"
         }
     }
 }

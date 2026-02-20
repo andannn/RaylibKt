@@ -31,3 +31,4 @@ dependencyResolutionManagement {
 
 include(":raylib")
 include(":sample")
+include(":sample-android-app")
