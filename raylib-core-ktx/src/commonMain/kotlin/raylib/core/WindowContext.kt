@@ -25,17 +25,17 @@ internal class DefaultWindowContext(
     override val windowHeight: Int
 ) : WindowContext {
     init {
-        RlWindow.init(windowWidth, windowHeight, title)
-        RlTiming.setTargetFPS(initialFps)
+        raylib.interop.InitWindow(windowWidth, windowHeight, title)
+        raylib.interop.SetTargetFPS(initialFps)
     }
 
     override var currentFps: Int
-        get() = RlTiming.getFPS()
+        get() = raylib.interop.GetFPS()
         set(value) {
-            if (RlTiming.getFPS() != value) {
-                RlTiming.setTargetFPS(value)
+            if (raylib.interop.GetFPS() != value) {
+                raylib.interop.SetTargetFPS(value)
             }
         }
     override val frameTimeSeconds: Float
-        get() = RlTiming.getFrameTime()
+        get() = raylib.interop.GetFrameTime()
 }

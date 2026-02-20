@@ -15,6 +15,9 @@ interface MouseFunction {
     fun MouseButton.isUp(): Boolean
     fun showCursor()
     fun hideCursor()
+
+    val wheelMove: Float
+    val wheelMoveVector: CValue<Vector2>
 }
 
 fun MouseFunction(): MouseFunction {
@@ -23,31 +26,36 @@ fun MouseFunction(): MouseFunction {
 
 private class DefaultMouseFunction : MouseFunction {
     override val isCursorHidden: Boolean
-        get() = RlCursor.isHidden()
+        get() = raylib.interop.IsCursorHidden()
     override val mousePositionX: Int
-        get() = RlMouse.x()
+        get() = raylib.interop.GetMouseX()
     override val mousePositionY: Int
-        get() = RlMouse.y()
+        get() = raylib.interop.GetMouseX()
     override val mousePosition: CValue<Vector2>
-        get() = RlMouse.position()
+        get() = raylib.interop.GetMousePosition()
 
     override fun MouseButton.isPressed() =
-        RlMouse.isButtonPressed(this.value.toInt())
+        raylib.interop.IsMouseButtonPressed(this.value.toInt())
 
     override fun MouseButton.isDown() =
-        RlMouse.isButtonDown(this.value.toInt())
+        raylib.interop.IsMouseButtonDown(this.value.toInt())
 
     override fun MouseButton.isReleased() =
-        RlMouse.isButtonReleased(this.value.toInt())
+        raylib.interop.IsMouseButtonReleased(this.value.toInt())
 
     override fun MouseButton.isUp() =
-        RlMouse.isButtonUp(this.value.toInt())
+        raylib.interop.IsMouseButtonUp(this.value.toInt())
 
     override fun showCursor() {
-        RlCursor.show()
+        raylib.interop.ShowCursor()
     }
 
     override fun hideCursor() {
-        RlCursor.hide()
+        raylib.interop.HideCursor()
     }
+
+    override val wheelMove: Float
+        get() = raylib.interop.GetMouseWheelMove()
+    override val wheelMoveVector: CValue<Vector2>
+        get() = raylib.interop.GetMouseWheelMoveV()
 }

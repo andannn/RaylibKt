@@ -4,7 +4,6 @@ import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.drawScope
 import raylib.core.mainGameLoop
-import raylib.core.textDrawScope
 import raylib.core.window
 
 internal fun firstWindow() {
@@ -15,11 +14,8 @@ internal fun firstWindow() {
         height = 450
     ) {
         mainGameLoop {
-            drawScope {
-                clearBackground(Colors.RAYWHITE)
-                textDrawScope {
-                    draw("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-                }
+            drawScope(Colors.RAYWHITE) {
+                drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
             }
         }
     }

@@ -2,11 +2,9 @@ package me.raylib.sample
 
 import kotlinx.cinterop.copy
 import raylib.core.Colors
-import raylib.core.RlMouse
 import raylib.core.Vector2
 import raylib.core.drawScope
 import raylib.core.mainGameLoop
-import raylib.core.textDrawScope
 import raylib.core.window
 import raylib.interop.KeyboardKey
 
@@ -23,7 +21,7 @@ internal fun deltaTime() {
         val circleRadius = 32f
 
         mainGameLoop {
-            currentFps += RlMouse.wheelMove().toInt()
+            currentFps += wheelMove.toInt()
 
             deltaCircle = deltaCircle.copy {
                 x += frameTimeSeconds * 6.0f * speed
@@ -36,8 +34,7 @@ internal fun deltaTime() {
                 deltaCircle = deltaCircle.copy { x = 0f }
                 frameCircle = frameCircle.copy { x = 0f }
             }
-            drawScope {
-                clearBackground(Colors.RAYWHITE)
+            drawScope(Colors.RAYWHITE) {
                 drawCircle(
                     center = deltaCircle,
                     radius = circleRadius,
@@ -49,12 +46,10 @@ internal fun deltaTime() {
                     color = Colors.BLUE
                 )
 
-                textDrawScope {
-                    draw("FPS: $currentFps", 10, 10, 20, Colors.DARKGRAY)
-                    draw("Frame time: ${frameTimeSeconds.times(1000)} ms", 10, 30, 20, Colors.DARKGRAY)
-                    draw("FUNC: x += GetFrameTime()*speed", 10, 90, 20, Colors.RED);
-                    draw("FUNC: x += speed", 10, 240, 20, Colors.BLUE)
-                }
+                drawText("FPS: $currentFps", 10, 10, 20, Colors.DARKGRAY)
+                drawText("Frame time: ${frameTimeSeconds.times(1000)} ms", 10, 30, 20, Colors.DARKGRAY)
+                drawText("FUNC: x += GetFrameTime()*speed", 10, 90, 20, Colors.RED);
+                drawText("FUNC: x += speed", 10, 240, 20, Colors.BLUE)
             }
         }
     }

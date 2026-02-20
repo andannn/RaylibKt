@@ -14,17 +14,17 @@ fun KeyboardFunction(): KeyboardFunction {
 
 private class DefaultKeyboardFunction : KeyboardFunction {
     override fun KeyboardKey.isDown() =
-        RlKeyboard.isKeyDown(this.value.toInt())
+        raylib.interop.IsKeyDown(this.value.toInt())
 
     override fun KeyboardKey.isUp() =
-        RlKeyboard.isKeyUp(this.value.toInt())
+        raylib.interop.IsKeyUp(this.value.toInt())
 
     override fun KeyboardKey.isPressed() =
-        RlKeyboard.isKeyPressed(this.value.toInt())
+        raylib.interop.IsKeyPressed(this.value.toInt())
 
     override fun KeyboardKey.isReleased() =
-        RlKeyboard.isKeyReleased(this.value.toInt())
+        raylib.interop.IsKeyReleased(this.value.toInt())
 
     override fun KeyboardKey.isPressedRepeat() =
-        RlKeyboard.isKeyPressedRepeat(this.value.toInt())
+        raylib.interop.IsKeyPressedRepeat(this.value.toInt())
 }

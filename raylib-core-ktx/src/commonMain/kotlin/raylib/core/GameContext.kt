@@ -1,10 +1,10 @@
 package raylib.core
 
-inline fun WindowContext.mainGameLoop(block: GameContext.() -> Unit) {
-    while (!RlWindow.shouldClose()) {
+fun WindowContext.mainGameLoop(block: GameContext.() -> Unit) {
+    while (!raylib.interop.WindowShouldClose()) {
         block(GameContext(this))
     }
-    RlWindow.close()
+    raylib.interop.CloseWindow()
 }
 
 interface GameContext : WindowContext, KeyboardFunction, MouseFunction
@@ -12,7 +12,7 @@ interface GameContext : WindowContext, KeyboardFunction, MouseFunction
 fun GameContext(
     windowContext: WindowContext,
     keyboardFunction: KeyboardFunction = KeyboardFunction(),
-    mouseFunction: MouseFunction = MouseFunction()
+    mouseFunction: MouseFunction = MouseFunction(),
 ): GameContext {
     return DefaultGameContext(windowContext, keyboardFunction, mouseFunction)
 }
@@ -25,14 +25,3 @@ private class DefaultGameContext(
     WindowContext by windowContext,
     KeyboardFunction by keyboardFunction,
     MouseFunction by mouseFunction
-
-
-inline fun GameContext.drawScope(block: DrawScope.() -> Unit) {
-    DrawMode.begin()
-    block(DrawScope)
-    DrawMode.end()
-}
-
-inline fun DrawScope.textDrawScope(block: TextDrawScope.() -> Unit) {
-    block(TextDrawScope)
-}

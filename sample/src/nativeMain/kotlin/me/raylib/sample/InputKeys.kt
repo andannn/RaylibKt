@@ -7,7 +7,6 @@ import raylib.core.KeyboardKey
 import raylib.core.Vector2
 import raylib.core.drawScope
 import raylib.core.mainGameLoop
-import raylib.core.textDrawScope
 import raylib.core.window
 
 internal fun inputKeys() {
@@ -28,12 +27,8 @@ internal fun inputKeys() {
             if (KeyboardKey.KEY_UP.isDown()) ballPosition = ballPosition.copy { y -= 2f }
             if (KeyboardKey.KEY_DOWN.isDown()) ballPosition = ballPosition.copy { y += 2f }
 
-            drawScope {
-                clearBackground(Colors.RAYWHITE)
-
-                textDrawScope {
-                    draw("move the ball with arrow keys", 10, 10, 20, Colors.DARKGRAY);
-                }
+            drawScope(Colors.RAYWHITE) {
+                drawText("move the ball with arrow keys", 10, 10, 20, Colors.DARKGRAY);
                 drawCircle(ballPosition, 50f, MAROON);
             }
         }
