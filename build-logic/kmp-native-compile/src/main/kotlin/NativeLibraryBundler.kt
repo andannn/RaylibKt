@@ -19,11 +19,18 @@ import com.android.build.api.variant.HasDeviceTests
 import com.android.build.api.variant.SourceDirectories
 import com.android.build.api.variant.Sources
 import com.android.utils.appendCapitalized
+import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Project
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.get
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.konan.target.Family
+import org.jetbrains.kotlin.konan.target.KonanTarget
 
 /**
  * Helper class to bundle outputs of [MultiTargetNativeCompilation] with a JVM or Android project.
@@ -54,7 +61,7 @@ class NativeLibraryBundler(
                 outputDirectory.set(
                     project.layout.buildDirectory.dir(
                         "combinedNativeLibraries/${jvmTarget.name}/" +
-                            "${nativeCompilation.archiveName}/$compilationName",
+                                "${nativeCompilation.archiveName}/$compilationName",
                     ),
                 )
             }
@@ -78,41 +85,37 @@ class NativeLibraryBundler(
         forTest: Boolean,
         provideSourceDirectories: Sources.() -> (SourceDirectories.Layered?),
     ) {
-        project.androidExtension.onVariants(project.androidExtension.selector().all()) { variant ->
-            fun setup(
-                name: String,
-                sources: SourceDirectories.Layered?,
-            ) {
-                checkNotNull(sources) {
-                    "Cannot find jni libs sources for variant: $variant (forTest=$forTest)"
-                }
-                val combineTask =
-                    project.tasks.register(
-                        "createJniLibsDirectoryFor"
-                            .appendCapitalized(
-                                nativeCompilation.archiveName,
-                                "for",
-                                name,
-                                androidTarget.name,
-                            ),
-                        CombineObjectFilesTask::class.java,
-                    )
-                combineTask.configureFrom(nativeCompilation) { it.family == Family.ANDROID }
+        androidTarget.addNativeLibrariesToAndroidVariantSources(
+            prefix = nativeCompilation.archiveName,
+            forTest = forTest,
+            configureCombineTaskAction = {
+                this.configureFrom(nativeCompilation) { it.family == Family.ANDROID }
+            },
+            provideSourceDirectories = provideSourceDirectories,
+        )
+    }
+}
 
-                sources.addGeneratedSourceDirectory(
-                    taskProvider = combineTask,
-                    wiredWith = { it.outputDirectory },
-                )
-            }
-
-            if (forTest) {
-                check(variant is HasDeviceTests) { "Variant $variant does not have a test target" }
-                variant.deviceTests.forEach { (_, deviceTest) ->
-                    setup(deviceTest.name, provideSourceDirectories(deviceTest.sources))
+/**
+ * Configures the [CombineObjectFilesTask] with the outputs of the [multiTargetNativeCompilation]
+ * based on the given target [filter].
+ */
+fun TaskProvider<CombineObjectFilesTask>.configureFrom(
+    multiTargetNativeCompilation: MultiTargetNativeCompilation,
+    filter: (KonanTarget) -> Boolean,
+) {
+    configure {
+        objectFiles.addAll(
+            multiTargetNativeCompilation.targetsProvider(filter).map { nativeTargetCompilations ->
+                nativeTargetCompilations.map { nativeTargetCompilation ->
+                    nativeTargetCompilation.linkerTask.map { linkerTask ->
+                        ObjectFile(
+                            konanTarget = linkerTask.clangParameters.konanTarget,
+                            file = linkerTask.clangParameters.outputFile,
+                        )
+                    }
                 }
-            } else {
-                setup(variant.name, provideSourceDirectories(variant.sources))
-            }
-        }
+            },
+        )
     }
 }

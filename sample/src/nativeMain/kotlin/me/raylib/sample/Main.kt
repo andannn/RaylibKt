@@ -6,7 +6,10 @@ import raylib.core.RlTiming
 import raylib.core.RlWindow
 import raylib.core.drawScope
 import raylib.core.text
+import kotlin.experimental.ExperimentalNativeApi
 
+@OptIn(ExperimentalNativeApi::class)
+@CName(externName = "raylib_android_main")
 fun main() {
     RlWindow.init(800, 450, "raylib [core] example - basic window")
     RlTiming.setTargetFPS(60)

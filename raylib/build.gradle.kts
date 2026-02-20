@@ -14,6 +14,7 @@ kmpExtension {
 //    linuxArm64()
     androidNativeX64()
     androidNativeX86()
+    androidNativeArm32()
     androidNativeArm64()
 
     withSourceSets {
@@ -26,6 +27,7 @@ kmpExtension {
             add(KonanTarget.MACOS_ARM64)
             add(KonanTarget.LINUX_ARM64)
             add(KonanTarget.LINUX_X64)
+            add(KonanTarget.ANDROID_ARM32)
             add(KonanTarget.ANDROID_ARM64)
             add(KonanTarget.ANDROID_X86)
             add(KonanTarget.ANDROID_X64)
@@ -33,7 +35,7 @@ kmpExtension {
     val rayLibCompile =
         createNativeCompilation("rayLibCompile") {
             configureEachTarget {
-                val externalRaylibPath = project.layout.projectDirectory.dir("external")
+                val externalRaylibPath = project.layout.projectDirectory.dir("external/raylib_c")
                 val sourceList = buildList {
                     add("rcore.c")
                     add("rshapes.c")
@@ -58,14 +60,9 @@ kmpExtension {
                     freeArgs.add("PLATFORM_ANDROID")
                     freeArgs.add("-D")
                     freeArgs.add("GRAPHICS_API_OPENGL_ES2")
-                    sources.from(
-                        externalRaylibPath
-                            .dir("projects/VS2019-Android/raylib_android/raylib_android.NativeActivity/android_native_app_glue.c")
-                    )
-                    includes.from(
-                        externalRaylibPath
-                            .dir("projects/VS2019-Android/raylib_android/raylib_android.NativeActivity")
-                    )
+                    sources.from(project.layout.projectDirectory.dir("external/native_app_glue/android_native_app_glue.c"))
+                    sources.from(project.layout.projectDirectory.dir("src/androidNativeMain/c/android_main.c"))
+                    includes.from(project.layout.projectDirectory.dir("external/native_app_glue/"))
                 }
                 if (konanTarget.family == Family.LINUX) {
                 }

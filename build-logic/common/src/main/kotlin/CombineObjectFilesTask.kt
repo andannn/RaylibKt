@@ -26,7 +26,6 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.work.DisableCachingByDefault
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
@@ -129,30 +128,6 @@ abstract class CombineObjectFilesTask : DefaultTask() {
                     )
             return "natives/${familyPrefix}_$architectureSuffix"
         }
-    }
-}
-
-/**
- * Configures the [CombineObjectFilesTask] with the outputs of the [multiTargetNativeCompilation]
- * based on the given target [filter].
- */
-fun TaskProvider<CombineObjectFilesTask>.configureFrom(
-    multiTargetNativeCompilation: MultiTargetNativeCompilation,
-    filter: (KonanTarget) -> Boolean,
-) {
-    configure {
-        objectFiles.addAll(
-            multiTargetNativeCompilation.targetsProvider(filter).map { nativeTargetCompilations ->
-                nativeTargetCompilations.map { nativeTargetCompilation ->
-                    nativeTargetCompilation.linkerTask.map { linkerTask ->
-                        ObjectFile(
-                            konanTarget = linkerTask.clangParameters.konanTarget,
-                            file = linkerTask.clangParameters.outputFile,
-                        )
-                    }
-                }
-            },
-        )
     }
 }
 
