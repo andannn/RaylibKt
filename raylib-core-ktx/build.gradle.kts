@@ -13,6 +13,10 @@ kmpExtension {
     androidNativeArm64()
 
     withSourceSets {
+        it.all {
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+
         it.commonMain.dependencies {
             api(project(":raylib-core"))
         }
