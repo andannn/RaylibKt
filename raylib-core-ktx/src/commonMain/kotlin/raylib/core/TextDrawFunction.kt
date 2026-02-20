@@ -11,13 +11,7 @@ fun TextDrawFunction(): TextDrawFunction {
 }
 
 class DefaultDrawTextFunction : TextDrawFunction {
-    override fun drawText(
-        text: String,
-        x: Int,
-        y: Int,
-        fontSize: Int,
-        color: CValue<Color>
-    ) {
+    override fun drawText(text: String, x: Int, y: Int, fontSize: Int, color: CValue<Color>) {
         raylib.interop.DrawText(text, x, y, fontSize, color)
     }
 }

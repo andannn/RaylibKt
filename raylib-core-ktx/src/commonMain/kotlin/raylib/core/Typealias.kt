@@ -8,6 +8,7 @@ import raylib.interop.float16
 import raylib.interop.float3
 
 typealias Vector3 = raylib.interop.Vector3
+
 object Vector3Factory {
     fun zero(): CValue<Vector3> = Vector3Zero()
     fun one(): CValue<Vector3> = Vector3One()
@@ -15,6 +16,7 @@ object Vector3Factory {
 typealias Vector4 = raylib.interop.Vector4
 typealias Quaternion = raylib.interop.Vector4
 typealias Vector2 = raylib.interop.Vector2
+
 fun Vector2(x: Float = 0f, y: Float = 0f): CValue<Vector2> = cValue {
     this.x = x
     this.y = y
@@ -23,6 +25,7 @@ typealias Float3 = float3
 typealias Float16 = float16
 typealias Matrix = raylib.interop.Matrix
 typealias Color = raylib.interop.Color
+
 fun Color(r: Int, g: Int, b: Int, a: Int = 255): CValue<Color> {
     return cValue {
         this.r = r.toUByte()
@@ -31,6 +34,7 @@ fun Color(r: Int, g: Int, b: Int, a: Int = 255): CValue<Color> {
         this.a = a.toUByte()
     }
 }
+
 object Colors {
     val LIGHTGRAY = Color(200, 200, 200, 255)
     val GRAY = Color(130, 130, 130, 255)

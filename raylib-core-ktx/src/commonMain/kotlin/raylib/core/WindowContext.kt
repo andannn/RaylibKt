@@ -10,9 +10,9 @@ interface WindowContext {
 
 fun window(
     title: String,
-    initialFps: Int,
     width: Int,
     height: Int,
+    initialFps: Int = 60,
     block: WindowContext.() -> Unit
 ): WindowContext {
     return DefaultWindowContext(initialFps, title, width, height).apply(block)

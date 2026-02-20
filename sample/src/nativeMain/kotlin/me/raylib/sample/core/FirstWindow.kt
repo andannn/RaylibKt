@@ -1,9 +1,9 @@
-package me.raylib.sample
+package me.raylib.sample.core
 
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.drawScope
-import raylib.core.mainGameLoop
+import raylib.core.gameLoop
 import raylib.core.window
 
 internal fun firstWindow() {
@@ -13,7 +13,7 @@ internal fun firstWindow() {
         width = 800,
         height = 450
     ) {
-        mainGameLoop {
+        gameLoop {
             drawScope(Colors.RAYWHITE) {
                 drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
             }

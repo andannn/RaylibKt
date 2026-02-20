@@ -1,5 +1,6 @@
 package me.raylib.sample
 
+import me.raylib.sample.core.inputMultitouch
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
@@ -8,5 +9,7 @@ fun main() {
 //    firstWindow()
 //    deltaTime()
 //    inputKeys()
-    inputMouse()
+//    inputMouse()
+//    inputMouseWheel()
+    inputMultitouch()
 }

@@ -1,4 +1,4 @@
-package me.raylib.sample
+package me.raylib.sample.core
 
 import kotlinx.cinterop.CValue
 import raylib.core.Colors
@@ -6,7 +6,7 @@ import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
 import raylib.core.drawScope
-import raylib.core.mainGameLoop
+import raylib.core.gameLoop
 import raylib.core.window
 
 fun inputMouse() {
@@ -17,7 +17,7 @@ fun inputMouse() {
         height = 450
     ) {
         var ballPosition: CValue<Vector2>
-        mainGameLoop {
+        gameLoop {
             if (KeyboardKey.KEY_H.isPressed()) {
                 if (isCursorHidden) {
                     showCursor()

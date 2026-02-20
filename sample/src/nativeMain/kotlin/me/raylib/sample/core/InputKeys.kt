@@ -1,4 +1,4 @@
-package me.raylib.sample
+package me.raylib.sample.core
 
 import kotlinx.cinterop.copy
 import raylib.core.Colors
@@ -6,7 +6,7 @@ import raylib.core.Colors.MAROON
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
 import raylib.core.drawScope
-import raylib.core.mainGameLoop
+import raylib.core.gameLoop
 import raylib.core.window
 
 internal fun inputKeys() {
@@ -21,7 +21,7 @@ internal fun inputKeys() {
             windowHeight.div(2f)
         )
 
-        mainGameLoop {
+        gameLoop {
             if (KeyboardKey.KEY_RIGHT.isDown()) ballPosition = ballPosition.copy { x += 2f }
             if (KeyboardKey.KEY_LEFT.isDown()) ballPosition = ballPosition.copy { x -= 2f }
             if (KeyboardKey.KEY_UP.isDown()) ballPosition = ballPosition.copy { y -= 2f }
