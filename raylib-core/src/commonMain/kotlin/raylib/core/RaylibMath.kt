@@ -116,6 +116,10 @@ fun CValue<Matrix>.subtract(other: CValue<Matrix>): CValue<Matrix> = MatrixSubtr
 fun CValue<Matrix>.multiply(other: CValue<Matrix>): CValue<Matrix> = MatrixMultiply(this, other)
 
 typealias Vector2 = raylib.interop.Vector2
+fun Vector2(x: Float = 0f, y: Float = 0f): CValue<Vector2> = cValue {
+    this.x = x
+    this.y = y
+}
 fun CValue<Vector2>.add(other: CValue<Vector2>): CValue<Vector2> = Vector2Add(this, other)
 fun CValue<Vector2>.addValue(value: Float): CValue<Vector2> = Vector2AddValue(this, value)
 fun CValue<Vector2>.subtract(other: CValue<Vector2>): CValue<Vector2> = Vector2Subtract(this, other)

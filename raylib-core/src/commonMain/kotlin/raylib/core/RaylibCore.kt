@@ -178,8 +178,7 @@ object RlCursor {
     fun isOnScreen(): Boolean = raylib.interop.IsCursorOnScreen()
 }
 
-object DrawScope {
-    fun clearBackground(color: CValue<Color>): Unit = raylib.interop.ClearBackground(color)
+object DrawMode {
     fun begin() = raylib.interop.BeginDrawing()
     fun end() = raylib.interop.EndDrawing()
     fun beginMode2D(camera: CValue<Camera2D>) = raylib.interop.BeginMode2D(camera)
@@ -524,7 +523,8 @@ object RlTexture {
         raylib.interop.SetShapesTexture(texture, source)
 }
 
-object RlBasicDraw {
+object DrawScope {
+    fun clearBackground(color: CValue<Color>): Unit = raylib.interop.ClearBackground(color)
     fun drawPixel(x: Int, y: Int, color: CValue<Color>) = raylib.interop.DrawPixel(x, y, color)
     fun drawPixel(position: CValue<Vector2>, color: CValue<Color>) =
         raylib.interop.DrawPixelV(position, color)

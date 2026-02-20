@@ -1,0 +1,41 @@
+package me.raylib.sample
+
+import kotlinx.cinterop.copy
+import raylib.core.Colors
+import raylib.core.Colors.MAROON
+import raylib.core.KeyboardKey
+import raylib.core.Vector2
+import raylib.core.drawScope
+import raylib.core.mainGameLoop
+import raylib.core.textDrawScope
+import raylib.core.window
+
+internal fun inputKeys() {
+    window(
+        title = "raylib [core] example - input keys",
+        initialFps = 60,
+        width = 800,
+        height = 450
+    ) {
+        var ballPosition = Vector2(
+            windowWidth.div(2f),
+            windowHeight.div(2f)
+        )
+
+        mainGameLoop {
+            if (KeyboardKey.KEY_RIGHT.isDown()) ballPosition = ballPosition.copy { x += 2f }
+            if (KeyboardKey.KEY_LEFT.isDown()) ballPosition = ballPosition.copy { x -= 2f }
+            if (KeyboardKey.KEY_UP.isDown()) ballPosition = ballPosition.copy { y -= 2f }
+            if (KeyboardKey.KEY_DOWN.isDown()) ballPosition = ballPosition.copy { y += 2f }
+
+            drawScope {
+                clearBackground(Colors.RAYWHITE)
+
+                textDrawScope {
+                    draw("move the ball with arrow keys", 10, 10, 20, Colors.DARKGRAY);
+                }
+                drawCircle(ballPosition, 50f, MAROON);
+            }
+        }
+    }
+}
