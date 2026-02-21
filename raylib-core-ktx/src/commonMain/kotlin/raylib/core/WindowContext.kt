@@ -1,11 +1,21 @@
 package raylib.core
 
-interface WindowContext {
+import kotlinx.cinterop.MemScope
+import kotlinx.cinterop.NativePlacement
+import kotlinx.cinterop.memScoped
+
+
+interface WindowContext : NativePlacement {
     val title: String
     val screenWidth: Int
     val screenHeight: Int
     var currentFps: Int
-    val frameTimeSeconds: Float
+
+    fun disposeOnClose(disposable: Disposable)
+}
+
+fun interface Disposable {
+    fun dispose()
 }
 
 fun window(
@@ -14,16 +24,28 @@ fun window(
     height: Int,
     initialFps: Int = 60,
     block: WindowContext.() -> Unit
-): WindowContext {
-    return DefaultWindowContext(initialFps, title, width, height).apply(block)
-}
+): WindowContext =
+    memScoped {
+        DefaultWindowContext(
+            memoScope = this,
+            initialFps = initialFps,
+            title = title,
+            screenWidth = width,
+            screenHeight = height
+        )
+            .apply(block)
+            .also { it.dispose() }
+    }
 
 internal class DefaultWindowContext(
+    memoScope: MemScope,
     initialFps: Int,
     override val title: String,
     override val screenWidth: Int,
-    override val screenHeight: Int
-) : WindowContext {
+    override val screenHeight: Int,
+) : WindowContext, NativePlacement by memoScope {
+    private val disposables = mutableListOf<Disposable>()
+
     init {
         raylib.interop.InitWindow(screenWidth, screenHeight, title)
         raylib.interop.SetTargetFPS(initialFps)
@@ -36,6 +58,13 @@ internal class DefaultWindowContext(
                 raylib.interop.SetTargetFPS(value)
             }
         }
-    override val frameTimeSeconds: Float
-        get() = raylib.interop.GetFrameTime()
+
+    override fun disposeOnClose(disposable: Disposable) {
+        disposables.add(disposable)
+    }
+
+    fun dispose() {
+        disposables.forEach { it.dispose() }
+        disposables.clear()
+    }
 }

@@ -5,7 +5,7 @@ import raylib.core.Colors
 import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
-import raylib.core.drawScope
+import raylib.core.basicDrawScope
 import raylib.core.gameLoop
 import raylib.core.window
 
@@ -45,7 +45,7 @@ fun inputMouse() {
                 Colors.DARKBLUE
             }
 
-            drawScope(Colors.RAYWHITE) {
+            basicDrawScope(Colors.RAYWHITE) {
                 drawCircle(ballPosition, 40f, ballColor)
 
                 drawText(

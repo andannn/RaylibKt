@@ -53,14 +53,18 @@ kotlin {
             }
         }
     }
-
-    sourceSets.all {
-        languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
-    }
     sourceSets {
         nativeMain.dependencies {
             implementation(project(":raylib-core-ktx"))
         }
+    }
+
+    compilerOptions {
+        // https://kotlinlang.org/docs/whatsnew22.html#preview-of-context-parameters
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
+    sourceSets.all {
+        languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
     }
 }
 

@@ -4,7 +4,7 @@ import kotlinx.cinterop.useContents
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.ORANGE
 import raylib.core.Colors.RAYWHITE
-import raylib.core.drawScope
+import raylib.core.basicDrawScope
 import raylib.core.gameLoop
 import raylib.core.window
 
@@ -15,7 +15,7 @@ fun inputMultitouch() {
         height = 450,
     ) {
         gameLoop {
-            drawScope(RAYWHITE) {
+            basicDrawScope(RAYWHITE) {
                 repeat(touchPointCount) { index ->
                     val position = touchPosition(index)
                     position.useContents {

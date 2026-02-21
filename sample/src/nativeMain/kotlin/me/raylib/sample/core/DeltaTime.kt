@@ -3,7 +3,7 @@ package me.raylib.sample.core
 import kotlinx.cinterop.copy
 import raylib.core.Colors
 import raylib.core.Vector2
-import raylib.core.drawScope
+import raylib.core.basicDrawScope
 import raylib.core.gameLoop
 import raylib.core.window
 import raylib.interop.KeyboardKey
@@ -21,7 +21,7 @@ internal fun deltaTime() {
         val circleRadius = 32f
 
         gameLoop {
-            currentFps += wheelMove.toInt()
+            currentFps += mouseWheelMove.toInt()
 
             deltaCircle = deltaCircle.copy {
                 x += frameTimeSeconds * 6.0f * speed
@@ -34,7 +34,7 @@ internal fun deltaTime() {
                 deltaCircle = deltaCircle.copy { x = 0f }
                 frameCircle = frameCircle.copy { x = 0f }
             }
-            drawScope(Colors.RAYWHITE) {
+            basicDrawScope(Colors.RAYWHITE) {
                 drawCircle(
                     center = deltaCircle,
                     radius = circleRadius,

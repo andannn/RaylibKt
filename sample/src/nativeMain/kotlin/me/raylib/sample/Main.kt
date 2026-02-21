@@ -1,7 +1,6 @@
 package me.raylib.sample
 
-import me.raylib.sample.core.inputGestures
-import me.raylib.sample.core.inputMultitouch
+import me.raylib.sample.core.*
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
@@ -13,5 +12,8 @@ fun main() {
 //    inputMouse()
 //    inputMouseWheel()
 //    inputMultitouch()
-    inputGestures()
+//    inputGestures()
+//    twoDCamera()
+//    twoDCameraMouseZoom()
+    twoDCameraSplitScreen()
 }

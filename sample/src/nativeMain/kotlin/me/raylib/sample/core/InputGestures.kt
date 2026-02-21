@@ -9,7 +9,7 @@ import raylib.core.Colors.RAYWHITE
 import raylib.core.Gesture
 import raylib.core.Rectangle
 import raylib.core.Vector2
-import raylib.core.drawScope
+import raylib.core.basicDrawScope
 import raylib.core.gameLoop
 import raylib.core.window
 import raylib.interop.Fade
@@ -18,7 +18,6 @@ private const val MAX_GESTURE_STRINGS = 20
 fun inputGestures() {
     window(
         title = "raylib [core] example - input gestures",
-        initialFps = 10,
         width = 800,
         height = 450
     ) {
@@ -41,7 +40,7 @@ fun inputGestures() {
                 }
             }
 
-            drawScope(RAYWHITE) {
+            basicDrawScope(RAYWHITE) {
                 drawRectangle(touchArea, GRAY)
                 drawRectangle(225, 15, screenWidth - 240, screenHeight - 30, RAYWHITE);
                 drawText(

@@ -7,7 +7,9 @@ fun WindowContext.gameLoop(block: GameContext.() -> Unit) {
     raylib.interop.CloseWindow()
 }
 
-interface GameContext : WindowContext, KeyboardFunction, MouseFunction,GestureFunction
+interface GameContext : WindowContext, KeyboardFunction, MouseFunction, GestureFunction {
+    val frameTimeSeconds: Float
+}
 
 fun GameContext(
     windowContext: WindowContext,
@@ -27,4 +29,7 @@ private class DefaultGameContext(
     WindowContext by windowContext,
     KeyboardFunction by keyboardFunction,
     MouseFunction by mouseFunction,
-    GestureFunction by gestureFunction
+    GestureFunction by gestureFunction {
+    override val frameTimeSeconds: Float
+        get() = raylib.interop.GetFrameTime()
+}
