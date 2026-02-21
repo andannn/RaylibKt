@@ -66,6 +66,17 @@ object Colors {
 }
 
 typealias Rectangle = raylib.interop.Rectangle
+fun Rectangle(
+    x: Float = 0f,
+    y: Float = 0f,
+    width: Float,
+    height: Float
+): CValue<Rectangle> = cValue {
+    this.x = x
+    this.y = y
+    this.width = width
+    this.height = height
+}
 typealias Image = raylib.interop.Image
 typealias Texture = raylib.interop.Texture
 typealias Texture2D = raylib.interop.Texture2D

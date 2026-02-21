@@ -1,5 +1,6 @@
 package me.raylib.sample
 
+import me.raylib.sample.core.inputGestures
 import me.raylib.sample.core.inputMultitouch
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -11,5 +12,6 @@ fun main() {
 //    inputKeys()
 //    inputMouse()
 //    inputMouseWheel()
-    inputMultitouch()
+//    inputMultitouch()
+    inputGestures()
 }

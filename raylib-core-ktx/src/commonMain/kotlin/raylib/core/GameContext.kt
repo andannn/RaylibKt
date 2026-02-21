@@ -7,24 +7,24 @@ fun WindowContext.gameLoop(block: GameContext.() -> Unit) {
     raylib.interop.CloseWindow()
 }
 
-interface GameContext : WindowContext, KeyboardFunction, MouseFunction,TouchFunction
+interface GameContext : WindowContext, KeyboardFunction, MouseFunction,GestureFunction
 
 fun GameContext(
     windowContext: WindowContext,
     keyboardFunction: KeyboardFunction = KeyboardFunction(),
     mouseFunction: MouseFunction = MouseFunction(),
-    touchFunction: TouchFunction = TouchFunction(),
+    gestureFunction: GestureFunction = TouchFunction(),
 ): GameContext {
-    return DefaultGameContext(windowContext, keyboardFunction, mouseFunction, touchFunction)
+    return DefaultGameContext(windowContext, keyboardFunction, mouseFunction, gestureFunction)
 }
 
 private class DefaultGameContext(
     windowContext: WindowContext,
     keyboardFunction: KeyboardFunction,
     mouseFunction: MouseFunction,
-    touchFunction: TouchFunction,
+    gestureFunction: GestureFunction,
 ) : GameContext,
     WindowContext by windowContext,
     KeyboardFunction by keyboardFunction,
     MouseFunction by mouseFunction,
-    TouchFunction by touchFunction
+    GestureFunction by gestureFunction

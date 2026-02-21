@@ -15,8 +15,8 @@ internal fun deltaTime() {
         width = 800,
         height = 450
     ) {
-        var deltaCircle = Vector2(y = windowHeight.div(3f))
-        var frameCircle = Vector2(y = windowHeight.div(3f).times(2f))
+        var deltaCircle = Vector2(y = screenHeight.div(3f))
+        var frameCircle = Vector2(y = screenHeight.div(3f).times(2f))
         val speed = 10f
         val circleRadius = 32f
 

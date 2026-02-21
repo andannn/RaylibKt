@@ -2,8 +2,8 @@ package raylib.core
 
 interface WindowContext {
     val title: String
-    val windowWidth: Int
-    val windowHeight: Int
+    val screenWidth: Int
+    val screenHeight: Int
     var currentFps: Int
     val frameTimeSeconds: Float
 }
@@ -21,11 +21,11 @@ fun window(
 internal class DefaultWindowContext(
     initialFps: Int,
     override val title: String,
-    override val windowWidth: Int,
-    override val windowHeight: Int
+    override val screenWidth: Int,
+    override val screenHeight: Int
 ) : WindowContext {
     init {
-        raylib.interop.InitWindow(windowWidth, windowHeight, title)
+        raylib.interop.InitWindow(screenWidth, screenHeight, title)
         raylib.interop.SetTargetFPS(initialFps)
     }
 

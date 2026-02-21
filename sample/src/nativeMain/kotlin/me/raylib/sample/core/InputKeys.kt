@@ -17,8 +17,8 @@ internal fun inputKeys() {
         height = 450
     ) {
         var ballPosition = Vector2(
-            windowWidth.div(2f),
-            windowHeight.div(2f)
+            screenWidth.div(2f),
+            screenHeight.div(2f)
         )
 
         gameLoop {
