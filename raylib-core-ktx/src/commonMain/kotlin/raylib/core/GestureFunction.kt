@@ -9,7 +9,7 @@ interface GestureFunction {
     val gestureDetected: Gesture
 }
 
-fun TouchFunction(): GestureFunction {
+fun GestureFunction(): GestureFunction {
     return DefaultTouchFunction()
 }
 

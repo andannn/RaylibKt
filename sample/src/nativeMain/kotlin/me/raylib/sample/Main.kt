@@ -14,6 +14,6 @@ fun main() {
 //    inputMultitouch()
 //    inputGestures()
 //    twoDCamera()
-//    twoDCameraMouseZoom()
-    twoDCameraSplitScreen()
+    twoDCameraMouseZoom()
+//    twoDCameraSplitScreen()
 }

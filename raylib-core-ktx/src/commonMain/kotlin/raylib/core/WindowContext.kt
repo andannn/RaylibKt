@@ -1,21 +1,19 @@
 package raylib.core
 
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.MemScope
 import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.memScoped
-
 
 interface WindowContext : NativePlacement {
     val title: String
     val screenWidth: Int
     val screenHeight: Int
     var currentFps: Int
-
+    val frameTimeSeconds: Float
     fun disposeOnClose(disposable: Disposable)
-}
 
-fun interface Disposable {
-    fun dispose()
+    fun gameLoopEffect(block: GameLoopEffectScope.() -> Unit)
 }
 
 fun window(
@@ -23,6 +21,7 @@ fun window(
     width: Int,
     height: Int,
     initialFps: Int = 60,
+    initialBackGroundColor: CValue<Color>? = null,
     block: WindowContext.() -> Unit
 ): WindowContext =
     memScoped {
@@ -34,8 +33,66 @@ fun window(
             screenHeight = height
         )
             .apply(block)
+            .apply {
+                val drawScope = DrawScope(this)
+                val gameContext = GameScope(initialBackGroundColor, this)
+                gameLoop(initialBackGroundColor) {
+                    with(gameContext) {
+                        // update state
+                        onUpdate()
+
+                        // Draw
+                        raylib.interop.BeginDrawing()
+                        backGroundColor?.let {
+                            raylib.interop.ClearBackground(it)
+                        }
+                        with(drawScope) {
+                            onDraw()
+                        }
+                        raylib.interop.EndDrawing()
+                    }
+                }
+            }
             .also { it.dispose() }
     }
+
+fun interface Disposable {
+    fun dispose()
+}
+
+class GameLoopEffectScope {
+    internal var loopHandlers = mutableListOf<UpdateHandler>()
+    internal var drawHandlers = mutableListOf<DrawHandler>()
+
+    fun onUpdate(onUpdateHandle: GameScope.() -> Unit) {
+        loopHandlers.add(
+            object : UpdateHandler {
+                override fun GameScope.update() {
+                    onUpdateHandle()
+                }
+            }
+        )
+    }
+
+    fun onDraw(onDrawHandle: DrawScope.() -> Unit) {
+        drawHandlers.add(
+            object : DrawHandler {
+                override fun DrawScope.draw() {
+                    this.onDrawHandle()
+                }
+            }
+        )
+    }
+}
+
+
+internal interface UpdateHandler {
+    fun GameScope.update()
+}
+
+internal interface DrawHandler {
+    fun DrawScope.draw()
+}
 
 internal class DefaultWindowContext(
     memoScope: MemScope,
@@ -45,6 +102,11 @@ internal class DefaultWindowContext(
     override val screenHeight: Int,
 ) : WindowContext, NativePlacement by memoScope {
     private val disposables = mutableListOf<Disposable>()
+    internal val updateHandlers = mutableListOf<UpdateHandler>()
+    internal val drawHandlers = mutableListOf<DrawHandler>()
+
+    override val frameTimeSeconds: Float
+        get() = raylib.interop.GetFrameTime()
 
     init {
         raylib.interop.InitWindow(screenWidth, screenHeight, title)
@@ -63,8 +125,29 @@ internal class DefaultWindowContext(
         disposables.add(disposable)
     }
 
+    override fun gameLoopEffect(block: GameLoopEffectScope.() -> Unit) {
+        val scope = GameLoopEffectScope()
+        block(scope)
+        scope.loopHandlers.forEach { updateHandlers.add(it) }
+        scope.drawHandlers.forEach { drawHandlers.add(it) }
+    }
+
+    fun GameScope.onUpdate() {
+        updateHandlers.forEach { handler ->
+            with(handler) { update() }
+        }
+    }
+
+    fun DrawScope.onDraw() {
+        drawHandlers.forEach { handler ->
+            with(handler) { draw() }
+        }
+    }
+
     fun dispose() {
-        disposables.forEach { it.dispose() }
         disposables.clear()
+        updateHandlers.clear()
+
+        disposables.forEach { it.dispose() }
     }
 }

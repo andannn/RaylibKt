@@ -2,8 +2,6 @@ package me.raylib.sample.core
 
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
-import raylib.core.basicDrawScope
-import raylib.core.gameLoop
 import raylib.core.window
 
 internal fun firstWindow() {
@@ -11,10 +9,11 @@ internal fun firstWindow() {
         title = "raylib [core] example - basic window",
         initialFps = 60,
         width = 800,
-        height = 450
+        height = 450,
+        initialBackGroundColor = Colors.RAYWHITE
     ) {
-        gameLoop {
-            basicDrawScope(Colors.RAYWHITE) {
+        gameLoopEffect {
+            onDraw {
                 drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
             }
         }
