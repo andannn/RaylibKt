@@ -43,14 +43,3 @@ private class DefaultGameContext(
     MouseFunction by mouseFunction,
     GestureFunction by gestureFunction,
     DrawFunction by drawFunction
-
-
-internal fun WindowContext.gameLoop(
-    initialBackGroundColor: CValue<Color>? = null,
-    block: WindowContext.() -> Unit
-) {
-    while (!raylib.interop.WindowShouldClose()) {
-        block()
-    }
-    raylib.interop.CloseWindow()
-}

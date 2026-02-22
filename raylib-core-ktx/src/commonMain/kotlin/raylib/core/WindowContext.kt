@@ -11,6 +11,10 @@ interface WindowContext : NativePlacement {
     val screenHeight: Int
     var currentFps: Int
     val frameTimeSeconds: Float
+
+    fun setExitKey(key: KeyboardKey)
+    fun interceptExitKey(intercept: Boolean)
+    fun requestExit()
     fun disposeOnClose(disposable: Disposable)
 
     fun gameLoopEffect(block: GameLoopEffectScope.() -> Unit)
@@ -36,7 +40,8 @@ fun window(
             .apply {
                 val drawScope = DrawScope(this)
                 val gameContext = GameScope(initialBackGroundColor, this)
-                gameLoop(initialBackGroundColor) {
+
+                gameLoop {
                     with(gameContext) {
                         // update state
                         onUpdate()
@@ -85,6 +90,20 @@ class GameLoopEffectScope {
     }
 }
 
+internal fun DefaultWindowContext.gameLoop(
+    block: WindowContext.() -> Unit
+) {
+    fun shouldExit(): Boolean =
+        if (interceptExitKey) {
+            exitWindowRequest
+        } else {
+            raylib.interop.WindowShouldClose()
+        }
+    while (!shouldExit()) {
+        block()
+    }
+    raylib.interop.CloseWindow()
+}
 
 internal interface UpdateHandler {
     fun GameScope.update()
@@ -105,12 +124,27 @@ internal class DefaultWindowContext(
     internal val updateHandlers = mutableListOf<UpdateHandler>()
     internal val drawHandlers = mutableListOf<DrawHandler>()
 
-    override val frameTimeSeconds: Float
-        get() = raylib.interop.GetFrameTime()
+    internal var interceptExitKey = false
+    internal var exitWindowRequest = false
 
     init {
         raylib.interop.InitWindow(screenWidth, screenHeight, title)
         raylib.interop.SetTargetFPS(initialFps)
+    }
+
+    override val frameTimeSeconds: Float
+        get() = raylib.interop.GetFrameTime()
+
+    override fun setExitKey(key: KeyboardKey) {
+        raylib.interop.SetExitKey(key.value.toInt())
+    }
+
+    override fun interceptExitKey(intercept: Boolean) {
+        interceptExitKey = intercept
+    }
+
+    override fun requestExit() {
+        exitWindowRequest = true
     }
 
     override var currentFps: Int
