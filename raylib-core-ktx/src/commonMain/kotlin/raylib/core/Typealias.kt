@@ -1,7 +1,10 @@
 package raylib.core
 
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.NativePlacement
+import kotlinx.cinterop.alloc
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.usePinned
 import raylib.interop.Vector3One
 import raylib.interop.Vector3Zero
 import raylib.interop.float16
@@ -66,6 +69,30 @@ object Colors {
 }
 
 typealias Rectangle = raylib.interop.Rectangle
+
+fun NativePlacement.allocRectangle(
+    x: Float = 0f,
+    y: Float = 0f,
+    width: Float = 0f,
+    height: Float = 0f
+) = alloc<Rectangle>().apply {
+    this.x = x
+    this.y = y
+    this.width = width
+    this.height = height
+}
+
+fun Rectangle(
+    x: Float = 0f,
+    y: Float = 0f,
+    width: Float = 0f,
+    height: Float = 0f
+): CValue<Rectangle> = cValue {
+    this.x = x
+    this.y = y
+    this.width = width
+    this.height = height
+}
 typealias Image = raylib.interop.Image
 typealias Texture = raylib.interop.Texture
 typealias Texture2D = raylib.interop.Texture2D
@@ -77,6 +104,8 @@ typealias Font = raylib.interop.Font
 typealias Camera3D = raylib.interop.Camera3D
 typealias Camera = raylib.interop.Camera
 typealias Camera2D = raylib.interop.Camera2D
+
+fun Camera2D() = cValue<Camera2D> {}
 typealias Mesh = raylib.interop.Mesh
 typealias Shader = raylib.interop.Shader
 typealias MaterialMap = raylib.interop.MaterialMap

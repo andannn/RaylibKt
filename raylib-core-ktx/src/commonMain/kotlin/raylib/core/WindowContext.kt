@@ -1,11 +1,19 @@
 package raylib.core
 
-interface WindowContext {
+import kotlinx.cinterop.CValue
+import kotlinx.cinterop.MemScope
+import kotlinx.cinterop.NativePlacement
+import kotlinx.cinterop.memScoped
+
+interface WindowContext : NativePlacement {
     val title: String
-    val windowWidth: Int
-    val windowHeight: Int
+    val screenWidth: Int
+    val screenHeight: Int
     var currentFps: Int
     val frameTimeSeconds: Float
+    fun disposeOnClose(disposable: Disposable)
+
+    fun gameLoopEffect(block: GameLoopEffectScope.() -> Unit)
 }
 
 fun window(
@@ -13,19 +21,95 @@ fun window(
     width: Int,
     height: Int,
     initialFps: Int = 60,
+    initialBackGroundColor: CValue<Color>? = null,
     block: WindowContext.() -> Unit
-): WindowContext {
-    return DefaultWindowContext(initialFps, title, width, height).apply(block)
+): WindowContext =
+    memScoped {
+        DefaultWindowContext(
+            memoScope = this,
+            initialFps = initialFps,
+            title = title,
+            screenWidth = width,
+            screenHeight = height
+        )
+            .apply(block)
+            .apply {
+                val drawScope = DrawScope(this)
+                val gameContext = GameScope(initialBackGroundColor, this)
+                gameLoop(initialBackGroundColor) {
+                    with(gameContext) {
+                        // update state
+                        onUpdate()
+
+                        // Draw
+                        raylib.interop.BeginDrawing()
+                        backGroundColor?.let {
+                            raylib.interop.ClearBackground(it)
+                        }
+                        with(drawScope) {
+                            onDraw()
+                        }
+                        raylib.interop.EndDrawing()
+                    }
+                }
+            }
+            .also { it.dispose() }
+    }
+
+fun interface Disposable {
+    fun dispose()
+}
+
+class GameLoopEffectScope {
+    internal var loopHandlers = mutableListOf<UpdateHandler>()
+    internal var drawHandlers = mutableListOf<DrawHandler>()
+
+    fun onUpdate(onUpdateHandle: GameScope.() -> Unit) {
+        loopHandlers.add(
+            object : UpdateHandler {
+                override fun GameScope.update() {
+                    onUpdateHandle()
+                }
+            }
+        )
+    }
+
+    fun onDraw(onDrawHandle: DrawScope.() -> Unit) {
+        drawHandlers.add(
+            object : DrawHandler {
+                override fun DrawScope.draw() {
+                    this.onDrawHandle()
+                }
+            }
+        )
+    }
+}
+
+
+internal interface UpdateHandler {
+    fun GameScope.update()
+}
+
+internal interface DrawHandler {
+    fun DrawScope.draw()
 }
 
 internal class DefaultWindowContext(
+    memoScope: MemScope,
     initialFps: Int,
     override val title: String,
-    override val windowWidth: Int,
-    override val windowHeight: Int
-) : WindowContext {
+    override val screenWidth: Int,
+    override val screenHeight: Int,
+) : WindowContext, NativePlacement by memoScope {
+    private val disposables = mutableListOf<Disposable>()
+    internal val updateHandlers = mutableListOf<UpdateHandler>()
+    internal val drawHandlers = mutableListOf<DrawHandler>()
+
+    override val frameTimeSeconds: Float
+        get() = raylib.interop.GetFrameTime()
+
     init {
-        raylib.interop.InitWindow(windowWidth, windowHeight, title)
+        raylib.interop.InitWindow(screenWidth, screenHeight, title)
         raylib.interop.SetTargetFPS(initialFps)
     }
 
@@ -36,6 +120,34 @@ internal class DefaultWindowContext(
                 raylib.interop.SetTargetFPS(value)
             }
         }
-    override val frameTimeSeconds: Float
-        get() = raylib.interop.GetFrameTime()
+
+    override fun disposeOnClose(disposable: Disposable) {
+        disposables.add(disposable)
+    }
+
+    override fun gameLoopEffect(block: GameLoopEffectScope.() -> Unit) {
+        val scope = GameLoopEffectScope()
+        block(scope)
+        scope.loopHandlers.forEach { updateHandlers.add(it) }
+        scope.drawHandlers.forEach { drawHandlers.add(it) }
+    }
+
+    fun GameScope.onUpdate() {
+        updateHandlers.forEach { handler ->
+            with(handler) { update() }
+        }
+    }
+
+    fun DrawScope.onDraw() {
+        drawHandlers.forEach { handler ->
+            with(handler) { draw() }
+        }
+    }
+
+    fun dispose() {
+        disposables.clear()
+        updateHandlers.clear()
+
+        disposables.forEach { it.dispose() }
+    }
 }

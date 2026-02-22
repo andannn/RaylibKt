@@ -58,6 +58,10 @@ abstract class KMPExtension(
             }
             project.plugins.apply(KotlinMultiplatformPluginWrapper::class.java)
             project.extensions.findByType(KotlinMultiplatformExtension::class.java)!!.also {
+                it.compilerOptions {
+                    // https://kotlinlang.org/docs/whatsnew22.html#preview-of-context-parameters
+                    freeCompilerArgs.add("-Xcontext-parameters")
+                }
                 it.applyAndroidXDefaultHierarchyTemplate()
             }
         }

@@ -4,9 +4,10 @@ import kotlinx.cinterop.CValue
 
 interface MouseFunction {
     val isCursorHidden: Boolean
-    val mousePositionX: Int
-    val mousePositionY: Int
+    val mouseX: Int
+    val mouseY: Int
     val mousePosition: CValue<Vector2>
+    val mouseDelta: CValue<Vector2>
     fun MouseButton.isPressed(): Boolean
     fun MouseButton.isDown(): Boolean
 
@@ -16,8 +17,8 @@ interface MouseFunction {
     fun showCursor()
     fun hideCursor()
 
-    val wheelMove: Float
-    val wheelMoveVector: CValue<Vector2>
+    val mouseWheelMove: Float
+    val mouseWheelMoveVector: CValue<Vector2>
 }
 
 fun MouseFunction(): MouseFunction {
@@ -27,12 +28,14 @@ fun MouseFunction(): MouseFunction {
 private class DefaultMouseFunction : MouseFunction {
     override val isCursorHidden: Boolean
         get() = raylib.interop.IsCursorHidden()
-    override val mousePositionX: Int
+    override val mouseX: Int
         get() = raylib.interop.GetMouseX()
-    override val mousePositionY: Int
-        get() = raylib.interop.GetMouseX()
+    override val mouseY: Int
+        get() = raylib.interop.GetMouseY()
     override val mousePosition: CValue<Vector2>
         get() = raylib.interop.GetMousePosition()
+    override val mouseDelta: CValue<Vector2>
+        get() = raylib.interop.GetMouseDelta()
 
     override fun MouseButton.isPressed() =
         raylib.interop.IsMouseButtonPressed(this.value.toInt())
@@ -54,8 +57,8 @@ private class DefaultMouseFunction : MouseFunction {
         raylib.interop.HideCursor()
     }
 
-    override val wheelMove: Float
+    override val mouseWheelMove: Float
         get() = raylib.interop.GetMouseWheelMove()
-    override val wheelMoveVector: CValue<Vector2>
+    override val mouseWheelMoveVector: CValue<Vector2>
         get() = raylib.interop.GetMouseWheelMoveV()
 }

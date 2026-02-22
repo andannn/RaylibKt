@@ -1,4 +1,4 @@
 package = raylib.interop
-headers = raylib.h raymath.h config.h
+headers = raylib.h raymath.h config.h rlgl.h
 
 strictEnums = KeyboardKey ConfigFlags MouseButton MouseCursor GamepadButton GamepadAxis MaterialMapIndex ShaderLocationIndex ShaderUniformDataType ShaderAttributeDataType PixelFormat TextureFilter TextureWrap CubemapLayout FontType BlendMode Gesture CameraMode CameraProjection NPatchLayout

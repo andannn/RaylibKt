@@ -5,8 +5,6 @@ import raylib.core.Colors
 import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
-import raylib.core.drawScope
-import raylib.core.gameLoop
 import raylib.core.window
 
 fun inputMouse() {
@@ -14,40 +12,46 @@ fun inputMouse() {
         title = "raylib [core] example - input mouse",
         initialFps = 60,
         width = 800,
-        height = 450
+        height = 450,
+        initialBackGroundColor = Colors.RAYWHITE
     ) {
-        var ballPosition: CValue<Vector2>
-        gameLoop {
-            if (KeyboardKey.KEY_H.isPressed()) {
-                if (isCursorHidden) {
-                    showCursor()
+        gameLoopEffect {
+            var ballPosition: CValue<Vector2> = Vector2()
+            var ballColor = Colors.DARKBLUE
+            var cursorHidden = false
+
+            onUpdate {
+                cursorHidden = isCursorHidden
+                if (KeyboardKey.KEY_H.isPressed()) {
+                    if (isCursorHidden) {
+                        showCursor()
+                    } else {
+                        hideCursor()
+                    }
+                }
+
+                ballPosition = mousePosition
+                ballColor = if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
+                    Colors.MAROON
+                } else if (MouseButton.MOUSE_BUTTON_MIDDLE.isPressed()) {
+                    Colors.LIME
+                } else if (MouseButton.MOUSE_BUTTON_RIGHT.isPressed()) {
+                    Colors.DARKBLUE
+                } else if (MouseButton.MOUSE_BUTTON_SIDE.isPressed()) {
+                    Colors.PURPLE
+                } else if (MouseButton.MOUSE_BUTTON_EXTRA.isPressed()) {
+                    Colors.YELLOW
+                } else if (MouseButton.MOUSE_BUTTON_FORWARD.isPressed()) {
+                    Colors.ORANGE
+                } else if (MouseButton.MOUSE_BUTTON_BACK.isPressed()) {
+                    Colors.BEIGE
                 } else {
-                    hideCursor()
+                    Colors.DARKBLUE
                 }
             }
 
-            ballPosition = mousePosition
-            val ballColor = if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
-                Colors.MAROON
-            } else if (MouseButton.MOUSE_BUTTON_MIDDLE.isPressed()) {
-                Colors.LIME
-            } else if (MouseButton.MOUSE_BUTTON_RIGHT.isPressed()) {
-                Colors.DARKBLUE
-            } else if (MouseButton.MOUSE_BUTTON_SIDE.isPressed()) {
-                Colors.PURPLE
-            } else if (MouseButton.MOUSE_BUTTON_EXTRA.isPressed()) {
-                Colors.YELLOW
-            } else if (MouseButton.MOUSE_BUTTON_FORWARD.isPressed()) {
-                Colors.ORANGE
-            } else if (MouseButton.MOUSE_BUTTON_BACK.isPressed()) {
-                Colors.BEIGE
-            } else {
-                Colors.DARKBLUE
-            }
-
-            drawScope(Colors.RAYWHITE) {
+            onDraw {
                 drawCircle(ballPosition, 40f, ballColor)
-
                 drawText(
                     "move ball with mouse and click mouse button to change color",
                     10,
@@ -56,7 +60,7 @@ fun inputMouse() {
                     Colors.DARKGRAY
                 )
                 drawText("Press 'H' to toggle cursor visibility", 10, 30, 20, Colors.DARKGRAY)
-                if (isCursorHidden) {
+                if (cursorHidden) {
                     drawText("Cursor is hidden", 20, 60, 20, Colors.RED)
                 } else {
                     drawText("Cursor is visible", 20, 60, 20, Colors.GREEN)
