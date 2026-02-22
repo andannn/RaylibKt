@@ -1,6 +1,7 @@
 package me.raylib.sample
 
 import me.raylib.sample.core.*
+import me.raylib.sample.shape.*
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
@@ -14,6 +15,9 @@ fun main() {
 //    inputMultitouch()
 //    inputGestures()
 //    twoDCamera()
-    twoDCameraMouseZoom()
+//    twoDCameraMouseZoom()
 //    twoDCameraSplitScreen()
+
+    // shape examples
+    bouncingBall()
 }
