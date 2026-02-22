@@ -17,7 +17,8 @@ fun main() {
 //    twoDCamera()
 //    twoDCameraMouseZoom()
 //    twoDCameraSplitScreen()
-    windowShouldClose()
+//    windowShouldClose()
+    windowFlags()
 
     // shape examples
 //    bouncingBall()

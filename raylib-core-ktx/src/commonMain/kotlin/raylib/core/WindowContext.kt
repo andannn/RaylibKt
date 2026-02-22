@@ -12,11 +12,18 @@ interface WindowContext : NativePlacement {
     var currentFps: Int
     val frameTimeSeconds: Float
 
+    fun ConfigFlags.isEnabled(): Boolean
+    fun ConfigFlags.clear()
+    fun ConfigFlags.set()
     fun setExitKey(key: KeyboardKey)
     fun interceptExitKey(intercept: Boolean)
     fun requestExit()
     fun disposeOnClose(disposable: Disposable)
-
+    fun toggleFullScreen()
+    fun toggleBorderlessWindowed()
+    fun minimizeWindow()
+    fun maximizeWindow()
+    fun restoreWindow()
     fun gameLoopEffect(block: GameLoopEffectScope.() -> Unit)
 }
 
@@ -135,6 +142,18 @@ internal class DefaultWindowContext(
     override val frameTimeSeconds: Float
         get() = raylib.interop.GetFrameTime()
 
+    override fun ConfigFlags.isEnabled(): Boolean {
+       return raylib.interop.IsWindowState(value)
+    }
+
+    override fun ConfigFlags.clear() {
+        raylib.interop.ClearWindowState(value)
+    }
+
+    override fun ConfigFlags.set() {
+        raylib.interop.SetWindowState(value)
+    }
+
     override fun setExitKey(key: KeyboardKey) {
         raylib.interop.SetExitKey(key.value.toInt())
     }
@@ -157,6 +176,26 @@ internal class DefaultWindowContext(
 
     override fun disposeOnClose(disposable: Disposable) {
         disposables.add(disposable)
+    }
+
+    override fun toggleFullScreen() {
+        raylib.interop.ToggleFullscreen()
+    }
+
+    override fun toggleBorderlessWindowed() {
+        raylib.interop.ToggleBorderlessWindowed()
+    }
+
+    override fun minimizeWindow() {
+        raylib.interop.MinimizeWindow()
+    }
+
+    override fun maximizeWindow() {
+        raylib.interop.MaximizeWindow()
+    }
+
+    override fun restoreWindow() {
+        raylib.interop.RestoreWindow()
     }
 
     override fun gameLoopEffect(block: GameLoopEffectScope.() -> Unit) {
