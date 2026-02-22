@@ -15,55 +15,56 @@ fun inputMouse() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        gameLoopEffect {
+        gameComponent {
             var ballPosition: CValue<Vector2> = Vector2()
             var ballColor = Colors.DARKBLUE
             var cursorHidden = false
 
-            onUpdate {
-                cursorHidden = isCursorHidden
-                if (KeyboardKey.KEY_H.isPressed()) {
-                    if (isCursorHidden) {
-                        showCursor()
+            provideHandlers {
+                onUpdate {
+                    cursorHidden = isCursorHidden
+                    if (KeyboardKey.KEY_H.isPressed()) {
+                        if (isCursorHidden) {
+                            showCursor()
+                        } else {
+                            hideCursor()
+                        }
+                    }
+
+                    ballPosition = mousePosition
+                    ballColor = if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
+                        Colors.MAROON
+                    } else if (MouseButton.MOUSE_BUTTON_MIDDLE.isPressed()) {
+                        Colors.LIME
+                    } else if (MouseButton.MOUSE_BUTTON_RIGHT.isPressed()) {
+                        Colors.DARKBLUE
+                    } else if (MouseButton.MOUSE_BUTTON_SIDE.isPressed()) {
+                        Colors.PURPLE
+                    } else if (MouseButton.MOUSE_BUTTON_EXTRA.isPressed()) {
+                        Colors.YELLOW
+                    } else if (MouseButton.MOUSE_BUTTON_FORWARD.isPressed()) {
+                        Colors.ORANGE
+                    } else if (MouseButton.MOUSE_BUTTON_BACK.isPressed()) {
+                        Colors.BEIGE
                     } else {
-                        hideCursor()
+                        Colors.DARKBLUE
                     }
                 }
-
-                ballPosition = mousePosition
-                ballColor = if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
-                    Colors.MAROON
-                } else if (MouseButton.MOUSE_BUTTON_MIDDLE.isPressed()) {
-                    Colors.LIME
-                } else if (MouseButton.MOUSE_BUTTON_RIGHT.isPressed()) {
-                    Colors.DARKBLUE
-                } else if (MouseButton.MOUSE_BUTTON_SIDE.isPressed()) {
-                    Colors.PURPLE
-                } else if (MouseButton.MOUSE_BUTTON_EXTRA.isPressed()) {
-                    Colors.YELLOW
-                } else if (MouseButton.MOUSE_BUTTON_FORWARD.isPressed()) {
-                    Colors.ORANGE
-                } else if (MouseButton.MOUSE_BUTTON_BACK.isPressed()) {
-                    Colors.BEIGE
-                } else {
-                    Colors.DARKBLUE
-                }
-            }
-
-            onDraw {
-                drawCircle(ballPosition, 40f, ballColor)
-                drawText(
-                    "move ball with mouse and click mouse button to change color",
-                    10,
-                    10,
-                    20,
-                    Colors.DARKGRAY
-                )
-                drawText("Press 'H' to toggle cursor visibility", 10, 30, 20, Colors.DARKGRAY)
-                if (cursorHidden) {
-                    drawText("Cursor is hidden", 20, 60, 20, Colors.RED)
-                } else {
-                    drawText("Cursor is visible", 20, 60, 20, Colors.GREEN)
+                onDraw {
+                    drawCircle(ballPosition, 40f, ballColor)
+                    drawText(
+                        "move ball with mouse and click mouse button to change color",
+                        10,
+                        10,
+                        20,
+                        Colors.DARKGRAY
+                    )
+                    drawText("Press 'H' to toggle cursor visibility", 10, 30, 20, Colors.DARKGRAY)
+                    if (cursorHidden) {
+                        drawText("Cursor is hidden", 20, 60, 20, Colors.RED)
+                    } else {
+                        drawText("Cursor is visible", 20, 60, 20, Colors.GREEN)
+                    }
                 }
             }
         }

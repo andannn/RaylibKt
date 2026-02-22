@@ -19,7 +19,7 @@ fun bouncingBall() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        gameLoopEffect {
+        gameComponent {
             val ballPosition = alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) }
             val ballSpeed = alloc<Vector2> { x = 5f; y = 4f }
             var useGravity = true
@@ -29,35 +29,34 @@ fun bouncingBall() {
             val gravity = 0.2f
             var framesCounter = 0
 
-            onUpdate {
-                if (KeyboardKey.KEY_G.isPressed()) useGravity = !useGravity;
-                if (KeyboardKey.KEY_SPACE.isPressed()) pause = !pause;
-            }
+            provideHandlers {
+                onUpdate {
+                    if (KeyboardKey.KEY_G.isPressed()) useGravity = !useGravity;
+                    if (KeyboardKey.KEY_SPACE.isPressed()) pause = !pause;
+                    if (!pause) {
+                        ballPosition.x += ballSpeed.x
+                        ballPosition.y += ballSpeed.y
 
-            onUpdate {
-                if (!pause) {
-                    ballPosition.x += ballSpeed.x
-                    ballPosition.y += ballSpeed.y
+                        if (useGravity) ballSpeed.y += gravity
 
-                    if (useGravity) ballSpeed.y += gravity
-
-                    // Check walls collision for bouncing
-                    if ((ballPosition.x >= (screenWidth - ballRadius)) || (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f
-                    if ((ballPosition.y >= (screenHeight - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -0.95f
-                } else {
-                    framesCounter++
+                        // Check walls collision for bouncing
+                        if ((ballPosition.x >= (screenWidth - ballRadius)) || (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f
+                        if ((ballPosition.y >= (screenHeight - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -0.95f
+                    } else {
+                        framesCounter++
+                    }
                 }
-            }
 
 
-            onDraw {
-                drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
-                drawText("PRESS SPACE to PAUSE BALL MOVEMENT", 10, screenHeight - 25, 20, LIGHTGRAY)
-                if (useGravity) drawText("GRAVITY: ON (Press G to disable)", 10, screenHeight - 50, 20, DARKGREEN)
-                else drawText("GRAVITY: OFF (Press G to enable)", 10, screenHeight - 50, 20, RED)
+                onDraw {
+                    drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
+                    drawText("PRESS SPACE to PAUSE BALL MOVEMENT", 10, screenHeight - 25, 20, LIGHTGRAY)
+                    if (useGravity) drawText("GRAVITY: ON (Press G to disable)", 10, screenHeight - 50, 20, DARKGREEN)
+                    else drawText("GRAVITY: OFF (Press G to enable)", 10, screenHeight - 50, 20, RED)
 
-                if (pause && ((framesCounter/30)%2 == 1)) drawText("PAUSED", 350, 200, 30, GRAY)
-                drawFPS(10, 10)
+                    if (pause && ((framesCounter / 30) % 2 == 1)) drawText("PAUSED", 350, 200, 30, GRAY)
+                    drawFPS(10, 10)
+                }
             }
         }
     }

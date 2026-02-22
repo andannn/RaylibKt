@@ -4,7 +4,7 @@ import kotlinx.cinterop.CValue
 
 abstract class GameScope(
     initialBackGroundColor: CValue<Color>?,
-) : WindowContext, KeyboardFunction, MouseFunction, GestureFunction {
+) : WindowFunction, KeyboardFunction, MouseFunction, GestureFunction {
     var backGroundColor: CValue<Color>? = null
 
     init {
@@ -12,34 +12,16 @@ abstract class GameScope(
     }
 }
 
-fun GameScope(
+internal fun GameScope(
     initialBackGroundColor: CValue<Color>? = null,
-    windowContext: WindowContext,
+    windowScope: WindowScope,
     keyboardFunction: KeyboardFunction = KeyboardFunction(),
     mouseFunction: MouseFunction = MouseFunction(),
     gestureFunction: GestureFunction = GestureFunction(),
     drawFunction: DrawFunction = DrawFunction()
-): GameScope {
-    return DefaultGameContext(
-        initialBackGroundColor,
-        windowContext,
-        keyboardFunction,
-        mouseFunction,
-        gestureFunction,
-        drawFunction
-    )
-}
-
-private class DefaultGameContext(
-    initialBackGroundColor: CValue<Color>?,
-    windowContext: WindowContext,
-    keyboardFunction: KeyboardFunction,
-    mouseFunction: MouseFunction,
-    gestureFunction: GestureFunction,
-    drawFunction: DrawFunction
-) : GameScope(initialBackGroundColor),
-    WindowContext by windowContext,
+): GameScope = object : GameScope(initialBackGroundColor),
+    WindowScope by windowScope,
     KeyboardFunction by keyboardFunction,
     MouseFunction by mouseFunction,
     GestureFunction by gestureFunction,
-    DrawFunction by drawFunction
+    DrawFunction by drawFunction {}

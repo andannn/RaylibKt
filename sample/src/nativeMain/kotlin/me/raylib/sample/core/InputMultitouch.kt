@@ -13,20 +13,22 @@ fun inputMultitouch() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        gameLoopEffect {
-            onDraw {
-                repeat(touchPointCount) { index ->
-                    val position = touchPosition(index)
-                    position.useContents {
-                        if (x > 0 && y > 0) {
-                            drawCircle(position, 34f, ORANGE)
-                            drawText(
-                                index.toString(),
-                                (x - 10).toInt(),
-                                (y - 70).toInt(),
-                                40,
-                                BLACK
-                            )
+        gameComponent {
+            provideHandlers {
+                onDraw {
+                    repeat(touchPointCount) { index ->
+                        val position = touchPosition(index)
+                        position.useContents {
+                            if (x > 0 && y > 0) {
+                                drawCircle(position, 34f, ORANGE)
+                                drawText(
+                                    index.toString(),
+                                    (x - 10).toInt(),
+                                    (y - 70).toInt(),
+                                    40,
+                                    BLACK
+                                )
+                            }
                         }
                     }
                 }

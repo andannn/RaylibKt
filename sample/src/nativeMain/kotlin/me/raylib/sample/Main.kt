@@ -18,8 +18,11 @@ fun main() {
 //    twoDCameraMouseZoom()
 //    twoDCameraSplitScreen()
 //    windowShouldClose()
-    windowFlags()
+//    windowFlags()
+//    monitorDetector()
+//    scissorTest()
+//    basicScreenManager()
 
     // shape examples
-//    bouncingBall()
+    bouncingBall()
 }

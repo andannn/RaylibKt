@@ -32,7 +32,7 @@ fun twoDCamera() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        gameLoopEffect {
+        gameComponent {
             val player = allocRectangle(400f, 280f, 40f, 40f)
             var spacex = 0f
             val buildings = List(MAX_BUILDINGS) { index ->
@@ -58,75 +58,75 @@ fun twoDCamera() {
                 zoom = 1.0f
             }
 
-            // update player.
-            onUpdate {
-                if (KeyboardKey.KEY_RIGHT.isDown()) {
-                    player.x += 2.0f
-                } else if (KeyboardKey.KEY_LEFT.isDown()) {
-                    player.x -= 2.0f
-                }
-            }
-
-            // update camera
-            onUpdate {
-                camera.setTarget(player.x + 20.0f, player.y + 20.0f)
-
-                if (KeyboardKey.KEY_A.isDown()) {
-                    camera.rotation = (camera.rotation - 1).coerceIn(-40f, 40f)
-                } else if (KeyboardKey.KEY_S.isDown()) {
-                    camera.rotation = (camera.rotation + 1).coerceIn(-40f, 40f)
-                }
-
-                camera.zoom = expf(logf(camera.zoom) + (mouseWheelMove * 0.1f)).coerceIn(0.1f, 3f)
-
-                if (KeyboardKey.KEY_R.isDown()) {
-                    camera.zoom = 1.0f
-                    camera.rotation = 0.0f
-                }
-            }
-
-            onDraw {
-                mode2d(camera.readValue()) {
-                    drawRectangle(-6000, 320, 13000, 8000, DARKGRAY)
-                    buildings.forEach { (buildingRect, color) ->
-                        drawRectangle(buildingRect, color)
+            provideHandlers {
+                // update player.
+                onUpdate {
+                    if (KeyboardKey.KEY_RIGHT.isDown()) {
+                        player.x += 2.0f
+                    } else if (KeyboardKey.KEY_LEFT.isDown()) {
+                        player.x -= 2.0f
                     }
-                    drawRectangle(player.readValue(), RED)
-                    drawLine(
-                        camera.target.x.toInt(),
-                        -screenHeight * 10,
-                        camera.target.x.toInt(),
-                        screenHeight * 10,
-                        GREEN
-                    )
-                    DrawLine(
-                        -screenWidth * 10,
-                        camera.target.y.toInt(),
-                        screenWidth * 10,
-                        camera.target.y.toInt(),
-                        GREEN
-                    )
+                    camera.setTarget(player.x + 20.0f, player.y + 20.0f)
+
+                    if (KeyboardKey.KEY_A.isDown()) {
+                        camera.rotation = (camera.rotation - 1).coerceIn(-40f, 40f)
+                    } else if (KeyboardKey.KEY_S.isDown()) {
+                        camera.rotation = (camera.rotation + 1).coerceIn(-40f, 40f)
+                    }
+
+                    camera.zoom = expf(logf(camera.zoom) + (mouseWheelMove * 0.1f)).coerceIn(0.1f, 3f)
+
+                    if (KeyboardKey.KEY_R.isDown()) {
+                        camera.zoom = 1.0f
+                        camera.rotation = 0.0f
+                    }
+                }
+
+                onDraw {
+                    mode2d(camera.readValue()) {
+                        drawRectangle(-6000, 320, 13000, 8000, DARKGRAY)
+                        buildings.forEach { (buildingRect, color) ->
+                            drawRectangle(buildingRect, color)
+                        }
+                        drawRectangle(player.readValue(), RED)
+                        drawLine(
+                            camera.target.x.toInt(),
+                            -screenHeight * 10,
+                            camera.target.x.toInt(),
+                            screenHeight * 10,
+                            GREEN
+                        )
+                        DrawLine(
+                            -screenWidth * 10,
+                            camera.target.y.toInt(),
+                            screenWidth * 10,
+                            camera.target.y.toInt(),
+                            GREEN
+                        )
+                    }
                 }
             }
         }
 
-        gameLoopEffect {
-            onDraw {
-                drawText("SCREEN AREA", 640, 10, 20, RED);
+        gameComponent {
+            provideHandlers {
+                onDraw {
+                    drawText("SCREEN AREA", 640, 10, 20, RED);
 
-                drawRectangle(0, 0, screenWidth, 5, RED);
-                drawRectangle(0, 5, 5, screenHeight - 10, RED);
-                drawRectangle(screenWidth - 5, 5, 5, screenHeight - 10, RED);
-                drawRectangle(0, screenHeight - 5, screenWidth, 5, RED);
+                    drawRectangle(0, 0, screenWidth, 5, RED);
+                    drawRectangle(0, 5, 5, screenHeight - 10, RED);
+                    drawRectangle(screenWidth - 5, 5, 5, screenHeight - 10, RED);
+                    drawRectangle(0, screenHeight - 5, screenWidth, 5, RED);
 
-                drawRectangle(10, 10, 250, 113, Fade(SKYBLUE, 0.5f));
-                drawRectangleLines(10, 10, 250, 113, BLUE);
+                    drawRectangle(10, 10, 250, 113, Fade(SKYBLUE, 0.5f));
+                    drawRectangleLines(10, 10, 250, 113, BLUE);
 
-                drawText("Free 2D camera controls:", 20, 20, 10, BLACK);
-                drawText("- Right/Left to move player", 40, 40, 10, DARKGRAY);
-                drawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, DARKGRAY);
-                drawText("- A / S to Rotate", 40, 80, 10, DARKGRAY);
-                drawText("- R to reset Zoom and Rotation", 40, 100, 10, DARKGRAY);
+                    drawText("Free 2D camera controls:", 20, 20, 10, BLACK);
+                    drawText("- Right/Left to move player", 40, 40, 10, DARKGRAY);
+                    drawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, DARKGRAY);
+                    drawText("- A / S to Rotate", 40, 80, 10, DARKGRAY);
+                    drawText("- R to reset Zoom and Rotation", 40, 100, 10, DARKGRAY);
+                }
             }
         }
     }
