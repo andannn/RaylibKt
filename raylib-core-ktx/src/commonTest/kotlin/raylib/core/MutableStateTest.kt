@@ -44,6 +44,17 @@ class MutableStateTest {
     }
 
     @Test
+    fun managedStateListTest_add(): Unit = with(windowScope) {
+        val list = stateList {
+            addState(disposableState { alloc<Vector2> {x = 1f} })
+        }
+        assertEquals(1, list.size)
+
+        list.addState(disposableState { alloc<Vector2> {x = 2f} })
+        assertEquals(2, list.size)
+    }
+
+    @Test
     fun managedStateListTest_remove(): Unit = with(windowScope) {
         val state1 = disposableState {
             alloc<Vector2>().apply { x = 1f }

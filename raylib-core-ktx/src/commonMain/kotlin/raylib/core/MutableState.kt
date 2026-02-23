@@ -26,7 +26,7 @@ internal abstract class StateBox<T>(
 }
 
 fun <T> WindowScope.stateList(init: ManagedStateList<T>.() -> Unit) =
-    ManagedStateList<T>()
+    ManagedStateList<T>(this)
         .apply(init)
         .also {
             (this as DefaultWindowScope).onPreBuild {
@@ -36,10 +36,13 @@ fun <T> WindowScope.stateList(init: ManagedStateList<T>.() -> Unit) =
 
 
 class ManagedStateList<T>(
+    private val windowScope: WindowScope,
     private val innerList: MutableList<DisposableState<T>> = mutableListOf()
 ) : List<DisposableState<T>> by innerList {
 
-    fun addState(state: DisposableState<T>) = innerList.add(state)
+    fun addState(state: DisposableState<T>) = innerList.add(state).also {
+        (windowScope as DefaultWindowScope).invalidComponents()
+    }
 
     internal fun cleanup() {
         innerList.removeAll { state ->
