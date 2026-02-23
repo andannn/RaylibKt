@@ -20,5 +20,9 @@ kmpExtension {
         it.commonMain.dependencies {
             api(project(":raylib-core"))
         }
+
+        it.commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }

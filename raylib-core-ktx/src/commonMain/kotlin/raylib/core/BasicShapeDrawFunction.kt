@@ -14,6 +14,7 @@ interface BasicShapeDrawFunction {
     fun drawLine(start: CValue<Vector2>, end: CValue<Vector2>, color: CValue<Color>)
 
     fun drawRectangleLines(x: Int, y: Int, width: Int, height: Int, color: CValue<Color>)
+    fun drawRectangleLines(rectangle: CValue<Rectangle>, lineThick: Float, color: CValue<Color>)
 }
 
 fun BasicShapeDrawFunction(): BasicShapeDrawFunction {
@@ -44,5 +45,13 @@ private class DefaultBasicShapeDrawFunction() : BasicShapeDrawFunction {
 
     override fun drawRectangleLines(x: Int, y: Int, width: Int, height: Int, color: CValue<Color>) {
         raylib.interop.DrawRectangleLines(x, y, width, height, color)
+    }
+
+    override fun drawRectangleLines(
+        rectangle: CValue<Rectangle>,
+        lineThick: Float,
+        color: CValue<Color>
+    ) {
+        raylib.interop.DrawRectangleLinesEx(rectangle, lineThick, color)
     }
 }

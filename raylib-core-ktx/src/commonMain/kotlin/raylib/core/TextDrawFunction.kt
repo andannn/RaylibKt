@@ -4,6 +4,9 @@ import kotlinx.cinterop.CValue
 
 interface TextDrawFunction {
     val defaultFont: CValue<Font>
+
+    fun drawFPS(x: Int, y: Int)
+
     fun drawText(
         text: String,
         position: CValue<Vector2>,
@@ -38,6 +41,10 @@ fun TextDrawFunction(): TextDrawFunction {
 class DefaultDrawTextFunction : TextDrawFunction {
     override val defaultFont: CValue<Font>
         get() = raylib.interop.GetFontDefault()
+
+    override fun drawFPS(x: Int, y: Int) {
+        raylib.interop.DrawFPS(x, y)
+    }
 
     override fun drawText(
         text: String,

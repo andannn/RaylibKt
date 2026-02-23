@@ -12,6 +12,14 @@ fun CValue<Camera2D>.screenToWorldPosition(screenPosition: CValue<Vector2>): CVa
     return raylib.interop.GetScreenToWorld2D(screenPosition, this)
 }
 
+fun Camera2D.worldToScreenPosition(worldPositon: CValue<Vector2>): CValue<Vector2> {
+   return readValue().worldToScreenPosition(worldPositon)
+}
+
+fun CValue<Camera2D>.worldToScreenPosition(worldPositon: CValue<Vector2>): CValue<Vector2> {
+    return raylib.interop.GetWorldToScreen2D(worldPositon, this)
+}
+
 fun Camera2D.setTarget(x: Float, y: Float) {
     target.x = x
     target.y = y

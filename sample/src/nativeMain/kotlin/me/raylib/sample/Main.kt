@@ -14,6 +14,16 @@ fun main() {
 //    inputMultitouch()
 //    inputGestures()
 //    twoDCamera()
-    twoDCameraMouseZoom()
+//    twoDCameraMouseZoom()
 //    twoDCameraSplitScreen()
+//    windowShouldClose()
+//    windowFlags()
+//    monitorDetector()
+//    scissorTest()
+//    basicScreenManager()
+//    randomSequence()
+    towDCameraPlatformer()
+
+    // shape examples
+//    bouncingBall()
 }

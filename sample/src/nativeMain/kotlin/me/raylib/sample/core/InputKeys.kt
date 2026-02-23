@@ -16,21 +16,25 @@ internal fun inputKeys() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        gameLoopEffect {
-            val ballPosition = alloc<Vector2>().apply {
-                x = screenWidth.div(2f)
-                y = screenHeight.div(2f)
-            }
+        registerGameComponents {
+            component("key") {
+                val ballPosition = alloc<Vector2>().apply {
+                    x = screenWidth.div(2f)
+                    y = screenHeight.div(2f)
+                }
 
-            onUpdate {
-                if (KeyboardKey.KEY_RIGHT.isDown()) ballPosition.x += 2f
-                if (KeyboardKey.KEY_LEFT.isDown()) ballPosition.x -= 2f
-                if (KeyboardKey.KEY_UP.isDown()) ballPosition.y -= 2f
-                if (KeyboardKey.KEY_DOWN.isDown()) ballPosition.y += 2f
-            }
-            onDraw {
-                drawText("move the ball with arrow keys", 10, 10, 20, Colors.DARKGRAY)
-                drawCircle(ballPosition.readValue(), 50f, MAROON)
+                provideHandlers {
+                    onUpdate {
+                        if (KeyboardKey.KEY_RIGHT.isDown()) ballPosition.x += 2f
+                        if (KeyboardKey.KEY_LEFT.isDown()) ballPosition.x -= 2f
+                        if (KeyboardKey.KEY_UP.isDown()) ballPosition.y -= 2f
+                        if (KeyboardKey.KEY_DOWN.isDown()) ballPosition.y += 2f
+                    }
+                    onDraw {
+                        drawText("move the ball with arrow keys", 10, 10, 20, Colors.DARKGRAY)
+                        drawCircle(ballPosition.readValue(), 50f, MAROON)
+                    }
+                }
             }
         }
     }
