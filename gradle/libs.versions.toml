@@ -1,10 +1,12 @@
 [versions]
 agp = "9.0.0"
 androidTool = "32.0.0"
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 task-tree = "4.0.0"
 
 [libraries]
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+
 # used in build-logic
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 android-tool-common = { group = "com.android.tools", name = "common", version.ref = "androidTool" }

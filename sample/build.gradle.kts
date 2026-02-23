@@ -62,6 +62,7 @@ kotlin {
     compilerOptions {
         // https://kotlinlang.org/docs/whatsnew22.html#preview-of-context-parameters
         freeCompilerArgs.add("-Xcontext-parameters")
+        freeCompilerArgs.add("-Xreturn-value-checker=check")
     }
     sourceSets.all {
         languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")

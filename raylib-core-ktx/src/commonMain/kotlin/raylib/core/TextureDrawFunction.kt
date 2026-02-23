@@ -36,5 +36,4 @@ private class DefaultTextureDrawFunction : TextureDrawFunction {
     ) {
         raylib.interop.DrawTextureRec(texture, source, position, tint)
     }
-
 }

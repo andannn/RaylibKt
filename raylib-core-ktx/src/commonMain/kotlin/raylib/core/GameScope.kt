@@ -13,14 +13,14 @@ abstract class GameScope(
 }
 
 internal fun GameScope(
+    windowScope: WindowFunction,
     initialBackGroundColor: CValue<Color>? = null,
-    windowScope: WindowScope,
     keyboardFunction: KeyboardFunction = KeyboardFunction(),
     mouseFunction: MouseFunction = MouseFunction(),
     gestureFunction: GestureFunction = GestureFunction(),
     drawFunction: DrawFunction = DrawFunction()
 ): GameScope = object : GameScope(initialBackGroundColor),
-    WindowScope by windowScope,
+    WindowFunction by windowScope,
     KeyboardFunction by keyboardFunction,
     MouseFunction by mouseFunction,
     GestureFunction by gestureFunction,

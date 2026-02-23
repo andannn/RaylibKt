@@ -3,9 +3,9 @@ package raylib.core
 import kotlinx.cinterop.CValue
 
 interface WindowScope : WindowFunction {
+    fun invalidComponents()
     fun disposeOnClose(disposable: Disposable)
-
-    fun gameComponent(block: GameComponentScope.() -> LoopHandler): GameComponent
+    fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager
 }
 
 fun window(
@@ -14,7 +14,7 @@ fun window(
     height: Int,
     initialFps: Int = 60,
     initialBackGroundColor: CValue<Color>? = null,
-    block: WindowScope.() -> Unit
+    block: WindowScope.() -> GameComponentManager
 ): WindowScope {
     val windowFunction = DefaultWindowFunction(
         initialFps = initialFps,
@@ -23,25 +23,23 @@ fun window(
         screenHeight = height
     )
     val windowScope = DefaultWindowScope(windowFunction)
+    val drawScope = DrawScope(windowFunction)
+    val gameScope = GameScope(windowScope, initialBackGroundColor)
+    val componentsManager = windowScope.block()
     return windowScope
-        .apply(block)
         .apply {
-            val drawScope = DrawScope(this)
-            val gameContext = GameScope(initialBackGroundColor, this)
-
             gameLoop {
-                with(gameContext) {
+                componentsManager.buildComponentsIfNeeded()
+                with(gameScope) {
                     // update state
-                    performUpdate()
+                    componentsManager.performUpdate(gameScope)
 
                     // Draw
                     raylib.interop.BeginDrawing()
                     backGroundColor?.let {
                         raylib.interop.ClearBackground(it)
                     }
-                    with(drawScope) {
-                        performDraw()
-                    }
+                    componentsManager.performDraw(drawScope)
                     raylib.interop.EndDrawing()
                 }
             }
@@ -107,34 +105,28 @@ internal class DefaultWindowScope(
     val windowFunction: DefaultWindowFunction
 ) : WindowScope, WindowFunction by windowFunction {
     private val disposables = mutableListOf<Disposable>()
-    internal val gameComponents = mutableListOf<GameComponent>()
+
+    private var isDirty = false
+
+    override fun invalidComponents() {
+        isDirty = true
+    }
 
     override fun disposeOnClose(disposable: Disposable) {
         disposables.add(disposable)
     }
 
-    override fun gameComponent(block: GameComponentScope.() -> LoopHandler): GameComponent {
-        val scope = GameComponentScope()
-        val handler = block(scope)
-        return GameComponent(handler, scope).also { gameComponents.add(it) }
-    }
-
-    fun GameScope.performUpdate() {
-        gameComponents.forEach { handler ->
-            with(handler) { update() }
-        }
-    }
-
-    fun DrawScope.performDraw() {
-        gameComponents.forEach { handler ->
-            with(handler) { draw() }
+    override fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager {
+        return GameComponentManagerImpl(
+            isDirty = { isDirty },
+            onRebuildFinished = { isDirty = false},
+            block
+        ).also {
+            disposables.add(it)
         }
     }
 
     fun dispose() {
-        gameComponents.forEach { it.dispose() }
-        gameComponents.clear()
-
         disposables.forEach { it.dispose() }
         disposables.clear()
     }

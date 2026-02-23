@@ -12,10 +12,12 @@ internal fun firstWindow() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        gameComponent {
-            provideHandlers {
-                onDraw {
-                    drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        registerGameComponents {
+            component("key") {
+                provideHandlers {
+                    onDraw {
+                        drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+                    }
                 }
             }
         }

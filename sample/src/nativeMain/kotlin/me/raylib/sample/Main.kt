@@ -1,7 +1,6 @@
 package me.raylib.sample
 
 import me.raylib.sample.core.*
-import me.raylib.sample.shape.*
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
@@ -22,7 +21,8 @@ fun main() {
 //    monitorDetector()
 //    scissorTest()
 //    basicScreenManager()
+    randomSequence()
 
     // shape examples
-    bouncingBall()
+//    bouncingBall()
 }

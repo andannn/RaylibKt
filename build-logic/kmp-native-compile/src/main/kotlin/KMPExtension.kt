@@ -61,6 +61,7 @@ abstract class KMPExtension(
                 it.compilerOptions {
                     // https://kotlinlang.org/docs/whatsnew22.html#preview-of-context-parameters
                     freeCompilerArgs.add("-Xcontext-parameters")
+                    freeCompilerArgs.add("-Xreturn-value-checker=check")
                 }
                 it.applyAndroidXDefaultHierarchyTemplate()
             }
