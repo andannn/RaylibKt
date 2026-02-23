@@ -22,7 +22,7 @@ interface GameComponentsRegisterScope {
 
 interface GameComponentManager : Disposable {
     fun buildComponentsIfNeeded()
-    fun performUpdate(scope: GameScope)
+    fun performUpdate(deltaTime: Float, scope: GameScope)
     fun performDraw(scope: DrawScope)
 }
 
@@ -105,9 +105,9 @@ internal class GameComponentManagerImpl(
         }
     }
 
-    override fun performUpdate(scope: GameScope) {
+    override fun performUpdate(deltaTime: Float, scope: GameScope) {
         gameComponents.forEach { handler ->
-            with(handler) { scope.update() }
+            with(handler) { scope.update(deltaTime) }
         }
     }
 

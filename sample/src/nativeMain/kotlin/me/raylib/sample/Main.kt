@@ -21,7 +21,8 @@ fun main() {
 //    monitorDetector()
 //    scissorTest()
 //    basicScreenManager()
-    randomSequence()
+//    randomSequence()
+    towDCameraPlatformer()
 
     // shape examples
 //    bouncingBall()

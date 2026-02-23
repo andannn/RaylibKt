@@ -1,8 +1,11 @@
 package raylib.core
 
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.MemScope
+import kotlinx.cinterop.NativePlacement
+import kotlinx.cinterop.memScoped
 
-interface WindowScope : WindowFunction {
+interface WindowScope : WindowFunction, NativePlacement {
     fun invalidComponents()
     fun disposeOnClose(disposable: Disposable)
     fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager
@@ -15,14 +18,14 @@ fun window(
     initialFps: Int = 60,
     initialBackGroundColor: CValue<Color>? = null,
     block: WindowScope.() -> GameComponentManager
-): WindowScope {
+): WindowScope = memScoped {
     val windowFunction = DefaultWindowFunction(
         initialFps = initialFps,
         title = title,
         screenWidth = width,
         screenHeight = height
     )
-    val windowScope = DefaultWindowScope(windowFunction)
+    val windowScope = DefaultWindowScope(this, windowFunction)
     val drawScope = DrawScope(windowFunction)
     val gameScope = GameScope(windowScope, initialBackGroundColor)
     val componentsManager = windowScope.block()
@@ -32,7 +35,7 @@ fun window(
                 componentsManager.buildComponentsIfNeeded()
                 with(gameScope) {
                     // update state
-                    componentsManager.performUpdate(gameScope)
+                    componentsManager.performUpdate(frameTimeSeconds, gameScope)
 
                     // Draw
                     raylib.interop.BeginDrawing()
@@ -69,7 +72,7 @@ internal fun DefaultWindowScope.gameLoop(
 interface LoopHandler : UpdateHandler, DrawHandler
 
 interface UpdateHandler {
-    fun GameScope.update()
+    fun GameScope.update(deltaTime: Float)
 }
 
 interface DrawHandler {
@@ -77,12 +80,11 @@ interface DrawHandler {
 }
 
 class LoopHandlerBuilder {
-    private var updateAction: (GameScope.() -> Unit)? = null
+    private var updateActions = mutableListOf<(GameScope.(deltaTime: Float) -> Unit)>()
     private var drawAction: (DrawScope.() -> Unit)? = null
 
-    fun onUpdate(block: GameScope.() -> Unit) {
-        check(updateAction == null)
-        updateAction = block
+    fun onUpdate(block: GameScope.(deltaTime: Float) -> Unit) {
+        updateActions.add(block)
     }
 
     fun onDraw(block: DrawScope.() -> Unit) {
@@ -91,8 +93,10 @@ class LoopHandlerBuilder {
     }
 
     fun build(): LoopHandler = object : LoopHandler {
-        override fun GameScope.update() {
-            updateAction?.invoke(this)
+        override fun GameScope.update(deltaTime: Float) {
+            updateActions.forEach {
+                it.invoke(this, deltaTime)
+            }
         }
 
         override fun DrawScope.draw() {
@@ -102,8 +106,9 @@ class LoopHandlerBuilder {
 }
 
 internal class DefaultWindowScope(
+    memScope: MemScope,
     val windowFunction: DefaultWindowFunction
-) : WindowScope, WindowFunction by windowFunction {
+) : WindowScope, WindowFunction by windowFunction, NativePlacement by memScope {
     private val disposables = mutableListOf<Disposable>()
 
     private var isDirty = false
@@ -119,7 +124,7 @@ internal class DefaultWindowScope(
     override fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager {
         return GameComponentManagerImpl(
             isDirty = { isDirty },
-            onRebuildFinished = { isDirty = false},
+            onRebuildFinished = { isDirty = false },
             block
         ).also {
             disposables.add(it)

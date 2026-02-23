@@ -329,7 +329,7 @@ private value class Snake(val data: IntArray) {
     override fun toString() = "Snake($startX,$startY,$endX,$endY,$reverse)"
 }
 
-private inline fun Boolean.toInt() = if (this) 1 else 0
+private fun Boolean.toInt() = if (this) 1 else 0
 
 internal fun fillSnake(
     startX: Int,
