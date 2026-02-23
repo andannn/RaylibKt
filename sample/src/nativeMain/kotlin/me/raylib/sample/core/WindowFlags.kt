@@ -114,7 +114,6 @@ fun windowFlags() {
                         drawRectangleLines(
                             Rectangle(width = screenWidth.toFloat(), height = screenHeight.toFloat()), 4f, RAYWHITE
                         )
-                        drawCircle(mousePosition, 10f, DARKBLUE);
                         drawFPS(10, 10)
                     }
                 }

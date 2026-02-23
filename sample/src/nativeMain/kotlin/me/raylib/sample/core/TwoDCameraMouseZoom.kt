@@ -39,9 +39,12 @@ fun twoDCameraMouseZoom() {
                 camera.zoom = 1.0f
                 // 0-Mouse Wheel, 1-Mouse Move
                 var zoomMode = 0
-
+                var mouseXPos = 0
+                var mouseYPos = 0
                 provideHandlers {
                     onUpdate {
+                        mouseXPos = mouseX
+                        mouseYPos = mouseY
                         if (MouseButton.MOUSE_BUTTON_LEFT.isDown()) {
                             val delta = mouseDelta.scale(-1.0f / camera.zoom);
                             camera.setTarget(camera.target.readValue().add(delta))
@@ -88,10 +91,10 @@ fun twoDCameraMouseZoom() {
                             drawCircle(screenWidth / 2, screenHeight / 2, 50f, MAROON)
                         }
 
-                        drawCircle(mousePosition, 4f, DARKGRAY)
+                        drawCircle(mouseXPos, mouseYPos, 4f, DARKGRAY)
                         drawText(
-                            "[$mouseX, $mouseY]",
-                            mousePosition.add(Vector2(-44f, -24f)),
+                            "[$mouseXPos, $mouseYPos]",
+                            Vector2(mouseXPos.toFloat(), mouseYPos.toFloat()).add(Vector2(-44f, -24f)),
                             20,
                             BLACK,
                             spacing = 2f

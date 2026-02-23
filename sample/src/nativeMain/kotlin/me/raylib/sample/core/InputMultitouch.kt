@@ -1,9 +1,11 @@
 package me.raylib.sample.core
 
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.ORANGE
+import raylib.core.Vector2
 import raylib.core.window
 
 fun inputMultitouch() {
@@ -15,10 +17,13 @@ fun inputMultitouch() {
     ) {
         registerGameComponents {
             component("key") {
+                var pointers = emptyList<CValue<Vector2>>()
                 provideHandlers {
+                    onUpdate {
+                        pointers = touchPositions().toList()
+                    }
                     onDraw {
-                        repeat(touchPointCount) { index ->
-                            val position = touchPosition(index)
+                        pointers.forEachIndexed { index, position ->
                             position.useContents {
                                 if (x > 0 && y > 0) {
                                     drawCircle(position, 34f, ORANGE)

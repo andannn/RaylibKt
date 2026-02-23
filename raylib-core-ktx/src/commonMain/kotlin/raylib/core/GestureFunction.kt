@@ -6,6 +6,8 @@ interface GestureFunction {
     val touchPointCount: Int
     fun touchPosition(index: Int): CValue<Vector2>
 
+    fun touchPositions(): Sequence<CValue<Vector2>>
+
     fun Gesture.isDetected(): Boolean
     val gestureDetected: Gesture
 }
@@ -20,6 +22,12 @@ private class DefaultTouchFunction : GestureFunction {
 
     override fun touchPosition(index: Int): CValue<Vector2> {
         return raylib.interop.GetTouchPosition(index)
+    }
+
+    override fun touchPositions(): Sequence<CValue<Vector2>> = sequence {
+        repeat(touchPointCount) { index ->
+            yield(touchPosition(index))
+        }
     }
 
     override fun Gesture.isDetected(): Boolean {

@@ -16,6 +16,7 @@ import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.RED
 import raylib.core.GameComponentsRegisterScope
 import raylib.core.KeyboardKey
+import raylib.core.MutableState
 import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.add
@@ -24,11 +25,10 @@ import raylib.core.length
 import raylib.core.mode2d
 import raylib.core.scale
 import raylib.core.screenToWorldPosition
+import raylib.core.stateBox
 import raylib.core.subtract
 import raylib.core.window
 import raylib.core.worldToScreenPosition
-
-class Box<T>(var value: T)
 
 private enum class CameraOption(val description: String) {
     FollowPlayerCenter("Follow player center"),
@@ -49,7 +49,7 @@ fun towDCameraPlatformer() {
     ) {
         val player = Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true)
         val camera = alloc<Camera2D>() { zoom = 1f }
-        val cameraOption = Box(CameraOption.FollowPlayerCenter)
+        val cameraOption = stateBox(CameraOption.FollowPlayerCenter)
         val envItems = listOf(
             EnvItem(allocRectangle(0f, 0f, 1000f, 400f), false, LIGHTGRAY),
             EnvItem(allocRectangle(0f, 400f, 1000f, 200f), true, GRAY),
@@ -64,7 +64,6 @@ fun towDCameraPlatformer() {
                     onUpdate {
                         if (KeyboardKey.KEY_C.isPressed()) {
                             cameraOption.value = cameraOption.value.next()
-                            invalidComponents()
                         }
                     }
                 }
@@ -335,7 +334,7 @@ private fun GameComponentsRegisterScope.playerComponent(camera: Camera2D, player
     }
 }
 
-private fun GameComponentsRegisterScope.infoComponent(cameraOption: Box<CameraOption>) {
+private fun GameComponentsRegisterScope.infoComponent(cameraOption: MutableState<CameraOption>) {
     component("info") {
         provideHandlers {
             onDraw {
