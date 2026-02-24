@@ -24,9 +24,10 @@ fun main() {
 //    basicScreenManager()
 //    randomSequence()
 //    towDCameraPlatformer()
+    renderTexture()
+
     // shape examples
 //    bouncingBall()
-
     // custom examples
-    randomObjectGenerator()
+//    randomObjectGenerator()
 }

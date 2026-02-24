@@ -21,6 +21,14 @@ interface TextureDrawFunction {
         tint: CValue<Color>
     )
 
+    fun drawTexture(
+        texture: CValue<Texture2D>,
+        source: CValue<Rectangle>,
+        dest: CValue<Rectangle>,
+        origin: CValue<Vector2>,
+        rotation: Float,
+        tint: CValue<Color>
+    )
 }
 
 fun TextureDrawFunction(): TextureDrawFunction {
@@ -35,5 +43,16 @@ private class DefaultTextureDrawFunction : TextureDrawFunction {
         tint: CValue<Color>
     ) {
         raylib.interop.DrawTextureRec(texture, source, position, tint)
+    }
+
+    override fun drawTexture(
+        texture: CValue<Texture2D>,
+        source: CValue<Rectangle>,
+        dest: CValue<Rectangle>,
+        origin: CValue<Vector2>,
+        rotation: Float,
+        tint: CValue<Color>
+    ) {
+        raylib.interop.DrawTexturePro(texture, source, dest, origin, rotation, tint)
     }
 }
