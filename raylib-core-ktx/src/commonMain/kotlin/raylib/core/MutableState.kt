@@ -3,8 +3,11 @@ package raylib.core
 import kotlinx.cinterop.Arena
 import kotlinx.cinterop.NativePlacement
 
-interface MutableState<T> {
-    var value: T
+interface State<out T> {
+    val value: T
+}
+interface MutableState<T>: State<T> {
+    override var value: T
 }
 
 fun <T> WindowScope.stateBox(initialValue: T): MutableState<T> =
@@ -25,15 +28,19 @@ internal abstract class StateBox<T>(
         }
 }
 
-fun <T> WindowScope.stateList(init: ManagedStateList<T>.() -> Unit) =
+fun <T> WindowScope.stateList(vararg items: DisposableState<T>) =
     ManagedStateList<T>(this)
-        .apply(init)
+        .apply{
+            items.forEach { addState(it) }
+        }
         .also {
             (this as DefaultWindowScope).onPreBuild {
                 it.cleanup()
             }
         }
 
+fun <T> WindowScope.disposableState(initialValue: NativePlacement.() -> T): DisposableState<T> =
+    object : DisposableState<T>(initialValue, this) {}
 
 class ManagedStateList<T>(
     private val windowScope: WindowScope,
@@ -56,17 +63,14 @@ class ManagedStateList<T>(
     }
 }
 
-fun <T> WindowScope.disposableState(initialValue: NativePlacement.() -> T): DisposableState<T> =
-    object : DisposableState<T>(initialValue, this) {}
-
 abstract class DisposableState<T>(
     initialValue: NativePlacement.() -> T,
     private val windowScope: WindowScope,
     private val arena: Arena = Arena(),
-) : Disposable, NativePlacement by arena {
-    val value = initialValue()
+) : State<T>, Disposable, NativePlacement by arena {
+    override val value = initialValue()
 
-    var isDisposed = false
+    internal var isDisposed = false
 
     override fun dispose() {
         if (isDisposed) return

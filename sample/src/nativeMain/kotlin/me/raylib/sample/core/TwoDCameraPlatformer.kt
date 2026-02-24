@@ -48,7 +48,7 @@ fun towDCameraPlatformer() {
         initialBackGroundColor = Colors.RAYWHITE
     ) {
         val player = Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true)
-        val camera = alloc<Camera2D>() { zoom = 1f }
+        val camera = alloc<Camera2D> { zoom = 1f }
         val cameraOption = stateBox(CameraOption.FollowPlayerCenter)
         val envItems = listOf(
             EnvItem(allocRectangle(0f, 0f, 1000f, 400f), false, LIGHTGRAY),
@@ -70,10 +70,10 @@ fun towDCameraPlatformer() {
             }
             when (cameraOption.value) {
                 CameraOption.FollowPlayerCenter -> followTargetCamera(camera, player.position)
-                CameraOption.FollowPlayerCenterClamped -> followPlayerCenterClampedCamera(
+                CameraOption.FollowPlayerCenterClamped -> followTargetCenterClampedCamera(
                     camera,
                     player.position,
-                    envItems
+                    Rectangle(0f, 0f, height = 600f, width = 1000f)
                 )
 
                 CameraOption.FollowPlayerCenterSmooth -> followTargetSmoothCamera(camera, player.position)
@@ -106,46 +106,44 @@ const val PLAYER_HOR_SPD = 200.0f
 const val PLAYER_JUMP_SPD = 350.0f
 const val G = 400
 
-private fun ComponentsRegisterScope.followPlayerCenterClampedCamera(
+private fun ComponentsRegisterScope.followTargetCenterClampedCamera(
     camera: Camera2D,
-    position: Vector2,
-    envItems: List<EnvItem>
+    target: Vector2,
+    worldRect: CValue<Rectangle>
 ) {
+    data class RectMinMax(
+        val maxX: Float,
+        val maxY: Float,
+        val minX: Float,
+        val minY: Float
+    )
     component("followPlayerCenterClampedCamera") {
         provideHandlers {
             onUpdate {
-                camera.target.x = position.x
-                camera.target.y = position.y
+                camera.target.x = target.x
+                camera.target.y = target.y
                 camera.offset.x = screenWidth / 2.0f
                 camera.offset.y = screenHeight / 2.0f
-                var minX = 1000f
-                var minY = 1000f
-                var maxX = -1000f
-                var maxY = -1000f
 
-                for (item in envItems) {
-                    val rect = item.rect
-                    minX = minOf(rect.x, minX)
-                    maxX = maxOf(rect.x + rect.width, maxX)
-                    minY = minOf(rect.y, minY)
-                    maxY = maxOf(rect.y + rect.height, maxY)
+                val (maxX, maxY, minX, minY) = worldRect.useContents {
+                    RectMinMax(minX = x, maxX = x + width, minY = y, maxY = y + height)
                 }
-
                 val cameraValue = camera.readValue()
                 val maxScreen = cameraValue.worldToScreenPosition(Vector2(maxX, maxY))
                 val minScreen = cameraValue.worldToScreenPosition(Vector2(minX, minY))
-
-                if (maxScreen.useContents { x } < screenWidth) {
-                    camera.offset.x = screenWidth - (maxScreen.useContents { x } - screenWidth / 2f)
+                val (maxScreenX, maxScreenY) = maxScreen.useContents { x to y }
+                val (minScreenX, minScreenY) = minScreen.useContents { x to y }
+                if (maxScreenX < screenWidth) {
+                    camera.offset.x = screenWidth - (maxScreenX - screenWidth / 2f)
                 }
-                if (maxScreen.useContents { y } < screenHeight) {
-                    camera.offset.y = screenHeight - (maxScreen.useContents { y } - screenHeight / 2f)
+                if (maxScreenY < screenHeight) {
+                    camera.offset.y = screenHeight - (maxScreenY - screenHeight / 2f)
                 }
-                if (minScreen.useContents { x } > 0) {
-                    camera.offset.x = screenWidth / 2f - minScreen.useContents { x }
+                if (minScreenX > 0) {
+                    camera.offset.x = screenWidth / 2f - minScreenX
                 }
-                if (minScreen.useContents { y } > 0) {
-                    camera.offset.y = screenHeight / 2f - minScreen.useContents { y }
+                if (minScreenY > 0) {
+                    camera.offset.y = screenHeight / 2f - minScreenY
                 }
             }
         }

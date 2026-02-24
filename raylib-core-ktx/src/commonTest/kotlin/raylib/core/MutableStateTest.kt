@@ -37,20 +37,20 @@ class MutableStateTest {
 
     @Test
     fun managedStateListTest_build() = with(windowScope) {
-        val list = stateList {
-            addState(disposableState { "1" })
-        }
+        val list = stateList(
+            disposableState { "1" }
+        )
         assertEquals(1, list.size)
     }
 
     @Test
     fun managedStateListTest_add(): Unit = with(windowScope) {
-        val list = stateList {
-            addState(disposableState { alloc<Vector2> {x = 1f} })
-        }
+        val list = stateList(
+            disposableState { alloc<Vector2> { x = 1f } }
+        )
         assertEquals(1, list.size)
 
-        list.addState(disposableState { alloc<Vector2> {x = 2f} })
+        list.addState(disposableState { alloc<Vector2> { x = 2f } })
         assertEquals(2, list.size)
     }
 
@@ -59,12 +59,12 @@ class MutableStateTest {
         val state1 = disposableState {
             alloc<Vector2>().apply { x = 1f }
         }
-        val list = stateList {
-            addState(state1)
-            addState(disposableState {
+        val list = stateList(
+            state1,
+            disposableState {
                 alloc<Vector2>()
-            })
-        }
+            }
+        )
         assertEquals(2, list.size)
         state1.dispose()
         prepareBuild()

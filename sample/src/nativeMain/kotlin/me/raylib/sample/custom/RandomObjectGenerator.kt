@@ -18,7 +18,7 @@ fun randomObjectGenerator() {
         height = 450,
         initialBackGroundColor = BLACK
     ) {
-        val stateList = stateList<Int> {}
+        val stateList = stateList<Int>()
         registerGameComponents {
             component("random object generator") {
                 var frameCount = 0
