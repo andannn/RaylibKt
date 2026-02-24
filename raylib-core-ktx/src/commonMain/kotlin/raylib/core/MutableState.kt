@@ -3,14 +3,18 @@ package raylib.core
 import kotlinx.cinterop.Arena
 import kotlinx.cinterop.NativePlacement
 
-interface MutableState<T> {
-    var value: T
+interface State<out T> {
+    val value: T
 }
 
-fun <T> WindowScope.stateBox(initialValue: T): MutableState<T> =
-    object : StateBox<T>(initialValue, this) {}
+interface MutableState<T> : State<T> {
+    override var value: T
+}
 
-internal abstract class StateBox<T>(
+fun <T> WindowScope.mutableStateOf(initialValue: T): MutableState<T> =
+    object : MutableStateBox<T>(initialValue, this) {}
+
+internal abstract class MutableStateBox<T>(
     initialValue: T,
     private val windowScope: WindowScope
 ) : MutableState<T> {
@@ -25,15 +29,14 @@ internal abstract class StateBox<T>(
         }
 }
 
-fun <T> WindowScope.stateList(init: ManagedStateList<T>.() -> Unit) =
+fun <T> WindowScope.stateListOf(vararg items: DisposableState<T>) =
     ManagedStateList<T>(this)
-        .apply(init)
-        .also {
-            (this as DefaultWindowScope).onPreBuild {
-                it.cleanup()
-            }
+        .apply {
+            items.forEach { addState(it) }
         }
 
+fun <T> WindowScope.disposableState(initialValue: NativePlacement.() -> T): DisposableState<T> =
+    object : DisposableState<T>(initialValue, this) {}
 
 class ManagedStateList<T>(
     private val windowScope: WindowScope,
@@ -42,39 +45,28 @@ class ManagedStateList<T>(
 
     fun addState(state: DisposableState<T>) = innerList.add(state).also {
         (windowScope as DefaultWindowScope).invalidComponents()
-    }
-
-    internal fun cleanup() {
-        innerList.removeAll { state ->
-            if (state.isDisposed) {
-                state.clearNativeState()
-                true
-            } else {
-                false
-            }
-        }
+        state.onRemove = { innerList.remove(state) }
     }
 }
-
-fun <T> WindowScope.disposableState(initialValue: NativePlacement.() -> T): DisposableState<T> =
-    object : DisposableState<T>(initialValue, this) {}
 
 abstract class DisposableState<T>(
     initialValue: NativePlacement.() -> T,
     private val windowScope: WindowScope,
-    private val arena: Arena = Arena(),
-) : Disposable, NativePlacement by arena {
-    val value = initialValue()
+) : State<T>, Disposable {
+    private val arena: Arena = Arena()
+    override val value = arena.initialValue()
 
-    var isDisposed = false
+    internal var isDisposed = false
+    internal var onRemove: (() -> Unit)? = null
 
     override fun dispose() {
         if (isDisposed) return
         isDisposed = true
         (windowScope as DefaultWindowScope).invalidComponents()
-    }
 
-    internal fun clearNativeState() {
-        arena.clear()
+        windowScope.postFrameCallback {
+            onRemove?.invoke()
+            arena.clear()
+        }
     }
 }

@@ -9,7 +9,7 @@ import raylib.core.Colors.GREEN
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.MAROON
 import raylib.core.Colors.PURPLE
-import raylib.core.GameComponentsRegisterScope
+import raylib.core.ComponentFactory
 import raylib.core.Gesture
 import raylib.core.KeyboardKey
 import raylib.core.window
@@ -22,7 +22,7 @@ fun basicScreenManager() {
         initialBackGroundColor = Colors.RAYWHITE
     ) {
         var currentScreen = GameScreen.LOGO
-        registerGameComponents {
+        componentRegistry {
             component("updater") {
                 var framesCounter = 0
                 provideHandlers {
@@ -64,7 +64,7 @@ fun basicScreenManager() {
     }
 }
 
-private fun GameComponentsRegisterScope.screen(screen: GameScreen) {
+private fun ComponentFactory.screen(screen: GameScreen) {
     component(screen) {
         provideHandlers {
             onDraw {

@@ -15,7 +15,7 @@ fun inputMultitouch() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        componentRegistry {
             component("key") {
                 var pointers = emptyList<CValue<Vector2>>()
                 provideHandlers {

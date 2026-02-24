@@ -6,35 +6,35 @@ import raylib.core.internal.DiffCallback
 import raylib.core.internal.executeDiff
 
 
-abstract class GameComponent(val componentId: Any) : LoopHandler, Disposable {
+abstract class Component(val componentId: Any) : LoopHandler, Disposable {
 
 }
 
-internal fun GameComponent(
+internal fun Component(
     componentId: Any,
     handler: LoopHandler,
     scope: Disposable
-): GameComponent = object : GameComponent(componentId), LoopHandler by handler, Disposable by scope {}
+): Component = object : Component(componentId), LoopHandler by handler, Disposable by scope {}
 
-interface GameComponentsRegisterScope {
-    fun component(componentId: Any, block: GameComponentScope.() -> LoopHandler)
+interface ComponentFactory {
+    fun component(componentId: Any, block: ComponentScope.() -> LoopHandler)
 }
 
-interface GameComponentManager : Disposable {
+interface ComponentManager : Disposable {
     fun buildComponentsIfNeeded()
     fun performUpdate(deltaTime: Float, scope: GameScope)
     fun performDraw(scope: DrawScope)
 }
 
-internal class GameComponentManagerImpl(
+internal class ComponentManagerImpl(
     private val isDirty: () -> Boolean,
     private val onRebuildFinished: () -> Unit,
-    private val block: GameComponentsRegisterScope.() -> Unit
-) : GameComponentManager {
-    internal val gameComponents = mutableListOf<GameComponent>()
+    private val block: ComponentFactory.() -> Unit
+) : ComponentManager {
+    internal val components = mutableListOf<Component>()
 
     override fun buildComponentsIfNeeded() {
-        if (gameComponents.isEmpty() || isDirty()) {
+        if (components.isEmpty() || isDirty()) {
             buildComponents()
             onRebuildFinished()
         }
@@ -42,15 +42,15 @@ internal class GameComponentManagerImpl(
 
     private class KeyWithBuilder(
         val componentId: Any,
-        val block: () -> GameComponent
+        val block: () -> Component
     )
 
     private inner class Differ(
-        val before: List<GameComponent>
-    ) : GameComponentsRegisterScope, DiffCallback {
+        val before: List<Component>
+    ) : ComponentFactory, DiffCallback {
         val after = mutableListOf<KeyWithBuilder>()
         private val componentKeys = mutableSetOf<Any>()
-        override fun component(componentId: Any, block: GameComponentScope.() -> LoopHandler) {
+        override fun component(componentId: Any, block: ComponentScope.() -> LoopHandler) {
             require(componentKeys.add(componentId)) {
                 "Error: Duplicate component key detected -> '$componentId'. " +
                         "Each component in the same scope must have a unique ID."
@@ -59,9 +59,9 @@ internal class GameComponentManagerImpl(
                 KeyWithBuilder(
                     componentId = componentId,
                     block = {
-                        val scope = GameComponentScope()
+                        val scope = ComponentScope()
                         val handler = block(scope)
-                        GameComponent(componentId, handler, scope)
+                        Component(componentId, handler, scope)
                     }
                 )
             )
@@ -73,12 +73,12 @@ internal class GameComponentManagerImpl(
 
         override fun insert(newIndex: Int) {
             println("insert ${after[newIndex].componentId} $newIndex")
-            gameComponents.add(newIndex, after[newIndex].block())
+            components.add(newIndex, after[newIndex].block())
         }
 
         override fun remove(atIndex: Int, oldIndex: Int) {
             println("remove ${before[oldIndex].componentId} $atIndex")
-            gameComponents.removeAt(atIndex).dispose()
+            components.removeAt(atIndex).dispose()
         }
 
         override fun same(oldIndex: Int, newIndex: Int) {
@@ -87,10 +87,10 @@ internal class GameComponentManagerImpl(
     }
 
     private fun buildComponents() {
-        Differ(gameComponents.toList()).apply(block)
+        Differ(components.toList()).apply(block)
             .also { newComponentsBuilder ->
                 executeDiff(
-                    oldSize = gameComponents.size,
+                    oldSize = components.size,
                     newSize = newComponentsBuilder.after.size,
                     callback = newComponentsBuilder
                 )
@@ -98,7 +98,7 @@ internal class GameComponentManagerImpl(
     }
 
     override fun performDraw(scope: DrawScope) {
-        gameComponents.forEach { handler ->
+        components.forEach { handler ->
             with(handler) {
                 scope.draw()
             }
@@ -106,18 +106,19 @@ internal class GameComponentManagerImpl(
     }
 
     override fun performUpdate(deltaTime: Float, scope: GameScope) {
-        gameComponents.forEach { handler ->
+        components.forEach { handler ->
             with(handler) { scope.update(deltaTime) }
         }
     }
 
     override fun dispose() {
-        gameComponents.forEach { it.dispose() }
-        gameComponents.clear()
+        components.forEach { it.dispose() }
+        components.clear()
     }
 }
 
-class GameComponentScope(
+@MustUseReturnValues
+class ComponentScope(
     private val arena: Arena = Arena()
 ) : NativePlacement by arena, Disposable {
 

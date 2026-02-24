@@ -14,7 +14,7 @@ internal fun deltaTime() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        componentRegistry {
             component("key") {
                 var deltaCircle = Vector2(y = screenHeight.div(3f))
                 var frameCircle = Vector2(y = screenHeight.div(3f).times(2f))

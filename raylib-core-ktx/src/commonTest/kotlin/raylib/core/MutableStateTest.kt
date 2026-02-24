@@ -29,7 +29,7 @@ class MutableStateTest {
 
     @Test
     fun mutableStateTest_invalid_required_when_set_value() {
-        val state = windowScope.stateBox(0)
+        val state = windowScope.mutableStateOf(0)
         assertFalse(windowScope.isDirty)
         state.value = 1
         assertTrue(windowScope.isDirty)
@@ -37,20 +37,20 @@ class MutableStateTest {
 
     @Test
     fun managedStateListTest_build() = with(windowScope) {
-        val list = stateList {
-            addState(disposableState { "1" })
-        }
+        val list = stateListOf(
+            disposableState { "1" }
+        )
         assertEquals(1, list.size)
     }
 
     @Test
     fun managedStateListTest_add(): Unit = with(windowScope) {
-        val list = stateList {
-            addState(disposableState { alloc<Vector2> {x = 1f} })
-        }
+        val list = stateListOf(
+            disposableState { alloc<Vector2> { x = 1f } }
+        )
         assertEquals(1, list.size)
 
-        list.addState(disposableState { alloc<Vector2> {x = 2f} })
+        list.addState(disposableState { alloc<Vector2> { x = 2f } })
         assertEquals(2, list.size)
     }
 
@@ -59,15 +59,18 @@ class MutableStateTest {
         val state1 = disposableState {
             alloc<Vector2>().apply { x = 1f }
         }
-        val list = stateList {
-            addState(state1)
-            addState(disposableState {
+        val list = stateListOf(
+            state1,
+            disposableState {
                 alloc<Vector2>()
-            })
-        }
+            }
+        )
         assertEquals(2, list.size)
         state1.dispose()
-        prepareBuild()
+        assertEquals(1f, state1.value.x)
+
+        onFrame()
+
         assertTrue(state1.isDisposed)
         assertEquals(1, list.size)
         // native placement scope is freed. this Native object point to invalid address.

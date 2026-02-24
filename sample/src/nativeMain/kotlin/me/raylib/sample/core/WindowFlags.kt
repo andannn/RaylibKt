@@ -3,7 +3,6 @@ package me.raylib.sample.core
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
 import raylib.core.Colors.BLACK
-import raylib.core.Colors.DARKBLUE
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.LIME
 import raylib.core.Colors.MAROON
@@ -22,7 +21,7 @@ fun windowFlags() {
         height = 450,
         initialBackGroundColor = BLACK
     ) {
-        registerGameComponents {
+        componentRegistry {
             component("key") {
                 val ballPosition = alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) }
                 val ballSpeed = alloc<Vector2> { x = 5f; y = 4f }
@@ -118,8 +117,6 @@ fun windowFlags() {
                     }
                 }
             }
-        }
-        registerGameComponents {
             component("key2") {
                 provideHandlers {
                     onDraw {

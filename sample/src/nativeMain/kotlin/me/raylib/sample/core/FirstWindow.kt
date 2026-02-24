@@ -12,7 +12,7 @@ internal fun firstWindow() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        componentRegistry {
             component("key") {
                 provideHandlers {
                     onDraw {

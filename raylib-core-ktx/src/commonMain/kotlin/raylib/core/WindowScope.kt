@@ -5,9 +5,12 @@ import kotlinx.cinterop.MemScope
 import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.memScoped
 
+@MustUseReturnValues
 interface WindowScope : WindowFunction, NativePlacement {
     fun disposeOnClose(disposable: Disposable)
-    fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager
+    @IgnorableReturnValue
+    fun postFrameCallback(action: () -> Unit): Disposable
+    fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager
 }
 
 fun window(
@@ -16,7 +19,7 @@ fun window(
     height: Int,
     initialFps: Int = 60,
     initialBackGroundColor: CValue<Color>? = null,
-    block: WindowScope.() -> GameComponentManager
+    block: WindowScope.() -> ComponentManager
 ): WindowScope = memScoped {
     val windowFunction = DefaultWindowFunction(
         initialFps = initialFps,
@@ -31,7 +34,7 @@ fun window(
     return windowScope
         .apply {
             windowFunction.gameLoop {
-                prepareBuild()
+                onFrame()
 
                 componentsManager.buildComponentsIfNeeded()
 
@@ -108,6 +111,7 @@ class LoopHandlerBuilder {
     }
 }
 
+
 internal class DefaultWindowScope(
     memScope: MemScope,
     val windowFunction: WindowFunction
@@ -116,14 +120,22 @@ internal class DefaultWindowScope(
 
     var isDirty = false
 
-    private val preBuildHooks = mutableListOf<() -> Unit>()
-    fun onPreBuild(hook: () -> Unit) {
-        preBuildHooks.add(hook)
+    private val callBacks = mutableListOf<FrameCallBack>()
+
+    override fun postFrameCallback(action: () -> Unit): Disposable {
+        val callBack = FrameCallBack(action) { callBacks.remove(it) }
+        callBacks.add(callBack)
+        return callBack
     }
 
-    fun prepareBuild() {
-        if (isDirty) {
-            preBuildHooks.forEach { it() }
+    fun onFrame() {
+        if (callBacks.isEmpty()) return
+
+        val iterator = callBacks.iterator()
+        while (iterator.hasNext()) {
+            val listener = iterator.next()
+            listener.action()
+            iterator.remove()
         }
     }
 
@@ -135,8 +147,8 @@ internal class DefaultWindowScope(
         disposables.add(disposable)
     }
 
-    override fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager {
-        return GameComponentManagerImpl(
+    override fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager {
+        return ComponentManagerImpl(
             isDirty = { isDirty },
             onRebuildFinished = { isDirty = false },
             block
@@ -148,5 +160,9 @@ internal class DefaultWindowScope(
     fun dispose() {
         disposables.forEach { it.dispose() }
         disposables.clear()
+    }
+
+    class FrameCallBack(val action: () -> Unit, val onDispose: (FrameCallBack) -> Unit) : Disposable {
+        override fun dispose() = onDispose(this)
     }
 }

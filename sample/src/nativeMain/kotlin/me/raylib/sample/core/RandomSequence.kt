@@ -26,7 +26,7 @@ fun randomSequence() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        componentRegistry {
             component("key") {
                 var rectCount = 20
                 var rectSize = screenWidth.toFloat() / rectCount
