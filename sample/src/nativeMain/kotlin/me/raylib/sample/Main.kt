@@ -23,11 +23,10 @@ fun main() {
 //    scissorTest()
 //    basicScreenManager()
 //    randomSequence()
-//    towDCameraPlatformer()
-
+    towDCameraPlatformer()
     // shape examples
 //    bouncingBall()
 
     // custom examples
-    randomObjectGenerator()
+//    randomObjectGenerator()
 }

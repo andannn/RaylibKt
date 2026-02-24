@@ -10,7 +10,7 @@ class GameComponentManagerTest {
     fun buildGameComponent_add() {
         var isAddComponent = false
         var isDirty = false
-        val manager = GameComponentManagerImpl(
+        val manager = ComponentManagerImpl(
             isDirty = { isDirty },
             onRebuildFinished = {},
             {
@@ -27,22 +27,22 @@ class GameComponentManagerTest {
                 }
             }
         )
-        assertEquals(0, manager.gameComponents.size)
+        assertEquals(0, manager.components.size)
         manager.buildComponentsIfNeeded()
-        assertEquals(listOf("component1", "component2"), manager.gameComponents.map { it.componentId })
+        assertEquals(listOf("component1", "component2"), manager.components.map { it.componentId })
 
         isDirty = true
         isAddComponent = true
         manager.buildComponentsIfNeeded()
-        assertEquals(3, manager.gameComponents.size)
-        assertEquals(listOf("component1", "component2", "component3"), manager.gameComponents.map { it.componentId })
+        assertEquals(3, manager.components.size)
+        assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
     }
 
     @Test
     fun buildGameComponent_remove() {
         var isRemoveComponent = false
         var isDirty = false
-        val manager = GameComponentManagerImpl(
+        val manager = ComponentManagerImpl(
             isDirty = { isDirty },
             onRebuildFinished = {},
             {
@@ -59,14 +59,14 @@ class GameComponentManagerTest {
                 }
             }
         )
-        assertEquals(0, manager.gameComponents.size)
+        assertEquals(0, manager.components.size)
         manager.buildComponentsIfNeeded()
-        assertEquals(listOf("component1", "component2", "component3"), manager.gameComponents.map { it.componentId })
+        assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
 
         isDirty = true
         isRemoveComponent = true
         manager.buildComponentsIfNeeded()
-        assertEquals(listOf("component1", "component3"), manager.gameComponents.map { it.componentId })
+        assertEquals(listOf("component1", "component3"), manager.components.map { it.componentId })
     }
 
     @Test
@@ -74,7 +74,7 @@ class GameComponentManagerTest {
         var isRemoveComponent = false
         var isDirty = false
         var called = 0
-        val manager = GameComponentManagerImpl(
+        val manager = ComponentManagerImpl(
             isDirty = { isDirty },
             onRebuildFinished = {},
             {
@@ -102,7 +102,7 @@ class GameComponentManagerTest {
 
     @Test
     fun buildGameComponent_duplicate_component_will_throw_exception() {
-        val manager = GameComponentManagerImpl(
+        val manager = ComponentManagerImpl(
             isDirty = { false },
             onRebuildFinished = {},
             {

@@ -9,7 +9,7 @@ import raylib.core.Colors.GREEN
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.MAROON
 import raylib.core.Colors.PURPLE
-import raylib.core.GameComponentsRegisterScope
+import raylib.core.ComponentsRegisterScope
 import raylib.core.Gesture
 import raylib.core.KeyboardKey
 import raylib.core.window
@@ -64,7 +64,7 @@ fun basicScreenManager() {
     }
 }
 
-private fun GameComponentsRegisterScope.screen(screen: GameScreen) {
+private fun ComponentsRegisterScope.screen(screen: GameScreen) {
     component(screen) {
         provideHandlers {
             onDraw {

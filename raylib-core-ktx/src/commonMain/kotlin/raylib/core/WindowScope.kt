@@ -7,7 +7,7 @@ import kotlinx.cinterop.memScoped
 
 interface WindowScope : WindowFunction, NativePlacement {
     fun disposeOnClose(disposable: Disposable)
-    fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager
+    fun registerGameComponents(block: ComponentsRegisterScope.() -> Unit): ComponentManager
 }
 
 fun window(
@@ -16,7 +16,7 @@ fun window(
     height: Int,
     initialFps: Int = 60,
     initialBackGroundColor: CValue<Color>? = null,
-    block: WindowScope.() -> GameComponentManager
+    block: WindowScope.() -> ComponentManager
 ): WindowScope = memScoped {
     val windowFunction = DefaultWindowFunction(
         initialFps = initialFps,
@@ -135,8 +135,8 @@ internal class DefaultWindowScope(
         disposables.add(disposable)
     }
 
-    override fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager {
-        return GameComponentManagerImpl(
+    override fun registerGameComponents(block: ComponentsRegisterScope.() -> Unit): ComponentManager {
+        return ComponentManagerImpl(
             isDirty = { isDirty },
             onRebuildFinished = { isDirty = false },
             block
