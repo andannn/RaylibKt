@@ -15,7 +15,7 @@ import raylib.core.Colors.RED
 import raylib.core.Colors.SKYBLUE
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
-import raylib.core.allocRectangle
+import raylib.core.RectangleAlloc
 import raylib.core.mode2d
 import raylib.core.randomValue
 import raylib.core.setOffset
@@ -34,7 +34,7 @@ fun twoDCamera() {
     ) {
         componentRegistry {
             component("key") {
-                val player = allocRectangle(400f, 280f, 40f, 40f)
+                val player = RectangleAlloc(400f, 280f, 40f, 40f)
                 var spacex = 0f
                 val buildings = List(MAX_BUILDINGS) { index ->
                     val width = randomValue(50, 200).toFloat()

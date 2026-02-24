@@ -4,7 +4,8 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.cValue
-import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
 import raylib.interop.Vector3One
 import raylib.interop.Vector3Zero
 import raylib.interop.float16
@@ -24,6 +25,23 @@ fun Vector2(x: Float = 0f, y: Float = 0f): CValue<Vector2> = cValue {
     this.x = x
     this.y = y
 }
+fun NativePlacement.Vector2Alloc(x: Float = 0f, y: Float = 0f) = alloc<Vector2>().apply {
+    this.x = x
+    this.y = y
+}
+fun Vector2.set(x: Float = 0f, y: Float = 0f) {
+    this.x = x
+    this.y = y
+}
+fun Vector2.set(vec: Vector2) {
+    set(vec.readValue())
+}
+fun Vector2.set(vec: CValue<Vector2>) {
+    vec.useContents {
+        this@set.set(x, y)
+    }
+}
+
 typealias Float3 = float3
 typealias Float16 = float16
 typealias Matrix = raylib.interop.Matrix
@@ -70,7 +88,7 @@ object Colors {
 
 typealias Rectangle = raylib.interop.Rectangle
 
-fun NativePlacement.allocRectangle(
+fun NativePlacement.RectangleAlloc(
     x: Float = 0f,
     y: Float = 0f,
     width: Float = 0f,
@@ -80,6 +98,32 @@ fun NativePlacement.allocRectangle(
     this.y = y
     this.width = width
     this.height = height
+}
+
+fun Rectangle.set(
+    x: Float = 0f,
+    y: Float = 0f,
+    width: Float = 0f,
+    height: Float = 0f
+)  {
+    this.x = x
+    this.y = y
+    this.width = width
+    this.height = height
+}
+
+fun Rectangle.set(
+    rect: Rectangle
+) {
+    set(rect.readValue())
+}
+
+fun Rectangle.set(
+    rect: CValue<Rectangle>
+) {
+    rect.useContents {
+        this@set.set(x, y, width, height)
+    }
 }
 
 fun Rectangle(
