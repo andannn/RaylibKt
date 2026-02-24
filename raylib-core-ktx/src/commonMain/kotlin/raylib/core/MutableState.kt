@@ -52,12 +52,12 @@ class ManagedStateList<T>(
 abstract class DisposableState<T>(
     initialValue: NativePlacement.() -> T,
     private val windowScope: WindowScope,
-    private val arena: Arena = Arena(),
-) : State<T>, Disposable, NativePlacement by arena {
-    override val value = initialValue()
+) : State<T>, Disposable {
+    private val arena: Arena = Arena()
+    override val value = arena.initialValue()
 
     internal var isDisposed = false
-    internal lateinit var onRemove: () -> Unit
+    internal var onRemove: (() -> Unit)? = null
 
     override fun dispose() {
         if (isDisposed) return
@@ -65,7 +65,7 @@ abstract class DisposableState<T>(
         (windowScope as DefaultWindowScope).invalidComponents()
 
         windowScope.postFrameCallback {
-            onRemove()
+            onRemove?.invoke()
             arena.clear()
         }
     }
