@@ -16,7 +16,7 @@ internal fun Component(
     scope: Disposable
 ): Component = object : Component(componentId), LoopHandler by handler, Disposable by scope {}
 
-interface ComponentsRegisterScope {
+interface ComponentRegistry {
     fun component(componentId: Any, block: ComponentScope.() -> LoopHandler)
 }
 
@@ -29,7 +29,7 @@ interface ComponentManager : Disposable {
 internal class ComponentManagerImpl(
     private val isDirty: () -> Boolean,
     private val onRebuildFinished: () -> Unit,
-    private val block: ComponentsRegisterScope.() -> Unit
+    private val block: ComponentRegistry.() -> Unit
 ) : ComponentManager {
     internal val components = mutableListOf<Component>()
 
@@ -47,7 +47,7 @@ internal class ComponentManagerImpl(
 
     private inner class Differ(
         val before: List<Component>
-    ) : ComponentsRegisterScope, DiffCallback {
+    ) : ComponentRegistry, DiffCallback {
         val after = mutableListOf<KeyWithBuilder>()
         private val componentKeys = mutableSetOf<Any>()
         override fun component(componentId: Any, block: ComponentScope.() -> LoopHandler) {

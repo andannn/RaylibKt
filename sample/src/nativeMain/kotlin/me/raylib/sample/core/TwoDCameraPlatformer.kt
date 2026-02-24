@@ -14,7 +14,7 @@ import raylib.core.Colors.GOLD
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.RED
-import raylib.core.ComponentsRegisterScope
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.MutableState
 import raylib.core.Rectangle
@@ -90,7 +90,7 @@ fun towDCameraPlatformer() {
     }
 }
 
-private fun ComponentsRegisterScope.envItemsComponent(camera: Camera2D, item: EnvItem) {
+private fun ComponentRegistry.envItemsComponent(camera: Camera2D, item: EnvItem) {
     component(item) {
         provideHandlers {
             onDraw {
@@ -106,7 +106,7 @@ const val PLAYER_HOR_SPD = 200.0f
 const val PLAYER_JUMP_SPD = 350.0f
 const val G = 400
 
-private fun ComponentsRegisterScope.followTargetCenterClampedCamera(
+private fun ComponentRegistry.followTargetCenterClampedCamera(
     camera: Camera2D,
     target: Vector2,
     worldRect: CValue<Rectangle>
@@ -150,7 +150,7 @@ private fun ComponentsRegisterScope.followTargetCenterClampedCamera(
     }
 }
 
-private fun ComponentsRegisterScope.followTargetCamera(
+private fun ComponentRegistry.followTargetCamera(
     camera: Camera2D,
     position: Vector2
 ) {
@@ -166,7 +166,7 @@ private fun ComponentsRegisterScope.followTargetCamera(
     }
 }
 
-private fun ComponentsRegisterScope.followTargetSmoothCamera(
+private fun ComponentRegistry.followTargetSmoothCamera(
     camera: Camera2D,
     position: Vector2
 ) {
@@ -193,7 +193,7 @@ private fun ComponentsRegisterScope.followTargetSmoothCamera(
     }
 }
 
-private fun ComponentsRegisterScope.playerPushCamera(
+private fun ComponentRegistry.playerPushCamera(
     camera: Camera2D,
     position: Vector2
 ) {
@@ -233,7 +233,7 @@ private fun ComponentsRegisterScope.playerPushCamera(
     }
 }
 
-private fun ComponentsRegisterScope.followPlayerCenterHorizontallyCamera(
+private fun ComponentRegistry.followPlayerCenterHorizontallyCamera(
     camera: Camera2D,
     player: Player,
 ) {
@@ -274,7 +274,7 @@ private fun ComponentsRegisterScope.followPlayerCenterHorizontallyCamera(
     }
 }
 
-private fun ComponentsRegisterScope.playerComponent(camera: Camera2D, player: Player, envItem: List<EnvItem>) {
+private fun ComponentRegistry.playerComponent(camera: Camera2D, player: Player, envItem: List<EnvItem>) {
     component("player") {
         provideHandlers {
             onUpdate {
@@ -332,7 +332,7 @@ private fun ComponentsRegisterScope.playerComponent(camera: Camera2D, player: Pl
     }
 }
 
-private fun ComponentsRegisterScope.infoComponent(cameraOption: MutableState<CameraOption>) {
+private fun ComponentRegistry.infoComponent(cameraOption: MutableState<CameraOption>) {
     component("info") {
         provideHandlers {
             onDraw {

@@ -3,7 +3,7 @@ package me.raylib.sample.custom
 import kotlinx.cinterop.CValue
 import raylib.core.Colors.BLACK
 import raylib.core.DisposableState
-import raylib.core.ComponentsRegisterScope
+import raylib.core.ComponentRegistry
 import raylib.core.Vector2
 import raylib.core.disposableState
 import raylib.core.randomColor
@@ -42,7 +42,7 @@ fun randomObjectGenerator() {
     }
 }
 
-private fun ComponentsRegisterScope.generatedObject(state: DisposableState<Int>) {
+private fun ComponentRegistry.generatedObject(state: DisposableState<Int>) {
     component(state.value) {
         var frameCount = 0f
         val color = randomColor()
@@ -57,7 +57,7 @@ private fun ComponentsRegisterScope.generatedObject(state: DisposableState<Int>)
                         randomValue(0, screenHeight).toFloat()
                     )
                 }
-                if (frameCount > 1500) {
+                if (frameCount > 150) {
                     // make itself disappear
                     state.dispose()
                 }
