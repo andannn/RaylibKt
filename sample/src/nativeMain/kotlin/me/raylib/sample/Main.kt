@@ -1,6 +1,7 @@
 package me.raylib.sample
 
 import me.raylib.sample.core.*
+import me.raylib.sample.custom.*
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
@@ -22,8 +23,11 @@ fun main() {
 //    scissorTest()
 //    basicScreenManager()
 //    randomSequence()
-    towDCameraPlatformer()
+//    towDCameraPlatformer()
 
     // shape examples
 //    bouncingBall()
+
+    // custom examples
+    randomObjectGenerator()
 }

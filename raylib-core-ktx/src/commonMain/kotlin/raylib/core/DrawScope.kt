@@ -6,14 +6,10 @@ import kotlinx.cinterop.readValue
 internal fun DrawScope(
     windowScope: WindowFunction,
     drawFunction: DrawFunction = DrawFunction(),
-    mouseFunction: MouseFunction = MouseFunction(),
-    gestureFunction: GestureFunction = GestureFunction()
 ): DrawScope = object : DrawScope, DrawFunction by drawFunction,
-    MouseFunction by mouseFunction,
-    WindowFunction by windowScope,
-    GestureFunction by gestureFunction {}
+    WindowFunction by windowScope{}
 
-interface DrawScope : DrawFunction, MouseFunction, WindowFunction, GestureFunction
+interface DrawScope : DrawFunction, WindowFunction
 
 
 interface DrawFunction : BasicShapeDrawFunction, TextDrawFunction, TextureDrawFunction

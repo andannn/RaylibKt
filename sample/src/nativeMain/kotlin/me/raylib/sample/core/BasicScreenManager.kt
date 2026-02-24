@@ -32,28 +32,24 @@ fun basicScreenManager() {
                                 framesCounter++
                                 if (framesCounter > 120) {
                                     currentScreen = GameScreen.TITLE
-                                    invalidComponents()
                                 }
                             }
 
                             GameScreen.TITLE -> {
                                 if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
                                     currentScreen = GameScreen.GAMEPLAY
-                                    invalidComponents()
                                 }
                             }
 
                             GameScreen.GAMEPLAY -> {
                                 if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
                                     currentScreen = GameScreen.ENDING
-                                    invalidComponents()
                                 }
                             }
 
                             GameScreen.ENDING -> {
                                 if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
                                     currentScreen = GameScreen.TITLE
-                                    invalidComponents()
                                 }
                             }
                         }

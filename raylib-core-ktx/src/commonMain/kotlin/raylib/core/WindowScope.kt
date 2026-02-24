@@ -6,7 +6,6 @@ import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.memScoped
 
 interface WindowScope : WindowFunction, NativePlacement {
-    fun invalidComponents()
     fun disposeOnClose(disposable: Disposable)
     fun registerGameComponents(block: GameComponentsRegisterScope.() -> Unit): GameComponentManager
 }
@@ -31,8 +30,11 @@ fun window(
     val componentsManager = windowScope.block()
     return windowScope
         .apply {
-            gameLoop {
+            windowFunction.gameLoop {
+                prepareBuild()
+
                 componentsManager.buildComponentsIfNeeded()
+
                 with(gameScope) {
                     // update state
                     componentsManager.performUpdate(frameTimeSeconds, gameScope)
@@ -54,12 +56,12 @@ fun interface Disposable {
     fun dispose()
 }
 
-internal fun DefaultWindowScope.gameLoop(
-    block: WindowScope.() -> Unit
+internal fun DefaultWindowFunction.gameLoop(
+    block: () -> Unit
 ) {
     fun shouldExit(): Boolean =
-        if (windowFunction.interceptExitKey) {
-            windowFunction.exitWindowRequest
+        if (interceptExitKey) {
+            exitWindowRequest
         } else {
             raylib.interop.WindowShouldClose()
         }
@@ -81,15 +83,14 @@ interface DrawHandler {
 
 class LoopHandlerBuilder {
     private var updateActions = mutableListOf<(GameScope.(deltaTime: Float) -> Unit)>()
-    private var drawAction: (DrawScope.() -> Unit)? = null
+    private var drawActions = mutableListOf<(DrawScope.() -> Unit)>()
 
     fun onUpdate(block: GameScope.(deltaTime: Float) -> Unit) {
         updateActions.add(block)
     }
 
     fun onDraw(block: DrawScope.() -> Unit) {
-        check(drawAction == null)
-        drawAction = block
+        drawActions.add(block)
     }
 
     fun build(): LoopHandler = object : LoopHandler {
@@ -100,20 +101,33 @@ class LoopHandlerBuilder {
         }
 
         override fun DrawScope.draw() {
-            drawAction?.invoke(this)
+            drawActions.forEach {
+                it.invoke(this)
+            }
         }
     }
 }
 
 internal class DefaultWindowScope(
     memScope: MemScope,
-    val windowFunction: DefaultWindowFunction
+    val windowFunction: WindowFunction
 ) : WindowScope, WindowFunction by windowFunction, NativePlacement by memScope {
     private val disposables = mutableListOf<Disposable>()
 
-    private var isDirty = false
+    var isDirty = false
 
-    override fun invalidComponents() {
+    private val preBuildHooks = mutableListOf<() -> Unit>()
+    fun onPreBuild(hook: () -> Unit) {
+        preBuildHooks.add(hook)
+    }
+
+    fun prepareBuild() {
+        if (isDirty) {
+            preBuildHooks.forEach { it() }
+        }
+    }
+
+    fun invalidComponents() {
         isDirty = true
     }
 
