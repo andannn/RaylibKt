@@ -24,7 +24,8 @@ fun main() {
 //    basicScreenManager()
 //    randomSequence()
 //    towDCameraPlatformer()
-    renderTexture()
+//    renderTexture()
+    inputActions()
 
     // shape examples
 //    bouncingBall()

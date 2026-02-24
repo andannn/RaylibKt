@@ -18,7 +18,7 @@ fun scissorTest() {
         height = 450,
         initialBackGroundColor = RAYWHITE
     ) {
-        registerComponents {
+        componentRegistry {
             component("key") {
                 val scissorArea = alloc<Rectangle> { x = 0f; y = 0f; width = 300f; height = 300f }
                 var scissorMode = true

@@ -21,7 +21,7 @@ fun inputGestures() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerComponents {
+        componentRegistry {
             component("key") {
                 var touchPosition = Vector2()
                 val touchArea = Rectangle(220f, 10f, screenWidth - 230.0f, screenHeight - 20.0f)

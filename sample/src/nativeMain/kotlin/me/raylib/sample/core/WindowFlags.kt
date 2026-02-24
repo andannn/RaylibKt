@@ -21,7 +21,7 @@ fun windowFlags() {
         height = 450,
         initialBackGroundColor = BLACK
     ) {
-        registerComponents {
+        componentRegistry {
             component("key") {
                 val ballPosition = alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) }
                 val ballSpeed = alloc<Vector2> { x = 5f; y = 4f }
@@ -117,8 +117,6 @@ fun windowFlags() {
                     }
                 }
             }
-        }
-        registerComponents {
             component("key2") {
                 provideHandlers {
                     onDraw {

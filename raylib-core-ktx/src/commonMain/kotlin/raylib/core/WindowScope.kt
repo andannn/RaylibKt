@@ -5,10 +5,12 @@ import kotlinx.cinterop.MemScope
 import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.memScoped
 
+@MustUseReturnValues
 interface WindowScope : WindowFunction, NativePlacement {
     fun disposeOnClose(disposable: Disposable)
+    @IgnorableReturnValue
     fun postFrameCallback(action: () -> Unit): Disposable
-    fun registerComponents(block: ComponentRegistry.() -> Unit): ComponentManager
+    fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager
 }
 
 fun window(
@@ -145,7 +147,7 @@ internal class DefaultWindowScope(
         disposables.add(disposable)
     }
 
-    override fun registerComponents(block: ComponentRegistry.() -> Unit): ComponentManager {
+    override fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager {
         return ComponentManagerImpl(
             isDirty = { isDirty },
             onRebuildFinished = { isDirty = false },

@@ -4,7 +4,7 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import raylib.core.Camera2D
-import raylib.core.ComponentRegistry
+import raylib.core.ComponentFactory
 import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.add
@@ -14,7 +14,7 @@ import raylib.core.subtract
 import raylib.core.worldToScreenPosition
 import kotlin.math.max
 
-fun ComponentRegistry.cameraFollowTarget(
+fun ComponentFactory.cameraFollowTarget(
     camera: Camera2D,
     target: Vector2
 ) {
@@ -30,7 +30,7 @@ fun ComponentRegistry.cameraFollowTarget(
     }
 }
 
-fun ComponentRegistry.cameraFollowTargetSmooth(
+fun ComponentFactory.cameraFollowTargetSmooth(
     camera: Camera2D,
     target: Vector2,
     minSpeed: Float = 30f,
@@ -56,7 +56,7 @@ fun ComponentRegistry.cameraFollowTargetSmooth(
     }
 }
 
-fun ComponentRegistry.cameraFollowTargetCenterClamped(
+fun ComponentFactory.cameraFollowTargetCenterClamped(
     camera: Camera2D,
     target: Vector2,
     worldRect: CValue<Rectangle>

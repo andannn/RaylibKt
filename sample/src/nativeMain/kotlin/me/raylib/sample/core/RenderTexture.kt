@@ -30,7 +30,7 @@ fun renderTexture() {
         val ballRadius = 20
         var rotation = 0.0f
 
-        registerComponents {
+        componentRegistry {
             component("ballMovement") {
                 provideHandlers {
                     onUpdate {

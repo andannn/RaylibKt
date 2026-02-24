@@ -19,7 +19,7 @@ fun bouncingBall() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerComponents {
+        componentRegistry {
             component("key") {
                 val ballPosition = alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) }
                 val ballSpeed = alloc<Vector2> { x = 5f; y = 4f }

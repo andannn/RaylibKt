@@ -3,7 +3,7 @@ package me.raylib.sample.custom
 import kotlinx.cinterop.CValue
 import raylib.core.Colors.BLACK
 import raylib.core.DisposableState
-import raylib.core.ComponentRegistry
+import raylib.core.ComponentFactory
 import raylib.core.Vector2
 import raylib.core.disposableState
 import raylib.core.randomColor
@@ -19,7 +19,7 @@ fun randomObjectGenerator() {
         initialBackGroundColor = BLACK
     ) {
         val stateList = stateListOf<Int>()
-        registerComponents {
+        componentRegistry {
             component("random object generator") {
                 var frameCount = 0
                 var newId = 0
@@ -42,7 +42,7 @@ fun randomObjectGenerator() {
     }
 }
 
-private fun ComponentRegistry.generatedObject(state: DisposableState<Int>) {
+private fun ComponentFactory.generatedObject(state: DisposableState<Int>) {
     component(state.value) {
         var frameCount = 0f
         val color = randomColor()

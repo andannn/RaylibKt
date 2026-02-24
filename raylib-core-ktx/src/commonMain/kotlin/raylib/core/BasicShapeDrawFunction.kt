@@ -8,6 +8,12 @@ interface BasicShapeDrawFunction {
 
     fun drawCircle(center: CValue<Vector2>, radius: Float, color: CValue<Color>)
     fun drawRectangle(x: Int, y: Int, width: Int, height: Int, color: CValue<Color>)
+    fun drawRectangle(
+        position: CValue<raylib.interop.Vector2>,
+        size: CValue<raylib.interop.Vector2>,
+        color: CValue<raylib.interop.Color>
+    )
+
     fun drawRectangle(rec: CValue<Rectangle>, color: CValue<Color>)
     fun drawLine(x1: Int, y1: Int, x2: Int, y2: Int, color: CValue<Color>)
 
@@ -29,6 +35,14 @@ private class DefaultBasicShapeDrawFunction() : BasicShapeDrawFunction {
 
     override fun drawRectangle(x: Int, y: Int, width: Int, height: Int, color: CValue<Color>) {
         raylib.interop.DrawRectangle(x, y, width, height, color)
+    }
+
+    override fun drawRectangle(
+        position: CValue<raylib.interop.Vector2>,
+        size: CValue<raylib.interop.Vector2>,
+        color: CValue<raylib.interop.Color>
+    ) {
+        raylib.interop.DrawRectangleV(position, size, color)
     }
 
     override fun drawRectangle(rec: CValue<Rectangle>, color: CValue<Color>) {
