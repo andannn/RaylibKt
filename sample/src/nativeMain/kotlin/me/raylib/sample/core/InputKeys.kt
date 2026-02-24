@@ -16,7 +16,7 @@ internal fun inputKeys() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        registerComponents {
             component("key") {
                 val ballPosition = alloc<Vector2>().apply {
                     x = screenWidth.div(2f)

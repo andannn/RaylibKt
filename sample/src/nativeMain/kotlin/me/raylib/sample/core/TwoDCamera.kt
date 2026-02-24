@@ -32,7 +32,7 @@ fun twoDCamera() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        registerComponents {
             component("key") {
                 val player = allocRectangle(400f, 280f, 40f, 40f)
                 var spacex = 0f
@@ -110,7 +110,7 @@ fun twoDCamera() {
             }
         }
 
-        registerGameComponents {
+        registerComponents {
             component("key") {
                 provideHandlers {
                     onDraw {

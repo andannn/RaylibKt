@@ -33,7 +33,7 @@ fun twoDCameraMouseZoom() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        registerComponents {
             component("key") {
                 val camera: Camera2D = alloc<Camera2D>()
                 camera.zoom = 1.0f

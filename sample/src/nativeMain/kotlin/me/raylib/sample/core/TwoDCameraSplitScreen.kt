@@ -32,7 +32,7 @@ fun twoDCameraSplitScreen() {
         height = 450,
         initialBackGroundColor = Colors.BLACK
     ) {
-        registerGameComponents {
+        registerComponents {
             component("components") {
                 val player1 = alloc<Rectangle>().apply {
                     width = PLAYER_SIZE.toFloat()

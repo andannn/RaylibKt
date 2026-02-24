@@ -15,7 +15,7 @@ fun inputMouse() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        registerComponents {
             component("key") {
                 var ballPosition: CValue<Vector2> = Vector2()
                 var ballColor = Colors.DARKBLUE

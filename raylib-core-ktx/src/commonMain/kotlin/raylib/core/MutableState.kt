@@ -6,14 +6,15 @@ import kotlinx.cinterop.NativePlacement
 interface State<out T> {
     val value: T
 }
-interface MutableState<T>: State<T> {
+
+interface MutableState<T> : State<T> {
     override var value: T
 }
 
-fun <T> WindowScope.stateBox(initialValue: T): MutableState<T> =
-    object : StateBox<T>(initialValue, this) {}
+fun <T> WindowScope.mutableStateOf(initialValue: T): MutableState<T> =
+    object : MutableStateBox<T>(initialValue, this) {}
 
-internal abstract class StateBox<T>(
+internal abstract class MutableStateBox<T>(
     initialValue: T,
     private val windowScope: WindowScope
 ) : MutableState<T> {
@@ -28,15 +29,10 @@ internal abstract class StateBox<T>(
         }
 }
 
-fun <T> WindowScope.stateList(vararg items: DisposableState<T>) =
+fun <T> WindowScope.stateListOf(vararg items: DisposableState<T>) =
     ManagedStateList<T>(this)
-        .apply{
+        .apply {
             items.forEach { addState(it) }
-        }
-        .also {
-            (this as DefaultWindowScope).onPreBuild {
-                it.cleanup()
-            }
         }
 
 fun <T> WindowScope.disposableState(initialValue: NativePlacement.() -> T): DisposableState<T> =
@@ -49,17 +45,7 @@ class ManagedStateList<T>(
 
     fun addState(state: DisposableState<T>) = innerList.add(state).also {
         (windowScope as DefaultWindowScope).invalidComponents()
-    }
-
-    internal fun cleanup() {
-        innerList.removeAll { state ->
-            if (state.isDisposed) {
-                state.clearNativeState()
-                true
-            } else {
-                false
-            }
-        }
+        state.onRemove = { innerList.remove(state) }
     }
 }
 
@@ -71,14 +57,16 @@ abstract class DisposableState<T>(
     override val value = initialValue()
 
     internal var isDisposed = false
+    internal lateinit var onRemove: () -> Unit
 
     override fun dispose() {
         if (isDisposed) return
         isDisposed = true
         (windowScope as DefaultWindowScope).invalidComponents()
-    }
 
-    internal fun clearNativeState() {
-        arena.clear()
+        windowScope.postFrameCallback {
+            onRemove()
+            arena.clear()
+        }
     }
 }

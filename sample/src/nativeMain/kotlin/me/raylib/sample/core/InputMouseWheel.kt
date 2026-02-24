@@ -13,7 +13,7 @@ fun inputMouseWheel() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        registerGameComponents {
+        registerComponents {
             component("key") {
                 var boxPositionY = screenHeight.div(2f) - 40
                 val scrollSpeed = 4f

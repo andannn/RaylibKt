@@ -8,7 +8,7 @@ import raylib.core.Vector2
 import raylib.core.disposableState
 import raylib.core.randomColor
 import raylib.core.randomValue
-import raylib.core.stateList
+import raylib.core.stateListOf
 import raylib.core.window
 
 fun randomObjectGenerator() {
@@ -18,8 +18,8 @@ fun randomObjectGenerator() {
         height = 450,
         initialBackGroundColor = BLACK
     ) {
-        val stateList = stateList<Int>()
-        registerGameComponents {
+        val stateList = stateListOf<Int>()
+        registerComponents {
             component("random object generator") {
                 var frameCount = 0
                 var newId = 0

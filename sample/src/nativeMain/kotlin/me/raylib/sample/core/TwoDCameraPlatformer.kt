@@ -25,7 +25,7 @@ import raylib.core.length
 import raylib.core.mode2d
 import raylib.core.scale
 import raylib.core.screenToWorldPosition
-import raylib.core.stateBox
+import raylib.core.mutableStateOf
 import raylib.core.subtract
 import raylib.core.window
 import raylib.core.worldToScreenPosition
@@ -49,7 +49,7 @@ fun towDCameraPlatformer() {
     ) {
         val player = Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true)
         val camera = alloc<Camera2D> { zoom = 1f }
-        val cameraOption = stateBox(CameraOption.FollowPlayerCenter)
+        val cameraOption = mutableStateOf(CameraOption.FollowPlayerCenter)
         val envItems = listOf(
             EnvItem(allocRectangle(0f, 0f, 1000f, 400f), false, LIGHTGRAY),
             EnvItem(allocRectangle(0f, 400f, 1000f, 200f), true, GRAY),
@@ -58,7 +58,7 @@ fun towDCameraPlatformer() {
             EnvItem(allocRectangle(650f, 300f, 100f, 10f), true, GRAY),
         )
 
-        registerGameComponents {
+        registerComponents {
             component("changeCameraOption") {
                 provideHandlers {
                     onUpdate {

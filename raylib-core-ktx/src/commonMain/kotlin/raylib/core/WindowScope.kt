@@ -7,7 +7,8 @@ import kotlinx.cinterop.memScoped
 
 interface WindowScope : WindowFunction, NativePlacement {
     fun disposeOnClose(disposable: Disposable)
-    fun registerGameComponents(block: ComponentsRegisterScope.() -> Unit): ComponentManager
+    fun postFrameCallback(action: () -> Unit): Disposable
+    fun registerComponents(block: ComponentsRegisterScope.() -> Unit): ComponentManager
 }
 
 fun window(
@@ -31,7 +32,7 @@ fun window(
     return windowScope
         .apply {
             windowFunction.gameLoop {
-                prepareBuild()
+                onFrame()
 
                 componentsManager.buildComponentsIfNeeded()
 
@@ -108,6 +109,7 @@ class LoopHandlerBuilder {
     }
 }
 
+
 internal class DefaultWindowScope(
     memScope: MemScope,
     val windowFunction: WindowFunction
@@ -116,14 +118,22 @@ internal class DefaultWindowScope(
 
     var isDirty = false
 
-    private val preBuildHooks = mutableListOf<() -> Unit>()
-    fun onPreBuild(hook: () -> Unit) {
-        preBuildHooks.add(hook)
+    private val callBacks = mutableListOf<FrameCallBack>()
+
+    override fun postFrameCallback(action: () -> Unit): Disposable {
+        val callBack = FrameCallBack(action) { callBacks.remove(it) }
+        callBacks.add(callBack)
+        return callBack
     }
 
-    fun prepareBuild() {
-        if (isDirty) {
-            preBuildHooks.forEach { it() }
+    fun onFrame() {
+        if (callBacks.isEmpty()) return
+
+        val iterator = callBacks.iterator()
+        while (iterator.hasNext()) {
+            val listener = iterator.next()
+            listener.action()
+            iterator.remove()
         }
     }
 
@@ -135,7 +145,7 @@ internal class DefaultWindowScope(
         disposables.add(disposable)
     }
 
-    override fun registerGameComponents(block: ComponentsRegisterScope.() -> Unit): ComponentManager {
+    override fun registerComponents(block: ComponentsRegisterScope.() -> Unit): ComponentManager {
         return ComponentManagerImpl(
             isDirty = { isDirty },
             onRebuildFinished = { isDirty = false },
@@ -148,5 +158,9 @@ internal class DefaultWindowScope(
     fun dispose() {
         disposables.forEach { it.dispose() }
         disposables.clear()
+    }
+
+    class FrameCallBack(val action: () -> Unit, val onDispose: (FrameCallBack) -> Unit) : Disposable {
+        override fun dispose() = onDispose(this)
     }
 }

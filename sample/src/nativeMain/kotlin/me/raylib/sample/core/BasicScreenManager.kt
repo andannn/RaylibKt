@@ -22,7 +22,7 @@ fun basicScreenManager() {
         initialBackGroundColor = Colors.RAYWHITE
     ) {
         var currentScreen = GameScreen.LOGO
-        registerGameComponents {
+        registerComponents {
             component("updater") {
                 var framesCounter = 0
                 provideHandlers {

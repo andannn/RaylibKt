@@ -21,7 +21,7 @@ fun windowShouldClose() {
 private fun WindowScope.exitGameRequest(
     exitKey: KeyboardKey = KeyboardKey.KEY_ESCAPE,
 ) =
-    registerGameComponents {
+    registerComponents {
         component("key") {
             setExitKey(exitKey)
             interceptExitKey(true)

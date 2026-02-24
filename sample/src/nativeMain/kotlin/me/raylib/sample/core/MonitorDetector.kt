@@ -10,7 +10,7 @@ fun monitorDetector() {
         height = 450,
         initialBackGroundColor = BLACK
     ) {
-        registerGameComponents {
+        registerComponents {
             component("key") {
                 provideHandlers {
 
