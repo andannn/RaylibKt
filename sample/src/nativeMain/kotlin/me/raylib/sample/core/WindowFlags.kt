@@ -11,6 +11,7 @@ import raylib.core.ConfigFlags
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.stateOf
 import raylib.core.window
 import raylib.interop.DrawText
 
@@ -23,8 +24,8 @@ fun windowFlags() {
     ) {
         componentRegistry {
             component("key") {
-                val ballPosition = alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) }
-                val ballSpeed = alloc<Vector2> { x = 5f; y = 4f }
+                val ballPosition by stateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) } }
+                val ballSpeed by stateOf { alloc<Vector2> { x = 5f; y = 4f } }
                 val ballRadius = 20
                 var framesCounter = 0
 

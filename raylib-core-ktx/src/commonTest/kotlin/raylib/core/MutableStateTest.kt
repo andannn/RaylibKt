@@ -38,7 +38,7 @@ class MutableStateTest {
     @Test
     fun managedStateListTest_build() = with(windowScope) {
         val list = stateListOf(
-            disposableState { "1" }
+            stateOf { "1" }
         )
         assertEquals(1, list.size)
     }
@@ -46,22 +46,22 @@ class MutableStateTest {
     @Test
     fun managedStateListTest_add(): Unit = with(windowScope) {
         val list = stateListOf(
-            disposableState { alloc<Vector2> { x = 1f } }
+            stateOf { alloc<Vector2> { x = 1f } }
         )
         assertEquals(1, list.size)
 
-        list.addState(disposableState { alloc<Vector2> { x = 2f } })
+        list.addState(stateOf { alloc<Vector2> { x = 2f } })
         assertEquals(2, list.size)
     }
 
     @Test
     fun managedStateListTest_remove(): Unit = with(windowScope) {
-        val state1 = disposableState {
+        val state1 = stateOf {
             alloc<Vector2>().apply { x = 1f }
         }
         val list = stateListOf(
             state1,
-            disposableState {
+            stateOf {
                 alloc<Vector2>()
             }
         )
@@ -72,8 +72,32 @@ class MutableStateTest {
         onFrame()
 
         assertTrue(state1.isDisposed)
+        assertTrue(state1.isFreed)
         assertEquals(1, list.size)
         // native placement scope is freed. this Native object point to invalid address.
         assertNotEquals(1f, state1.value.x)
+    }
+
+    @Test
+    fun disposableStateTest_dispose(): Unit = with(windowScope) {
+        val state = stateOf {
+            alloc<Vector2> { x = 100f }
+        }
+        assertEquals(100f, state.value.x)
+        state.dispose()
+
+        assertTrue(state.isDisposed)
+        assertTrue(state.isFreed)
+    }
+
+    @Test
+    fun disposableStateTest_disposed_when_container_dispose() = with(windowScope) {
+        val state = stateOf { alloc<Vector2> { x = 100f } }
+        assertEquals(100f, state.value.x)
+
+        this.dispose()
+
+        assertTrue(state.isDisposed)
+        assertTrue(state.isFreed)
     }
 }

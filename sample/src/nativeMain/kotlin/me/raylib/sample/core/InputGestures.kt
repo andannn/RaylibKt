@@ -1,6 +1,5 @@
 package me.raylib.sample.core
 
-import me.raylib.sample.isCollisionWith
 import raylib.core.Colors
 import raylib.core.Colors.DARKGRAY
 import raylib.core.Colors.GRAY
@@ -10,6 +9,7 @@ import raylib.core.Colors.RAYWHITE
 import raylib.core.Gesture
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.isCollisionWith
 import raylib.core.window
 import raylib.interop.Fade
 

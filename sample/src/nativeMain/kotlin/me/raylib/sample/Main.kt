@@ -2,6 +2,7 @@ package me.raylib.sample
 
 import me.raylib.sample.core.*
 import me.raylib.sample.custom.*
+import me.raylib.sample.shape.*
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
@@ -25,10 +26,17 @@ fun main() {
 //    randomSequence()
 //    towDCameraPlatformer()
 //    renderTexture()
-    inputActions()
+//    inputActions()
 
     // shape examples
 //    bouncingBall()
+//    basicShapes()
+//    rectangleScaling()
+//    linesBezier()
+//    collisionArea()
+//    followingEyes()
+//    easingBall()
+
     // custom examples
-//    randomObjectGenerator()
+    randomObjectGenerator()
 }

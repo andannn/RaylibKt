@@ -1,13 +1,15 @@
 package raylib.core
 
-import kotlinx.cinterop.Arena
-import kotlinx.cinterop.NativePlacement
 import raylib.core.internal.DiffCallback
 import raylib.core.internal.executeDiff
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
-
-abstract class Component(val componentId: Any) : LoopHandler, Disposable {
-
+internal abstract class Component(val componentId: Any) : LoopHandler, Disposable {
+    @OptIn(ExperimentalNativeApi::class)
+    val cleaner = createCleaner(componentId) {
+        println("Runtime Monitor: Component [$it] has been Garbage Collected.")
+    }
 }
 
 internal fun Component(
@@ -27,6 +29,7 @@ interface ComponentManager : Disposable {
 }
 
 internal class ComponentManagerImpl(
+    private val windowFunction: WindowFunction,
     private val isDirty: () -> Boolean,
     private val onRebuildFinished: () -> Unit,
     private val block: ComponentFactory.() -> Unit
@@ -42,7 +45,7 @@ internal class ComponentManagerImpl(
 
     private class KeyWithBuilder(
         val componentId: Any,
-        val block: () -> Component
+        val builder: () -> Component
     )
 
     private inner class Differ(
@@ -58,10 +61,12 @@ internal class ComponentManagerImpl(
             after.add(
                 KeyWithBuilder(
                     componentId = componentId,
-                    block = {
-                        val scope = ComponentScope()
+                    builder = {
+                        val scope = ComponentScope(windowFunction)
                         val handler = block(scope)
-                        Component(componentId, handler, scope)
+                        Component(componentId, handler) {
+                            scope.dispose()
+                        }
                     }
                 )
             )
@@ -73,7 +78,7 @@ internal class ComponentManagerImpl(
 
         override fun insert(newIndex: Int) {
             println("insert ${after[newIndex].componentId} $newIndex")
-            components.add(newIndex, after[newIndex].block())
+            components.add(newIndex, after[newIndex].builder())
         }
 
         override fun remove(atIndex: Int, oldIndex: Int) {
@@ -112,15 +117,18 @@ internal class ComponentManagerImpl(
     }
 
     override fun dispose() {
-        components.forEach { it.dispose() }
+        components.forEach {
+            it.dispose()
+        }
         components.clear()
     }
 }
 
 @MustUseReturnValues
 class ComponentScope(
-    private val arena: Arena = Arena()
-) : NativePlacement by arena, Disposable {
+    private val windowFunction: WindowFunction,
+) : DisposableRegistry, WindowFunction by windowFunction {
+    private val disposableRegistry = DisposableRegistryImpl()
 
     inline fun provideHandlers(
         crossinline block: LoopHandlerBuilder.() -> Unit,
@@ -128,5 +136,9 @@ class ComponentScope(
         return LoopHandlerBuilder().apply(block).build()
     }
 
-    override fun dispose(): Unit = arena.clear()
+    override fun disposeOnClose(disposable: Disposable) = disposableRegistry.disposeOnClose(disposable)
+
+    internal fun dispose() {
+        disposableRegistry.dispose()
+    }
 }
