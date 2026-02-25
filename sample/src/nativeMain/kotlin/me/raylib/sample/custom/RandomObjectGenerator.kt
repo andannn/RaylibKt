@@ -32,6 +32,9 @@ fun randomObjectGenerator() {
                             }
                         }
                     }
+                    onDraw {
+
+                    }
                 }
             }
 
@@ -57,7 +60,7 @@ private fun ComponentFactory.generatedObject(state: DisposableState<Int>) {
                         randomValue(0, screenHeight).toFloat()
                     )
                 }
-                if (frameCount > 150) {
+                if (frameCount > 5) {
                     // make itself disappear
                     state.dispose()
                 }

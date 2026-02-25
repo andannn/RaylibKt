@@ -7,9 +7,9 @@ import kotlinx.cinterop.memScoped
 
 @MustUseReturnValues
 interface WindowScope : WindowFunction, NativePlacement {
-    fun disposeOnClose(disposable: Disposable)
     @IgnorableReturnValue
     fun postFrameCallback(action: () -> Unit): Disposable
+    fun invalidComponents()
     fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager
 }
 
@@ -52,11 +52,9 @@ fun window(
                 }
             }
         }
-        .also { it.dispose() }
-}
-
-fun interface Disposable {
-    fun dispose()
+        .also { windowScope ->
+            windowScope.dispose()
+        }
 }
 
 internal fun DefaultWindowFunction.gameLoop(
@@ -114,16 +112,19 @@ class LoopHandlerBuilder {
 
 internal class DefaultWindowScope(
     memScope: MemScope,
-    val windowFunction: WindowFunction
-) : WindowScope, WindowFunction by windowFunction, NativePlacement by memScope {
-    private val disposables = mutableListOf<Disposable>()
-
+    val windowFunction: WindowFunction,
+) : WindowScope,
+    WindowFunction by windowFunction,
+    NativePlacement by memScope {
+    private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl()
     var isDirty = false
 
     private val callBacks = mutableListOf<FrameCallBack>()
 
     override fun postFrameCallback(action: () -> Unit): Disposable {
-        val callBack = FrameCallBack(action) { callBacks.remove(it) }
+        val callBack = FrameCallBack(action) {
+            callBacks.remove(it)
+        }
         callBacks.add(callBack)
         return callBack
     }
@@ -139,27 +140,24 @@ internal class DefaultWindowScope(
         }
     }
 
-    fun invalidComponents() {
+    override fun invalidComponents() {
         isDirty = true
-    }
-
-    override fun disposeOnClose(disposable: Disposable) {
-        disposables.add(disposable)
     }
 
     override fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager {
         return ComponentManagerImpl(
+            windowFunction,
             isDirty = { isDirty },
             onRebuildFinished = { isDirty = false },
             block
-        ).also {
-            disposables.add(it)
+        ).also { componentManager ->
+            disposableRegistry.disposeOnClose(componentManager)
         }
     }
 
     fun dispose() {
-        disposables.forEach { it.dispose() }
-        disposables.clear()
+        disposableRegistry.dispose()
+        callBacks.clear()
     }
 
     class FrameCallBack(val action: () -> Unit, val onDispose: (FrameCallBack) -> Unit) : Disposable {

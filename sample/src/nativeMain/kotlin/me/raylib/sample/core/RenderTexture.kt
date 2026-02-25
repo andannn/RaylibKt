@@ -22,16 +22,16 @@ fun renderTexture() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        val renderTextureWidth = 300
-        val renderTextureHeight = 300
-        val loadedTexture = loadRenderTexture(renderTextureWidth, renderTextureHeight)
-        val ballPosition: Vector2 = alloc { x = renderTextureWidth / 2.0f; y = renderTextureHeight / 2.0f }
-        val ballSpeed = alloc<Vector2> { x = 5.0f; y = 4.0f }
-        val ballRadius = 20
-        var rotation = 0.0f
-
         componentRegistry {
             component("ballMovement") {
+                val renderTextureWidth = 300
+                val renderTextureHeight = 300
+                val loadedTexture = loadRenderTexture(renderTextureWidth, renderTextureHeight)
+                val ballPosition: Vector2 = alloc { x = renderTextureWidth / 2.0f; y = renderTextureHeight / 2.0f }
+                val ballSpeed = alloc<Vector2> { x = 5.0f; y = 4.0f }
+                val ballRadius = 20
+                var rotation = 0.0f
+
                 provideHandlers {
                     onUpdate {
                         ballPosition.x += ballSpeed.x

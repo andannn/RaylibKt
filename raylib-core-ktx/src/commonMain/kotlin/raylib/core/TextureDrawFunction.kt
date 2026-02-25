@@ -2,7 +2,7 @@ package raylib.core
 
 import kotlinx.cinterop.CValue
 
-fun WindowScope.loadRenderTexture(
+fun DisposableRegistry.loadRenderTexture(
     width: Int,
     height: Int,
 ): CValue<RenderTexture2D> {

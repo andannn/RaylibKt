@@ -43,9 +43,10 @@ class ManagedStateList<T>(
     private val innerList: MutableList<DisposableState<T>> = mutableListOf()
 ) : List<DisposableState<T>> by innerList {
 
-    fun addState(state: DisposableState<T>) = innerList.add(state).also {
-        (windowScope as DefaultWindowScope).invalidComponents()
+    fun addState(state: DisposableState<T>): Disposable = innerList.add(state).let {
+        windowScope.invalidComponents()
         state.onRemove = { innerList.remove(state) }
+        state
     }
 }
 
@@ -62,8 +63,8 @@ abstract class DisposableState<T>(
     override fun dispose() {
         if (isDisposed) return
         isDisposed = true
-        (windowScope as DefaultWindowScope).invalidComponents()
 
+        windowScope.invalidComponents()
         windowScope.postFrameCallback {
             onRemove?.invoke()
             arena.clear()

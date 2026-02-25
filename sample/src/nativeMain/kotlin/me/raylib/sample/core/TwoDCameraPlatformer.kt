@@ -21,6 +21,7 @@ import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.add
 import raylib.core.RectangleAlloc
+import raylib.core.internal.LeakDetector
 import raylib.core.length
 import raylib.core.mode2d
 import raylib.core.scale
