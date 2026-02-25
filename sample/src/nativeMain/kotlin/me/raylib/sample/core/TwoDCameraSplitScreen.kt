@@ -21,6 +21,7 @@ import raylib.core.loadRenderTexture
 import raylib.core.mode2d
 import raylib.core.setOffset
 import raylib.core.setTarget
+import raylib.core.stateOf
 import raylib.core.textureDrawScope
 import raylib.core.window
 
@@ -41,29 +42,37 @@ fun twoDCameraSplitScreen() {
 
 private fun ComponentFactory.component() {
     component("components") {
-        val player1 = alloc<Rectangle>().apply {
-            width = PLAYER_SIZE.toFloat()
-            height = PLAYER_SIZE.toFloat()
-            x = 200.0f
-            y = 200.0f
+        val player1 by stateOf {
+            alloc<Rectangle> {
+                width = PLAYER_SIZE.toFloat()
+                height = PLAYER_SIZE.toFloat()
+                x = 200.0f
+                y = 200.0f
+            }
         }
-        val player2 = alloc<Rectangle>().apply {
-            width = PLAYER_SIZE.toFloat()
-            height = PLAYER_SIZE.toFloat()
-            x = 200.0f
-            y = 200.0f
+        val player2 by stateOf {
+            alloc<Rectangle> {
+                width = PLAYER_SIZE.toFloat()
+                height = PLAYER_SIZE.toFloat()
+                x = 200.0f
+                y = 200.0f
+            }
         }
-        val camera1 = alloc<Camera2D>().apply {
-            setTarget(player1.x, player1.y)
-            setOffset(200.0f, 200.0f)
-            rotation = 0.0f
-            zoom = 1.0f
+        val camera1 by stateOf {
+            alloc<Camera2D> {
+                setTarget(player1.x, player1.y)
+                setOffset(200.0f, 200.0f)
+                rotation = 0.0f
+                zoom = 1.0f
+            }
         }
-        val camera2 = alloc<Camera2D>().apply {
-            setTarget(player2.x, player2.y)
-            setOffset(200.0f, 200.0f)
-            rotation = 0.0f
-            zoom = 1.0f
+        val camera2 by stateOf {
+            alloc<Camera2D> {
+                setTarget(player2.x, player2.y)
+                setOffset(200.0f, 200.0f)
+                rotation = 0.0f
+                zoom = 1.0f
+            }
         }
 
         val screenCamera1 = loadRenderTexture(screenWidth / 2, screenHeight)

@@ -12,6 +12,7 @@ import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Vector2Alloc
 import raylib.core.isCollisionWith
 import raylib.core.set
+import raylib.core.stateOf
 import raylib.core.window
 
 fun followingEyes() {
@@ -23,12 +24,12 @@ fun followingEyes() {
     ) {
         componentRegistry {
             component("A") {
-                val scleraLeftPosition =
-                    Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
-                val scleraRightPosition = Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f)
+                val scleraLeftPosition by stateOf {
+                    Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f) }
+                val scleraRightPosition by stateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
                 val scleraRadius = 80f
-                val irisLeftPosition = Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
-                val irisRightPosition = Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f)
+                val irisLeftPosition by stateOf { Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f) }
+                val irisRightPosition by stateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
                 val irisRadius = 24f
 
                 var angle = 0.0f

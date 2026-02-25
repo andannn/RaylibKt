@@ -12,6 +12,7 @@ import raylib.core.RectangleAlloc
 import raylib.core.getCollisionRec
 import raylib.core.isCollisionWith
 import raylib.core.set
+import raylib.core.stateOf
 import raylib.core.window
 import raylib.interop.MeasureText
 
@@ -24,10 +25,10 @@ fun collisionArea() {
     ) {
         componentRegistry {
             component("K") {
-                val boxA = RectangleAlloc(10f, screenHeight / 2.0f - 50, 200f, 100f)
+                val boxA by stateOf { RectangleAlloc(10f, screenHeight / 2.0f - 50, 200f, 100f) }
                 var boxASpeedX = 4
-                val boxB = RectangleAlloc(screenWidth / 2.0f - 30, screenHeight / 2.0f - 30, 60f, 60f)
-                val boxCollision = RectangleAlloc()
+                val boxB by stateOf { RectangleAlloc(screenWidth / 2.0f - 30, screenHeight / 2.0f - 30, 60f, 60f) }
+                val boxCollision by stateOf { RectangleAlloc() }
                 val screenUpperLimit = 40
                 var pause = false
                 var collision = false

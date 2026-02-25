@@ -9,6 +9,7 @@ import raylib.core.Colors.RAYWHITE
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.scissorMode
+import raylib.core.stateOf
 import raylib.core.window
 
 fun scissorTest() {
@@ -20,7 +21,7 @@ fun scissorTest() {
     ) {
         componentRegistry {
             component("key") {
-                val scissorArea = alloc<Rectangle> { x = 0f; y = 0f; width = 300f; height = 300f }
+                val scissorArea by stateOf { alloc<Rectangle> { x = 0f; y = 0f; width = 300f; height = 300f } }
                 var scissorMode = true
 
                 provideHandlers {

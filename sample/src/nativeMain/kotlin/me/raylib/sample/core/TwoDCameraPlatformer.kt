@@ -27,6 +27,7 @@ import raylib.core.mode2d
 import raylib.core.scale
 import raylib.core.screenToWorldPosition
 import raylib.core.mutableStateOf
+import raylib.core.stateOf
 import raylib.core.subtract
 import raylib.core.window
 import raylib.core.worldToScreenPosition
@@ -48,16 +49,18 @@ fun towDCameraPlatformer() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
-        val player = Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true)
-        val camera = alloc<Camera2D> { zoom = 1f }
+        val player by stateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }
+        val camera by stateOf { alloc<Camera2D> { zoom = 1f } }
         val cameraOption = mutableStateOf(CameraOption.FollowPlayerCenter)
-        val envItems = listOf(
-            EnvItem(RectangleAlloc(0f, 0f, 1000f, 400f), false, LIGHTGRAY),
-            EnvItem(RectangleAlloc(0f, 400f, 1000f, 200f), true, GRAY),
-            EnvItem(RectangleAlloc(300f, 200f, 400f, 10f), true, GRAY),
-            EnvItem(RectangleAlloc(250f, 300f, 100f, 10f), true, GRAY),
-            EnvItem(RectangleAlloc(650f, 300f, 100f, 10f), true, GRAY),
-        )
+        val envItems by stateOf {
+            listOf(
+                EnvItem(RectangleAlloc(0f, 0f, 1000f, 400f), false, LIGHTGRAY),
+                EnvItem(RectangleAlloc(0f, 400f, 1000f, 200f), true, GRAY),
+                EnvItem(RectangleAlloc(300f, 200f, 400f, 10f), true, GRAY),
+                EnvItem(RectangleAlloc(250f, 300f, 100f, 10f), true, GRAY),
+                EnvItem(RectangleAlloc(650f, 300f, 100f, 10f), true, GRAY),
+            )
+        }
 
         componentRegistry {
             component("changeCameraOption") {

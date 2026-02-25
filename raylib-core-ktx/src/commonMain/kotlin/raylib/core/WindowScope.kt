@@ -6,7 +6,7 @@ import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.memScoped
 
 @MustUseReturnValues
-interface WindowScope : WindowFunction, NativePlacement {
+interface WindowScope : WindowFunction, DisposableRegistry {
     @IgnorableReturnValue
     fun postFrameCallback(action: () -> Unit): Disposable
     fun invalidComponents()
@@ -113,10 +113,11 @@ class LoopHandlerBuilder {
 internal class DefaultWindowScope(
     memScope: MemScope,
     val windowFunction: WindowFunction,
+    private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl()
 ) : WindowScope,
     WindowFunction by windowFunction,
-    NativePlacement by memScope {
-    private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl()
+    NativePlacement by memScope,
+    DisposableRegistry by disposableRegistry {
     var isDirty = false
 
     private val callBacks = mutableListOf<FrameCallBack>()

@@ -1,12 +1,9 @@
 package raylib.core
 
-import kotlinx.cinterop.Arena
-import kotlinx.cinterop.NativePlacement
 import raylib.core.internal.DiffCallback
 import raylib.core.internal.executeDiff
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
-
 
 internal abstract class Component(val componentId: Any) : LoopHandler, Disposable {
     @OptIn(ExperimentalNativeApi::class)
@@ -128,10 +125,9 @@ internal class ComponentManagerImpl(
 }
 
 @MustUseReturnValues
-class ComponentScope constructor(
+class ComponentScope(
     private val windowFunction: WindowFunction,
-    private val arena: Arena = Arena(),
-) : NativePlacement by arena, DisposableRegistry, WindowFunction by windowFunction {
+) : DisposableRegistry, WindowFunction by windowFunction {
     private val disposableRegistry = DisposableRegistryImpl()
 
     inline fun provideHandlers(
@@ -144,6 +140,5 @@ class ComponentScope constructor(
 
     internal fun dispose() {
         disposableRegistry.dispose()
-        arena.clear()
     }
 }

@@ -10,6 +10,7 @@ import raylib.core.MouseButton
 import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.isCollisionWith
+import raylib.core.stateOf
 import raylib.core.window
 import raylib.interop.Fade
 
@@ -24,9 +25,9 @@ fun rectangleScaling() {
     ) {
         componentRegistry {
             component("key") {
-                val rec = alloc<Rectangle> { x = 100f; y = 100f; width = 200f; height = 80f }
+                val rec by stateOf { alloc<Rectangle> { x = 100f; y = 100f; width = 200f; height = 80f } }
 
-                var mousePosition = alloc<Vector2>()
+                val mousePosition by stateOf { alloc<Vector2>() }
 
                 var mouseScaleReady = false
                 var mouseScaleMode = false

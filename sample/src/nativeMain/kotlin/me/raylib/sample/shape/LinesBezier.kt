@@ -11,6 +11,7 @@ import raylib.core.Colors.RED
 import raylib.core.MouseButton
 import raylib.core.Vector2
 import raylib.core.isCollisionWith
+import raylib.core.stateOf
 import raylib.core.window
 
 fun linesBezier() {
@@ -22,8 +23,8 @@ fun linesBezier() {
     ) {
         componentRegistry {
             component("k") {
-                val startPoint = alloc<Vector2> { x = 30f; y = 30f }
-                val endPoint = alloc<Vector2> { x = screenWidth - 30f; y = screenHeight - 30f }
+                val startPoint by stateOf { alloc<Vector2> { x = 30f; y = 30f } }
+                val endPoint by stateOf { alloc<Vector2> { x = screenWidth - 30f; y = screenHeight - 30f } }
                 var moveStartPoint = false
                 var moveEndPoint = false
                 var mousePosition: CValue<Vector2>? = null

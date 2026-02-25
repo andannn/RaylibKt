@@ -12,6 +12,7 @@ import raylib.core.Colors.WHITE
 import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.loadRenderTexture
+import raylib.core.stateOf
 import raylib.core.textureDrawScope
 import raylib.core.window
 
@@ -27,8 +28,12 @@ fun renderTexture() {
                 val renderTextureWidth = 300
                 val renderTextureHeight = 300
                 val loadedTexture = loadRenderTexture(renderTextureWidth, renderTextureHeight)
-                val ballPosition: Vector2 = alloc { x = renderTextureWidth / 2.0f; y = renderTextureHeight / 2.0f }
-                val ballSpeed = alloc<Vector2> { x = 5.0f; y = 4.0f }
+                val ballPosition: Vector2 by stateOf {
+                    alloc {
+                        x = renderTextureWidth / 2.0f; y = renderTextureHeight / 2.0f
+                    }
+                }
+                val ballSpeed by stateOf { alloc<Vector2> { x = 5.0f; y = 4.0f } }
                 val ballRadius = 20
                 var rotation = 0.0f
 

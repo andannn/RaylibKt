@@ -6,6 +6,7 @@ import raylib.core.Colors
 import raylib.core.Colors.MAROON
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
+import raylib.core.stateOf
 import raylib.core.window
 
 internal fun inputKeys() {
@@ -18,9 +19,11 @@ internal fun inputKeys() {
     ) {
         componentRegistry {
             component("key") {
-                val ballPosition = alloc<Vector2>().apply {
-                    x = screenWidth.div(2f)
-                    y = screenHeight.div(2f)
+                val ballPosition by stateOf {
+                    alloc<Vector2>  {
+                        x = screenWidth.div(2f)
+                        y = screenHeight.div(2f)
+                    }
                 }
 
                 provideHandlers {

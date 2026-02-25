@@ -10,6 +10,7 @@ import raylib.core.Colors.MAROON
 import raylib.core.Colors.RED
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
+import raylib.core.stateOf
 import raylib.core.window
 
 fun bouncingBall() {
@@ -21,8 +22,8 @@ fun bouncingBall() {
     ) {
         componentRegistry {
             component("key") {
-                val ballPosition = alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) }
-                val ballSpeed = alloc<Vector2> { x = 5f; y = 4f }
+                val ballPosition by stateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) }}
+                val ballSpeed by stateOf { alloc<Vector2> { x = 5f; y = 4f } }
                 var useGravity = true
                 var pause = false
 
