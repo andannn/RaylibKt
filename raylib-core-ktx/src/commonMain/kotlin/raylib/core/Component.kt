@@ -1,7 +1,12 @@
 package raylib.core
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import raylib.core.internal.DiffCallback
 import raylib.core.internal.executeDiff
+import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
@@ -24,8 +29,8 @@ interface ComponentFactory {
 
 interface ComponentManager : Disposable {
     fun buildComponentsIfNeeded()
-    fun performUpdate(deltaTime: Float, scope: GameScope)
-    fun performDraw(scope: DrawScope)
+    fun performUpdate(deltaTime: Float, scope: GameContext)
+    fun performDraw(scope: DrawContext)
 }
 
 internal class ComponentManagerImpl(
@@ -36,6 +41,7 @@ internal class ComponentManagerImpl(
 ) : ComponentManager {
     internal val components = mutableListOf<Component>()
 
+    private val coroutineContext = CoroutineScope(Dispatchers.Default)
     override fun buildComponentsIfNeeded() {
         if (components.isEmpty() || isDirty()) {
             buildComponents()
@@ -62,7 +68,7 @@ internal class ComponentManagerImpl(
                 KeyWithBuilder(
                     componentId = componentId,
                     builder = {
-                        val scope = ComponentScope(windowFunction)
+                        val scope = ComponentScope(windowFunction, coroutineContext.coroutineContext)
                         val handler = block(scope)
                         Component(componentId, handler) {
                             scope.dispose()
@@ -102,21 +108,20 @@ internal class ComponentManagerImpl(
             }
     }
 
-    override fun performDraw(scope: DrawScope) {
+    override fun performDraw(scope: DrawContext) {
         components.forEach { handler ->
-            with(handler) {
-                scope.draw()
-            }
+            with(handler) { draw(scope) }
         }
     }
 
-    override fun performUpdate(deltaTime: Float, scope: GameScope) {
+    override fun performUpdate(deltaTime: Float, scope: GameContext) {
         components.forEach { handler ->
-            with(handler) { scope.update(deltaTime) }
+            with(handler) { update(scope, deltaTime) }
         }
     }
 
     override fun dispose() {
+        coroutineContext.cancel()
         components.forEach {
             it.dispose()
         }
@@ -127,18 +132,22 @@ internal class ComponentManagerImpl(
 @MustUseReturnValues
 class ComponentScope(
     private val windowFunction: WindowFunction,
+    parentContext: CoroutineContext,
 ) : DisposableRegistry, WindowFunction by windowFunction {
     private val disposableRegistry = DisposableRegistryImpl()
+
+    val scope = CoroutineScope(parentContext + Job())
 
     inline fun provideHandlers(
         crossinline block: LoopHandlerBuilder.() -> Unit,
     ): LoopHandler {
-        return LoopHandlerBuilder().apply(block).build()
+        return LoopHandlerBuilder(scope).apply(block).build()
     }
 
     override fun disposeOnClose(disposable: Disposable) = disposableRegistry.disposeOnClose(disposable)
 
     internal fun dispose() {
+        scope.cancel()
         disposableRegistry.dispose()
     }
 }

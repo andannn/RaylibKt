@@ -7,7 +7,7 @@ import raylib.core.Colors.GRAY
 import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
 import raylib.core.Colors.WHITE
-import raylib.core.GameScope
+import raylib.core.GameContext
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
 import raylib.core.stateOf
@@ -47,13 +47,13 @@ private val alternateKeySet: Map<ActionType, ActionInput> = mapOf(
 
 private var currentKeySet = defaultKeySet
 
-private fun GameScope.isDown(type: ActionType) =
+private fun GameContext.isDown(type: ActionType) =
     currentKeySet[type]!!.key.isDown() || currentKeySet[type]!!.button.isDown(0)
 
-private fun GameScope.isPressed(type: ActionType) =
+private fun GameContext.isPressed(type: ActionType) =
     currentKeySet[type]!!.key.isPressed() || currentKeySet[type]!!.button.isPressed(0)
 
-private fun GameScope.isReleased(type: ActionType) =
+private fun GameContext.isReleased(type: ActionType) =
     currentKeySet[type]!!.key.isReleased() || currentKeySet[type]!!.button.isReleased(0)
 
 fun inputActions() {

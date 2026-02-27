@@ -1,3 +1,6 @@
 [submodule "raylib-core/external/raylib_c"]
 	path = raylib-core/external/raylib_c
 	url = https://github.com/raysan5/raylib
+[submodule "raylib-easings/external/reasings"]
+	path = raylib-easings/external/reasings
+	url = https://github.com/raylib-extras/reasings.git

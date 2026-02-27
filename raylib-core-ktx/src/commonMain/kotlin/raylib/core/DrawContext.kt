@@ -3,13 +3,13 @@ package raylib.core
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
 
-internal fun DrawScope(
+internal fun DrawContext(
     windowScope: WindowFunction,
     drawFunction: DrawFunction = DrawFunction(),
-): DrawScope = object : DrawScope, DrawFunction by drawFunction,
+): DrawContext = object : DrawContext, DrawFunction by drawFunction,
     WindowFunction by windowScope{}
 
-interface DrawScope : DrawFunction, WindowFunction
+interface DrawContext : DrawFunction, WindowFunction
 
 
 interface DrawFunction : BasicShapeDrawFunction, TextDrawFunction, TextureDrawFunction

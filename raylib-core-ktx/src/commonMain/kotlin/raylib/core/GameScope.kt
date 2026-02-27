@@ -1,26 +1,16 @@
 package raylib.core
 
-import kotlinx.cinterop.CValue
+interface GameContext : WindowFunction, KeyboardFunction, MouseFunction, GestureFunction, GamepadFunction
 
-abstract class GameScope(
-    initialBackGroundColor: CValue<Color>?,
-) : WindowFunction, KeyboardFunction, MouseFunction, GestureFunction, GamepadFunction {
-    var backGroundColor: CValue<Color>? = null
-
-    init {
-        backGroundColor = initialBackGroundColor
-    }
-}
-
-internal fun GameScope(
+internal fun GameContext(
     windowScope: WindowFunction,
-    initialBackGroundColor: CValue<Color>? = null,
     keyboardFunction: KeyboardFunction = KeyboardFunction(),
     mouseFunction: MouseFunction = MouseFunction(),
     gestureFunction: GestureFunction = GestureFunction(),
     drawFunction: DrawFunction = DrawFunction(),
     gamepadFunction: GamepadFunction = GamepadFunction()
-): GameScope = object : GameScope(initialBackGroundColor),
+): GameContext = object :
+    GameContext,
     WindowFunction by windowScope,
     KeyboardFunction by keyboardFunction,
     MouseFunction by mouseFunction,

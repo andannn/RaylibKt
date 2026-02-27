@@ -4,6 +4,7 @@ import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
+import raylib.core.SuspendingUpdateEventScope
 import raylib.core.window
 import raylib.interop.Fade
 
@@ -24,8 +25,10 @@ fun easingBall() {
                 val framesCounter = 0
 
                 provideHandlers {
-                    onUpdate {
+                    suspendingScope {
+                        awaitUpdateEventScope {
 
+                        }
                     }
                     onDraw {
                         if (state >= 2) drawRectangle(0, 0, screenWidth, screenHeight, GREEN)
@@ -38,3 +41,11 @@ fun easingBall() {
     }
 }
 
+private suspend fun SuspendingUpdateEventScope.easeElasticOutAnimation() = awaitUpdateEventScope {
+    var framesCounter = 0
+    while (framesCounter < 120) {
+        awaitUpdateEvent()
+//        EaseElasticOut((float)framesCounter, -100, screenWidth/2.0f + 100, 120)
+        framesCounter++
+    }
+}

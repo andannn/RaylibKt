@@ -12,7 +12,7 @@ import raylib.core.Colors.RAYWHITE
 import raylib.core.Colors.RED
 import raylib.core.Colors.WHITE
 import raylib.core.ComponentFactory
-import raylib.core.DrawScope
+import raylib.core.DrawContext
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.RenderTexture
@@ -104,7 +104,7 @@ private fun ComponentFactory.component() {
             }
 
             onDraw {
-                fun DrawScope.fillTexture(
+                fun DrawContext.fillTexture(
                     texture: CValue<RenderTexture>,
                     camera: Camera2D
                 ) = textureDrawScope(texture, RAYWHITE) {

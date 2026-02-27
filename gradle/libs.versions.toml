@@ -3,9 +3,11 @@ agp = "9.0.0"
 androidTool = "32.0.0"
 kotlin = "2.3.10"
 task-tree = "4.0.0"
+kotlinxCoroutines = "1.10.2"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 
 # used in build-logic
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }

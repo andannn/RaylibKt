@@ -1,6 +1,9 @@
 package raylib.core
 
+import kotlinx.cinterop.CValue
+
 interface WindowFunction {
+    var backGroundColor: CValue<Color>?
     val title: String
     val screenWidth: Int
     val screenHeight: Int
@@ -24,6 +27,7 @@ internal class DefaultWindowFunction(
     override val title: String,
     override val screenWidth: Int,
     override val screenHeight: Int,
+    override var backGroundColor: CValue<Color>? = null
 ) : WindowFunction {
 
     override val frameTimeSeconds: Float
@@ -60,6 +64,7 @@ internal class DefaultWindowFunction(
     override fun setExitKey(key: KeyboardKey) {
         raylib.interop.SetExitKey(key.value.toInt())
     }
+
 
     override var currentFps: Int
         get() = raylib.interop.GetFPS()

@@ -4,6 +4,7 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.MemScope
 import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.memScoped
+import kotlinx.coroutines.CoroutineScope
 
 @MustUseReturnValues
 interface WindowScope : WindowFunction, DisposableRegistry {
@@ -25,11 +26,12 @@ fun window(
         initialFps = initialFps,
         title = title,
         screenWidth = width,
-        screenHeight = height
+        screenHeight = height,
+        backGroundColor = initialBackGroundColor
     )
     val windowScope = DefaultWindowScope(this, windowFunction)
-    val drawScope = DrawScope(windowFunction)
-    val gameScope = GameScope(windowScope, initialBackGroundColor)
+    val drawContext = DrawContext(windowFunction)
+    val gameContext = GameContext(windowScope)
     val componentsManager = windowScope.block()
     return windowScope
         .apply {
@@ -38,16 +40,16 @@ fun window(
 
                 componentsManager.buildComponentsIfNeeded()
 
-                with(gameScope) {
+                with(gameContext) {
                     // update state
-                    componentsManager.performUpdate(frameTimeSeconds, gameScope)
+                    componentsManager.performUpdate(frameTimeSeconds, gameContext)
 
                     // Draw
                     raylib.interop.BeginDrawing()
                     backGroundColor?.let {
                         raylib.interop.ClearBackground(it)
                     }
-                    componentsManager.performDraw(drawScope)
+                    componentsManager.performDraw(drawContext)
                     raylib.interop.EndDrawing()
                 }
             }
@@ -74,36 +76,42 @@ internal fun DefaultWindowFunction.gameLoop(
 
 interface LoopHandler : UpdateHandler, DrawHandler
 
-interface UpdateHandler {
-    fun GameScope.update(deltaTime: Float)
+fun interface UpdateHandler {
+    fun update(gameContext: GameContext, deltaTime: Float)
 }
 
-interface DrawHandler {
-    fun DrawScope.draw()
+fun interface DrawHandler {
+    fun draw(drawContext: DrawContext)
 }
 
-class LoopHandlerBuilder {
-    private var updateActions = mutableListOf<(GameScope.(deltaTime: Float) -> Unit)>()
-    private var drawActions = mutableListOf<(DrawScope.() -> Unit)>()
+class LoopHandlerBuilder(
+    private val scope: CoroutineScope
+) {
+    private var updateActions = mutableListOf<UpdateHandler>()
+    private var drawActions = mutableListOf<DrawHandler>()
 
-    fun onUpdate(block: GameScope.(deltaTime: Float) -> Unit) {
+    fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit) {
         updateActions.add(block)
     }
 
-    fun onDraw(block: DrawScope.() -> Unit) {
+    fun suspendingScope(block: suspend SuspendingUpdateEventScope.() -> Unit) {
+        updateActions.add(SuspendingUpdateInputHandler(scope, block))
+    }
+
+    fun onDraw(block: DrawContext.() -> Unit) {
         drawActions.add(block)
     }
 
     fun build(): LoopHandler = object : LoopHandler {
-        override fun GameScope.update(deltaTime: Float) {
+        override fun update(gameContext: GameContext, deltaTime: Float) {
             updateActions.forEach {
-                it.invoke(this, deltaTime)
+                it.update(gameContext, deltaTime)
             }
         }
 
-        override fun DrawScope.draw() {
+        override fun draw(drawContext: DrawContext) {
             drawActions.forEach {
-                it.invoke(this)
+                it.draw(drawContext)
             }
         }
     }
