@@ -1,5 +1,10 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Family
+import org.jetbrains.kotlin.konan.target.KonanTarget
+
 plugins {
     id("kmp.library")
+    id("com.dorongold.task-tree")
 }
 
 kmpExtension {
@@ -18,12 +23,8 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
-            api(project(":raylib-core"))
-            implementation(libs.kotlinx.coroutines.core)
-        }
-
-        it.commonTest.dependencies {
-            implementation(libs.kotlin.test)
+            api(project(":raylib-core-ktx"))
+            api(project(":raylib-easings"))
         }
     }
 }

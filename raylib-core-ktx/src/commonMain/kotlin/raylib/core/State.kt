@@ -26,7 +26,7 @@ internal abstract class MutableStateBox<T>(
             if (_field == value) return
 
             _field = value
-            (windowScope as? DefaultWindowScope)?.invalidComponents()
+            windowScope.invalidComponents()
         }
 }
 

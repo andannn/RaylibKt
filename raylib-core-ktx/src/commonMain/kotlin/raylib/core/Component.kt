@@ -24,8 +24,8 @@ interface ComponentFactory {
 
 interface ComponentManager : Disposable {
     fun buildComponentsIfNeeded()
-    fun performUpdate(deltaTime: Float, scope: GameScope)
-    fun performDraw(scope: DrawScope)
+    fun performUpdate(deltaTime: Float, scope: GameContext)
+    fun performDraw(scope: DrawContext)
 }
 
 internal class ComponentManagerImpl(
@@ -102,17 +102,15 @@ internal class ComponentManagerImpl(
             }
     }
 
-    override fun performDraw(scope: DrawScope) {
+    override fun performDraw(scope: DrawContext) {
         components.forEach { handler ->
-            with(handler) {
-                scope.draw()
-            }
+            with(handler) { draw(scope) }
         }
     }
 
-    override fun performUpdate(deltaTime: Float, scope: GameScope) {
+    override fun performUpdate(deltaTime: Float, scope: GameContext) {
         components.forEach { handler ->
-            with(handler) { scope.update(deltaTime) }
+            with(handler) { update(scope, deltaTime) }
         }
     }
 
