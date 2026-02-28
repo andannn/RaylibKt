@@ -1,12 +1,12 @@
 package raylib.core
 
 import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.RestrictsSuspension
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.createCoroutine
 import kotlin.coroutines.resume
 
@@ -39,18 +39,24 @@ interface AwaitUpdateEventScope : GameContext {
     suspend fun awaitUpdateEvent(): Float
 }
 
-internal class SuspendingUpdateInputHandler(
-    private val block: suspend SuspendingUpdateEventScope.() -> Unit
-) : SuspendingUpdateEventScope, UpdateHandler {
+interface TaskController {
+    fun start()
+    fun stop()
+}
+
+internal class FinishHandleInputException : CancellationException(message = "task is cancelled by user")
+
+internal class SuspendingUpdateTask(
+    private val gameContext: GameContext,
+    private val block: suspend SuspendingUpdateEventScope.() -> Unit,
+) : SuspendingUpdateEventScope, UpdateHandler, TaskController {
     private var activeHandler: EventHandlerCoroutine<*>? = null
-    private var gameContext: GameContext? = null
-    private var isCoroutineStart = false
     private var isInDispatch = false
     private var newHandlerRegisteredInDispatch = false
 
     override suspend fun <R> awaitUpdateEventScope(block: suspend AwaitUpdateEventScope.() -> R): R =
         suspendCancellableCoroutine { continuation ->
-            val handlerCoroutine = EventHandlerCoroutine(continuation, gameContext!!)
+            val handlerCoroutine = EventHandlerCoroutine(continuation, gameContext)
             check(activeHandler == null) { "handler already registered." }
 
             activeHandler = handlerCoroutine
@@ -62,6 +68,8 @@ internal class SuspendingUpdateInputHandler(
         }
 
     private fun dispatchUpdateEvent(deltaTime: Float) {
+        if (activeHandler == null) return
+
         isInDispatch = true
 
         do {
@@ -74,20 +82,29 @@ internal class SuspendingUpdateInputHandler(
     }
 
     override fun update(gameContext: GameContext, deltaTime: Float) {
-        this.gameContext = gameContext
-
-        if (!isCoroutineStart) {
-            isCoroutineStart = true
-            block.createCoroutine(this, object : Continuation<Unit> {
-                override val context: CoroutineContext = EmptyCoroutineContext
-
-                override fun resumeWith(result: Result<Unit>) {
-                    result.getOrThrow()
-                }
-            }).resume(Unit)
-        }
-
         dispatchUpdateEvent(deltaTime)
+    }
+
+    override fun start() {
+        activeHandler?.cancel(FinishHandleInputException())
+        createTask().resume(Unit)
+    }
+
+    override fun stop() {
+        activeHandler?.cancel(FinishHandleInputException())
+    }
+
+    private fun createTask(): Continuation<Unit> {
+        return block.createCoroutine(this, object : Continuation<Unit> {
+            override val context: CoroutineContext = EmptyCoroutineContext
+
+            override fun resumeWith(result: Result<Unit>) {
+                val exceptionOrNull = result.exceptionOrNull()
+                if (exceptionOrNull != null && exceptionOrNull !is FinishHandleInputException) {
+                    throw exceptionOrNull
+                }
+            }
+        })
     }
 
     private inner class EventHandlerCoroutine<R>(

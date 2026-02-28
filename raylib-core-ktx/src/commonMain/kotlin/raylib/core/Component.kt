@@ -24,8 +24,8 @@ interface ComponentFactory {
 
 interface ComponentManager : Disposable {
     fun buildComponentsIfNeeded()
-    fun performUpdate(deltaTime: Float, scope: GameContext)
-    fun performDraw(scope: DrawContext)
+    fun performUpdate(deltaTime: Float)
+    fun performDraw()
 }
 
 internal class ComponentManagerImpl(
@@ -102,15 +102,15 @@ internal class ComponentManagerImpl(
             }
     }
 
-    override fun performDraw(scope: DrawContext) {
+    override fun performDraw() {
         components.forEach { handler ->
-            with(handler) { draw(scope) }
+            with(handler) { draw() }
         }
     }
 
-    override fun performUpdate(deltaTime: Float, scope: GameContext) {
+    override fun performUpdate(deltaTime: Float) {
         components.forEach { handler ->
-            with(handler) { update(scope, deltaTime) }
+            with(handler) { update(deltaTime) }
         }
     }
 
@@ -128,10 +128,10 @@ class ComponentScope(
 ) : DisposableRegistry, WindowFunction by windowFunction {
     private val disposableRegistry = DisposableRegistryImpl()
 
-    inline fun provideHandlers(
-        crossinline block: LoopHandlerBuilder.() -> Unit,
+    fun provideHandlers(
+        block: LoopHandlerBuilder.() -> Unit,
     ): LoopHandler {
-        return LoopHandlerBuilder().apply(block).build()
+        return LoopHandlerBuilder(windowFunction).apply(block).build()
     }
 
     override fun disposeOnClose(disposable: Disposable) = disposableRegistry.disposeOnClose(disposable)
