@@ -8,7 +8,7 @@ import kotlin.experimental.ExperimentalNativeApi
 @OptIn(ExperimentalNativeApi::class)
 @CName(externName = "raylib_android_main")
 fun main() {
-    firstWindow()
+//    firstWindow()
 //    deltaTime()
 //    inputKeys()
 //    inputMouse()
@@ -35,7 +35,7 @@ fun main() {
 //    linesBezier()
 //    collisionArea()
 //    followingEyes()
-//    easingBall()
+    easingBall()
 
     // custom examples
 //    randomObjectGenerator()

@@ -71,7 +71,6 @@ interface BasicShapeDrawFunction {
         thick: Float,
         color: CValue<Color>
     )
-//
 }
 
 

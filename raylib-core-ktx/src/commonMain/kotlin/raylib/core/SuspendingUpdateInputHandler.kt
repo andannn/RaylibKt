@@ -15,6 +15,22 @@ import kotlin.coroutines.RestrictsSuspension
 import kotlin.coroutines.createCoroutine
 import kotlin.coroutines.resume
 
+/**
+ * Suspends the coroutine until the given [condition] is satisfied.
+ *
+ * This function polls the [condition] on every frame update. It is non-blocking
+ * to the main thread as it yields execution between checks using [AwaitUpdateEventScope.awaitUpdateEvent].
+ *
+ * @param condition A lambda that is evaluated every frame; returns true to resume.
+ */
+suspend inline fun SuspendingUpdateEventScope.await(crossinline condition: GameContext.() -> Boolean) {
+    awaitUpdateEventScope {
+        while (!condition()) {
+            awaitUpdateEvent()
+        }
+    }
+}
+
 interface SuspendingUpdateEventScope {
     suspend fun <R> awaitUpdateEventScope(block: suspend AwaitUpdateEventScope.() -> R): R
 }

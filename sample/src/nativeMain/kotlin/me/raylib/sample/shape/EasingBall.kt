@@ -4,32 +4,67 @@ import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
-import raylib.core.SuspendingUpdateEventScope
+import raylib.core.KeyboardKey
+import raylib.core.await
 import raylib.core.window
+import raylib.easings.Ease
+import raylib.easings.awaitEasingAnimation
 import raylib.interop.Fade
+import kotlin.time.Duration.Companion.seconds
 
 fun easingBall() {
     window(
         title = "raylib [shapes] example - easings ball",
         width = 800,
         height = 450,
+        initialFps = 60,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
         componentRegistry {
             component("A") {
-                val ballPositionX = -100
-                val ballRadius = 20
-                val ballAlpha = 0.0f
+                var ballPositionX = -100
+                var ballRadius = 20
+                var ballAlpha = 0.0f
 
-                val state = 0
-                val framesCounter = 0
+                var state = 0
 
                 provideHandlers {
                     suspendingScope {
-                        awaitUpdateEventScope {
+                        while (true) {
+                            awaitEasingAnimation(
+                                start = ballPositionX.toFloat(),
+                                target = screenWidth.div(2f),
+                                duration = 2.seconds,
+                                easing = Ease.ElasticInOut,
+                                onUpdate = { ballPositionX = it.toInt() }
+                            )
+                            state = 1
+                            awaitEasingAnimation(
+                                start = ballRadius.toFloat(),
+                                target = 500f,
+                                duration = 3.seconds,
+                                easing = Ease.ElasticIn,
+                                onUpdate = { ballRadius = it.toInt() }
+                            )
+                            state = 2
+                            awaitEasingAnimation(
+                                start = ballAlpha,
+                                target = 1f,
+                                duration = 3.seconds,
+                                easing = Ease.CubicOut,
+                                onUpdate = { ballAlpha = it }
+                            )
+                            state = 3
 
+                            await { KeyboardKey.KEY_ENTER.isPressed() }
+
+                            ballPositionX = -100
+                            ballRadius = 20
+                            ballAlpha = 0.0f
+                            state = 0
                         }
                     }
+
                     onDraw {
                         if (state >= 2) drawRectangle(0, 0, screenWidth, screenHeight, GREEN)
                         drawCircle(ballPositionX, 200, ballRadius.toFloat(), Fade(RED, 1.0f - ballAlpha))
@@ -38,14 +73,5 @@ fun easingBall() {
                 }
             }
         }
-    }
-}
-
-private suspend fun SuspendingUpdateEventScope.easeElasticOutAnimation() = awaitUpdateEventScope {
-    var framesCounter = 0
-    while (framesCounter < 120) {
-        awaitUpdateEvent()
-//        EaseElasticOut((float)framesCounter, -100, screenWidth/2.0f + 100, 120)
-        framesCounter++
     }
 }

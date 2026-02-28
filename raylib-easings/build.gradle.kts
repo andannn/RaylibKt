@@ -33,47 +33,10 @@ kmpExtension {
             add(KonanTarget.ANDROID_X64)
         }
     val rayLibCompile =
-        createNativeCompilation("rayLibCompile") {
+        createNativeCompilation("reasingCompile") {
             configureEachTarget {
-                val externalRaylibPath = project.layout.projectDirectory.dir("external/raylib_c")
-                val sourceList = buildList {
-                    add("rcore.c")
-                    add("rshapes.c")
-                    add("utils.c")
-                    add("rtextures.c")
-                    add("rmodels.c")
-                    add("raudio.c")
-                    add("rtext.c")
-                    if (konanTarget.isDesktop()) {
-                        add("rglfw.c")
-                    }
-                }.map {
-                    externalRaylibPath.dir("src/$it")
-                }
-
-                if (konanTarget.family == Family.OSX) {
-                    freeArgs.add("-x")
-                    freeArgs.add("objective-c")
-                }
-                if (konanTarget.family == Family.ANDROID) {
-                    freeArgs.add("-D")
-                    freeArgs.add("PLATFORM_ANDROID")
-                    freeArgs.add("-D")
-                    freeArgs.add("GRAPHICS_API_OPENGL_ES2")
-                    sources.from(project.layout.projectDirectory.dir("external/native_app_glue/android_native_app_glue.c"))
-                    sources.from(project.layout.projectDirectory.dir("src/androidNativeMain/c/android_main.c"))
-                    includes.from(project.layout.projectDirectory.dir("external/native_app_glue/"))
-                }
-                if (konanTarget.family == Family.LINUX) {
-                }
-                if (konanTarget.isDesktop()) {
-                    freeArgs.add("-D")
-                    freeArgs.add("PLATFORM_DESKTOP")
-                    includes.from(externalRaylibPath.dir("src/external/glfw/include"))
-                }
-
-                sources.from(sourceList)
-                includes.from(externalRaylibPath.dir("src"))
+                sources.from(project.layout.projectDirectory.dir("src/c/empty.c"))
+                includes.from(project.layout.projectDirectory.dir("external/reasings/src"))
             }
             configureTargets(requiredNativeTargets)
         }
@@ -91,9 +54,4 @@ kmpExtension {
             )
         }
     }
-}
-
-private fun KonanTarget.isDesktop(): Boolean {
-    if (family == Family.OSX || family == Family.LINUX) return true
-    return false
 }
