@@ -82,6 +82,7 @@ internal class SuspendingUpdateInputHandler(
                 override val context: CoroutineContext = EmptyCoroutineContext
 
                 override fun resumeWith(result: Result<Unit>) {
+                    result.getOrThrow()
                 }
             }).resume(Unit)
         }
