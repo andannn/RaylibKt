@@ -1,12 +1,7 @@
 package raylib.core
 
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
@@ -31,6 +26,7 @@ suspend inline fun SuspendingUpdateEventScope.await(crossinline condition: GameC
     }
 }
 
+@RestrictsSuspension
 interface SuspendingUpdateEventScope {
     suspend fun <R> awaitUpdateEventScope(block: suspend AwaitUpdateEventScope.() -> R): R
 }
@@ -44,40 +40,50 @@ interface AwaitUpdateEventScope : GameContext {
 }
 
 internal class SuspendingUpdateInputHandler(
-    private val scope: CoroutineScope,
     private val block: suspend SuspendingUpdateEventScope.() -> Unit
 ) : SuspendingUpdateEventScope, UpdateHandler {
-    private var updateInputJob: Job? = null
-
-    private val synchronizedObject: SynchronizedObject = SynchronizedObject()
-    private val pointerHandlers =
-        mutableListOf<EventHandlerCoroutine<*>>()
-
+    private var activeHandler: EventHandlerCoroutine<*>? = null
     private var gameContext: GameContext? = null
+    private var isCoroutineStart = false
+    private var isInDispatch = false
+    private var newHandlerRegisteredInDispatch = false
+
     override suspend fun <R> awaitUpdateEventScope(block: suspend AwaitUpdateEventScope.() -> R): R =
         suspendCancellableCoroutine { continuation ->
             val handlerCoroutine = EventHandlerCoroutine(continuation, gameContext!!)
-            synchronized(synchronizedObject) {
-                pointerHandlers += handlerCoroutine
+            check(activeHandler == null) { "handler already registered." }
 
-                block.createCoroutine(handlerCoroutine, handlerCoroutine).resume(Unit)
-            }
+            activeHandler = handlerCoroutine
+            block.createCoroutine(handlerCoroutine, handlerCoroutine).resume(Unit)
+
+            if (isInDispatch) newHandlerRegisteredInDispatch = true
 
             continuation.invokeOnCancellation { handlerCoroutine.cancel(it) }
         }
 
     private fun dispatchUpdateEvent(deltaTime: Float) {
-        pointerHandlers.forEach {
-            it.doUpdate(deltaTime)
-        }
+        isInDispatch = true
+
+        do {
+            newHandlerRegisteredInDispatch = false
+            val current = activeHandler
+            current?.doUpdate(deltaTime)
+        } while (newHandlerRegisteredInDispatch)
+
+        isInDispatch = false
     }
 
     override fun update(gameContext: GameContext, deltaTime: Float) {
         this.gameContext = gameContext
-        if (updateInputJob == null) {
-            updateInputJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
-                block.invoke(this@SuspendingUpdateInputHandler)
-            }
+
+        if (!isCoroutineStart) {
+            isCoroutineStart = true
+            block.createCoroutine(this, object : Continuation<Unit> {
+                override val context: CoroutineContext = EmptyCoroutineContext
+
+                override fun resumeWith(result: Result<Unit>) {
+                }
+            }).resume(Unit)
         }
 
         dispatchUpdateEvent(deltaTime)
@@ -93,7 +99,7 @@ internal class SuspendingUpdateInputHandler(
         private var awaiter: CancellableContinuation<Float>? = null
 
         override fun resumeWith(result: Result<R>) {
-            synchronized(synchronizedObject) { pointerHandlers -= this }
+            activeHandler = null
             completion.resumeWith(result)
         }
 
@@ -116,3 +122,4 @@ internal class SuspendingUpdateInputHandler(
         }
     }
 }
+

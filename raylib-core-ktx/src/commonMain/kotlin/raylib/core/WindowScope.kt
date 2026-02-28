@@ -84,9 +84,7 @@ fun interface DrawHandler {
     fun draw(drawContext: DrawContext)
 }
 
-class LoopHandlerBuilder(
-    private val scope: CoroutineScope
-) {
+class LoopHandlerBuilder {
     private var updateActions = mutableListOf<UpdateHandler>()
     private var drawActions = mutableListOf<DrawHandler>()
 
@@ -95,7 +93,7 @@ class LoopHandlerBuilder(
     }
 
     fun suspendingScope(block: suspend SuspendingUpdateEventScope.() -> Unit) {
-        updateActions.add(SuspendingUpdateInputHandler(scope, block))
+        updateActions.add(SuspendingUpdateInputHandler(block))
     }
 
     fun onDraw(block: DrawContext.() -> Unit) {
