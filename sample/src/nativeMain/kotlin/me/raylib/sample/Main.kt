@@ -35,7 +35,8 @@ fun main() {
 //    linesBezier()
 //    collisionArea()
 //    followingEyes()
-    easingBall()
+//    easingBall()
+    easingBox()
 
     // custom examples
 //    randomObjectGenerator()

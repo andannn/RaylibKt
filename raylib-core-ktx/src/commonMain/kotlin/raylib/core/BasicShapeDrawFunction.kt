@@ -19,6 +19,12 @@ interface BasicShapeDrawFunction {
         size: CValue<raylib.interop.Vector2>,
         color: CValue<raylib.interop.Color>
     )
+    fun drawRectangle(
+        rectangle: CValue<Rectangle>,
+        origin: CValue<raylib.interop.Vector2>,
+        rotation: Float,
+        color: CValue<raylib.interop.Color>
+    )
 
     fun drawRectangle(rec: CValue<Rectangle>, color: CValue<Color>)
     fun drawRectangleGradientH(x: Int, y: Int, width: Int, height: Int, color1: CValue<Color>, color2: CValue<Color>)
@@ -123,6 +129,15 @@ private class DefaultBasicShapeDrawFunction() : BasicShapeDrawFunction {
         color: CValue<raylib.interop.Color>
     ) {
         raylib.interop.DrawRectangleV(position, size, color)
+    }
+
+    override fun drawRectangle(
+        rectangle: CValue<Rectangle>,
+        origin: CValue<raylib.interop.Vector2>,
+        rotation: Float,
+        color: CValue<raylib.interop.Color>
+    ) {
+        raylib.interop.DrawRectanglePro(rectangle, origin, rotation, color)
     }
 
     override fun drawRectangle(rec: CValue<Rectangle>, color: CValue<Color>) {

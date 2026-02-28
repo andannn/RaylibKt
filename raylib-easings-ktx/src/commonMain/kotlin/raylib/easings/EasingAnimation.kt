@@ -10,24 +10,31 @@ suspend fun SuspendingUpdateEventScope.awaitEasingAnimation(
     duration: Duration,
     easing: Easing = Ease.LinearNone,
     onUpdate: (Float) -> Unit
-) =
-    awaitUpdateEventScope {
-        val totalSeconds = duration.toDouble(DurationUnit.SECONDS).toFloat()
-        if (totalSeconds <= 0f) {
-            onUpdate(target)
-            return@awaitUpdateEventScope
-        }
+) = awaitDuration(duration) { fraction ->
+    onUpdate(start.animateTo(target, fraction, easing))
+}
 
-        var elapsedTime = 0f
-
-        while (true) {
-            val dt = awaitUpdateEvent()
-            elapsedTime += dt
-
-            val fraction = (elapsedTime / totalSeconds).coerceIn(0f, 1f)
-
-            onUpdate(start.animateTo(target, fraction, easing))
-
-            if (fraction >= 1f) break
-        }
+suspend fun SuspendingUpdateEventScope.awaitDuration(
+    duration: Duration,
+    onProgress: (Float) -> Unit = {}
+) = awaitUpdateEventScope {
+    val totalSeconds = duration.toDouble(DurationUnit.SECONDS).toFloat()
+    if (totalSeconds <= 0f) {
+        onProgress(1f)
+        return@awaitUpdateEventScope
     }
+
+    var elapsedTime = 0f
+
+    while (true) {
+        val dt = awaitUpdateEvent()
+        elapsedTime += dt
+
+        val fraction = (elapsedTime / totalSeconds).coerceIn(0f, 1f)
+
+        onProgress(fraction)
+
+        if (fraction >= 1f) break
+    }
+}
+
