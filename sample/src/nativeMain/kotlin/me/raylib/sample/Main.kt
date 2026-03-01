@@ -36,7 +36,9 @@ fun main() {
 //    collisionArea()
 //    followingEyes()
 //    easingBall()
-    easingBox()
+//    easingBox()
+//    easingsRectangles()
+    mouseTrail()
 
     // custom examples
 //    randomObjectGenerator()
