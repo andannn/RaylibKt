@@ -3,7 +3,7 @@ package me.raylib.sample.core
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.WHITE
 import raylib.core.KeyboardKey
-import raylib.core.WindowScope
+import raylib.core.WindowContext
 import raylib.core.window
 import raylib.interop.WindowShouldClose
 
@@ -18,7 +18,7 @@ fun windowShouldClose() {
     }
 }
 
-private fun WindowScope.exitGameRequest(
+private fun WindowContext.exitGameRequest(
     exitKey: KeyboardKey = KeyboardKey.KEY_ESCAPE,
 ) =
     componentRegistry {

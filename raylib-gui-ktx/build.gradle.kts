@@ -1,5 +1,10 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Family
+import org.jetbrains.kotlin.konan.target.KonanTarget
+
 plugins {
     id("kmp.library")
+    id("com.dorongold.task-tree")
 }
 
 kmpExtension {
@@ -18,6 +23,7 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
+            implementation(project(":raylib-gui"))
             api(project(":raylib-core-ktx"))
         }
     }

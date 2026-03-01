@@ -55,7 +55,8 @@ kotlin {
     }
     sourceSets {
         nativeMain.dependencies {
-            implementation(project(":raylib-core-ktx"))
+            implementation(project(":raylib-kt-framework"))
+            implementation(project(":raylib-gui"))
             implementation(project(":raylib-easings-ktx"))
         }
     }

@@ -1,6 +1,7 @@
 package me.raylib.sample.custom
 
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.reinterpret
 import raylib.core.Colors.BLACK
 import raylib.core.ComponentFactory
 import raylib.core.DisposableState

@@ -12,12 +12,12 @@ interface MutableState<T> : State<T> {
     override var value: T
 }
 
-fun <T> WindowScope.mutableStateOf(initialValue: T): MutableState<T> =
+fun <T> WindowContext.mutableStateOf(initialValue: T): MutableState<T> =
     object : MutableStateBox<T>(initialValue, this) {}
 
 internal abstract class MutableStateBox<T>(
     initialValue: T,
-    private val windowScope: WindowScope
+    private val windowContext: WindowContext
 ) : MutableState<T> {
     private var _field = initialValue
     override var value: T
@@ -26,11 +26,11 @@ internal abstract class MutableStateBox<T>(
             if (_field == value) return
 
             _field = value
-            windowScope.invalidComponents()
+            windowContext.invalidComponents()
         }
 }
 
-fun <T> WindowScope.stateListOf(vararg items: DisposableState<T>) =
+fun <T> WindowContext.stateListOf(vararg items: DisposableState<T>) =
     ManagedStateList<T>(this)
         .apply {
             items.forEach { addState(it) }
@@ -42,22 +42,22 @@ fun <T> DisposableRegistry.stateOf(initialValue: NativePlacement.() -> T): Dispo
     }
 
 class ManagedStateList<T>(
-    private val windowScope: WindowScope,
+    private val windowContext: WindowContext,
     private val innerList: MutableList<DisposableState<T>> = mutableListOf()
 ) : List<DisposableState<T>> by innerList {
 
     fun addState(state: DisposableState<T>): Disposable = innerList.add(state).let {
-        windowScope.invalidComponents()
+        windowContext.invalidComponents()
 
         state.onDispose = {
-            windowScope.invalidComponents()
+            windowContext.invalidComponents()
             removeObjectOnNextFrame(state)
         }
         state
     }
 
     private fun removeObjectOnNextFrame(state: DisposableState<T>) {
-        windowScope.postFrameCallback {
+        windowContext.postFrameCallback {
             innerList.remove(state)
             state.clearNative()
         }

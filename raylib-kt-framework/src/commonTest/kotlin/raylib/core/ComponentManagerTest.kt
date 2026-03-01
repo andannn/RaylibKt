@@ -1,7 +1,6 @@
 package raylib.core
 
 import raylib.core.internal.DummyWindowFunction
-import raylib.core.internal.LeakDetector
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails

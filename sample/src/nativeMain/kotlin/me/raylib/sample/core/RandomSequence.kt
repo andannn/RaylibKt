@@ -12,7 +12,7 @@ import raylib.core.Colors.MAROON
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2
-import raylib.core.WindowScope
+import raylib.core.WindowContext
 import raylib.core.randomColor
 import raylib.core.window
 import raylib.interop.LoadRandomSequence
@@ -105,7 +105,7 @@ class ColorRect(
     val rectangleSize: CValue<Vector2>
 )
 
-private fun WindowScope.generateRandomColorRectSequence(rectCount: Int, rectWidth: Float): List<ColorRectWithPositon> {
+private fun WindowContext.generateRandomColorRectSequence(rectCount: Int, rectWidth: Float): List<ColorRectWithPositon> {
     val seq = LoadRandomSequence(rectCount.toUInt(), 0, rectCount - 1)
     val rectSeqWidth: Float = rectCount * rectWidth
     val startX = (screenWidth - rectSeqWidth) * 0.5f

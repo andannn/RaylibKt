@@ -7,7 +7,6 @@ internal fun GameContext(
     keyboardFunction: KeyboardFunction = KeyboardFunction(),
     mouseFunction: MouseFunction = MouseFunction(),
     gestureFunction: GestureFunction = GestureFunction(),
-    drawFunction: DrawFunction = DrawFunction(),
     gamepadFunction: GamepadFunction = GamepadFunction()
 ): GameContext = object :
     GameContext,
@@ -15,5 +14,4 @@ internal fun GameContext(
     KeyboardFunction by keyboardFunction,
     MouseFunction by mouseFunction,
     GestureFunction by gestureFunction,
-    GamepadFunction by gamepadFunction,
-    DrawFunction by drawFunction {}
+    GamepadFunction by gamepadFunction {}

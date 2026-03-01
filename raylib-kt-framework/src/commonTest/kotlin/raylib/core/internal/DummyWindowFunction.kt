@@ -65,4 +65,8 @@ class DummyWindowFunction: WindowFunction {
     override fun restoreWindow() {
         TODO("Not yet implemented")
     }
+
+    override fun shouldExit(): Boolean {
+        TODO("Not yet implemented")
+    }
 }

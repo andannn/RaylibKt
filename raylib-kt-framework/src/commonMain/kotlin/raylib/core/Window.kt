@@ -4,9 +4,15 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.MemScope
 import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.memScoped
+import raylib.interop.BeginDrawing
+import raylib.interop.ClearBackground
+import raylib.interop.CloseWindow
+import raylib.interop.EndDrawing
+import kotlin.reflect.KClass
+import kotlin.reflect.cast
 
 @MustUseReturnValues
-interface WindowScope : WindowFunction, DisposableRegistry {
+interface WindowContext : WindowFunction, ContextRegistry, DisposableRegistry {
     @IgnorableReturnValue
     fun postFrameCallback(action: () -> Unit): Disposable
     fun invalidComponents()
@@ -19,9 +25,9 @@ fun window(
     height: Int,
     initialFps: Int = 60,
     initialBackGroundColor: CValue<Color>? = null,
-    block: WindowScope.() -> ComponentManager
-): WindowScope = memScoped {
-    val windowFunction = DefaultWindowFunction(
+    block: WindowContext.() -> ComponentManager
+): WindowContext = memScoped {
+    val windowFunction = WindowFunction(
         initialFps = initialFps,
         title = title,
         screenWidth = width,
@@ -41,12 +47,12 @@ fun window(
                 componentsManager.performUpdate(frameTimeSeconds)
 
                 // Draw
-                raylib.interop.BeginDrawing()
+                BeginDrawing()
                 backGroundColor?.let {
-                    raylib.interop.ClearBackground(it)
+                    ClearBackground(it)
                 }
                 componentsManager.performDraw()
-                raylib.interop.EndDrawing()
+                EndDrawing()
             }
         }
         .also { windowScope ->
@@ -54,19 +60,13 @@ fun window(
         }
 }
 
-internal fun DefaultWindowFunction.gameLoop(
+internal fun WindowFunction.gameLoop(
     block: () -> Unit
 ) {
-    fun shouldExit(): Boolean =
-        if (interceptExitKey) {
-            exitWindowRequest
-        } else {
-            raylib.interop.WindowShouldClose()
-        }
     while (!shouldExit()) {
         block()
     }
-    raylib.interop.CloseWindow()
+    CloseWindow()
 }
 
 interface LoopHandler {
@@ -122,7 +122,8 @@ internal class DefaultWindowScope(
     memScope: MemScope,
     val windowFunction: WindowFunction,
     private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl()
-) : WindowScope,
+) : WindowContext,
+    ContextRegistry by ContextRegistryImpl(),
     WindowFunction by windowFunction,
     NativePlacement by memScope,
     DisposableRegistry by disposableRegistry {

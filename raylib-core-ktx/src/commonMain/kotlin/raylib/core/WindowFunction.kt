@@ -1,6 +1,7 @@
 package raylib.core
 
 import kotlinx.cinterop.CValue
+import raylib.interop.WindowShouldClose
 
 interface WindowFunction {
     var backGroundColor: CValue<Color>?
@@ -20,7 +21,23 @@ interface WindowFunction {
     fun minimizeWindow()
     fun maximizeWindow()
     fun restoreWindow()
+
+    fun shouldExit(): Boolean
 }
+
+fun WindowFunction(
+    initialFps: Int,
+    title: String,
+    screenWidth: Int,
+    screenHeight: Int,
+    backGroundColor: CValue<Color>? = null
+): WindowFunction = DefaultWindowFunction(
+    initialFps,
+    title,
+    screenWidth,
+    screenHeight,
+    backGroundColor,
+)
 
 internal class DefaultWindowFunction(
     initialFps: Int,
@@ -93,5 +110,12 @@ internal class DefaultWindowFunction(
     override fun restoreWindow() {
         raylib.interop.RestoreWindow()
     }
+
+    override fun shouldExit(): Boolean =
+        if (interceptExitKey) {
+            exitWindowRequest
+        } else {
+            WindowShouldClose()
+        }
 }
 
