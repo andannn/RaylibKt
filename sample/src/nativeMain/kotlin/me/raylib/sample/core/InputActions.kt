@@ -69,37 +69,35 @@ fun inputActions() {
                 val size: Vector2 by stateOf { alloc { x = 40.0f; y = 40.0f } }
                 var actionSet = false
                 var releaseAction = false
-                provideHandlers {
-                    onUpdate {
-                        if (isDown(ActionType.ACTION_UP)) position.y -= 2f
-                        if (isDown(ActionType.ACTION_DOWN)) position.y += 2f
-                        if (isDown(ActionType.ACTION_LEFT)) position.x -= 2f
-                        if (isDown(ActionType.ACTION_RIGHT)) position.x += 2f
-                        if (isPressed(ActionType.ACTION_FIRE)) {
-                            position.x = (screenWidth - size.x) / 2;
-                            position.y = (screenHeight - size.y) / 2;
-                        }
-
-                        releaseAction = false
-                        if (isReleased(ActionType.ACTION_FIRE)) releaseAction = true
-
-                        if (KeyboardKey.KEY_TAB.isPressed()) {
-                            actionSet = !actionSet
-                            if (actionSet) currentKeySet = defaultKeySet
-                            else currentKeySet = alternateKeySet
-                        }
+                onUpdate {
+                    if (isDown(ActionType.ACTION_UP)) position.y -= 2f
+                    if (isDown(ActionType.ACTION_DOWN)) position.y += 2f
+                    if (isDown(ActionType.ACTION_LEFT)) position.x -= 2f
+                    if (isDown(ActionType.ACTION_RIGHT)) position.x += 2f
+                    if (isPressed(ActionType.ACTION_FIRE)) {
+                        position.x = (screenWidth - size.x) / 2;
+                        position.y = (screenHeight - size.y) / 2;
                     }
-                    onDraw {
-                        drawRectangle(position.readValue(), size.readValue(), if (releaseAction) BLUE else RED)
-                        drawText(
-                            if (actionSet) "Current input set: WASD (default)" else "Current input set: Arrow keys",
-                            10,
-                            10,
-                            20,
-                            WHITE
-                        )
-                        drawText("Use TAB key to toggles Actions keyset", 10, 50, 20, GREEN)
+
+                    releaseAction = false
+                    if (isReleased(ActionType.ACTION_FIRE)) releaseAction = true
+
+                    if (KeyboardKey.KEY_TAB.isPressed()) {
+                        actionSet = !actionSet
+                        if (actionSet) currentKeySet = defaultKeySet
+                        else currentKeySet = alternateKeySet
                     }
+                }
+                onDraw {
+                    drawRectangle(position.readValue(), size.readValue(), if (releaseAction) BLUE else RED)
+                    drawText(
+                        if (actionSet) "Current input set: WASD (default)" else "Current input set: Arrow keys",
+                        10,
+                        10,
+                        20,
+                        WHITE
+                    )
+                    drawText("Use TAB key to toggles Actions keyset", 10, 50, 20, GREEN)
                 }
             }
         }

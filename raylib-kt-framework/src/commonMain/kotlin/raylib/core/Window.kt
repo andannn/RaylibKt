@@ -72,48 +72,6 @@ internal fun WindowFunction.gameLoop(
     CloseWindow()
 }
 
-interface LoopHandler {
-    fun update(deltaTime: Float)
-    fun draw()
-}
-
-fun interface UpdateHandler {
-    fun update(gameContext: GameContext, deltaTime: Float)
-}
-
-fun interface DrawHandler {
-    fun draw(drawContext: DrawContext)
-}
-
-class LoopHandlerBuilder(contextRegistry: ContextRegistry) : ContextRegistry by contextRegistry {
-    private var updateActions = mutableListOf<UpdateHandler>()
-    private var drawActions = mutableListOf<DrawHandler>()
-    private val gameContext = contextRegistry.get<GameContext>()
-    private val drawContext = contextRegistry.get<DrawContext>()
-
-    fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit) {
-        updateActions.add(block)
-    }
-
-    fun onDraw(block: DrawContext.() -> Unit) {
-        drawActions.add(block)
-    }
-
-    fun build(): LoopHandler = object : LoopHandler {
-        override fun update(deltaTime: Float) {
-            updateActions.forEach {
-                it.update(gameContext, deltaTime)
-            }
-        }
-
-        override fun draw() {
-            drawActions.forEach {
-                it.draw(drawContext)
-            }
-        }
-    }
-}
-
 internal class WindowContextImpl(
     contextRegistry: ContextRegistry,
     windowFunction: WindowFunction,

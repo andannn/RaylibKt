@@ -37,52 +37,50 @@ fun renderTexture() {
                 val ballRadius = 20
                 var rotation = 0.0f
 
-                provideHandlers {
-                    onUpdate {
-                        ballPosition.x += ballSpeed.x
-                        ballPosition.y += ballSpeed.y
+                onUpdate {
+                    ballPosition.x += ballSpeed.x
+                    ballPosition.y += ballSpeed.y
 
-                        // Check walls collision for bouncing
-                        if ((ballPosition.x >= (renderTextureWidth - ballRadius)) || (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f;
-                        if ((ballPosition.y >= (renderTextureHeight - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
+                    // Check walls collision for bouncing
+                    if ((ballPosition.x >= (renderTextureWidth - ballRadius)) || (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f;
+                    if ((ballPosition.y >= (renderTextureHeight - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
 
-                        rotation += 0.5f;
+                    rotation += 0.5f;
+                }
+
+                onDraw {
+                    fun fillTexture() = textureDrawScope(loadedTexture, SKYBLUE) {
+                        drawRectangle(0, 0, 20, 20, RED)
+                        drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
                     }
 
-                    onDraw {
-                        fun fillTexture() = textureDrawScope(loadedTexture, SKYBLUE) {
-                            drawRectangle(0, 0, 20, 20, RED)
-                            drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
-                        }
+                    val sourceRectangle = loadedTexture.useContents {
+                        Rectangle(0f, 0f, texture.width.toFloat(), -texture.height.toFloat())
+                    }
 
-                        val sourceRectangle = loadedTexture.useContents {
-                            Rectangle(0f, 0f, texture.width.toFloat(), -texture.height.toFloat())
-                        }
-
-                        val dstRectangle = loadedTexture.useContents {
-                            Rectangle(
-                                screenWidth / 2f,
-                                screenHeight / 2f,
-                                texture.width.toFloat(),
-                                texture.height.toFloat()
-                            )
-                        }
-                        val origin = loadedTexture.useContents {
-                            Vector2(texture.width / 2f, texture.height / 2f)
-                        }
-
-                        drawTexture(
-                            fillTexture().useContents { texture.readValue() },
-                            sourceRectangle,
-                            dstRectangle,
-                            origin,
-                            rotation,
-                            WHITE
+                    val dstRectangle = loadedTexture.useContents {
+                        Rectangle(
+                            screenWidth / 2f,
+                            screenHeight / 2f,
+                            texture.width.toFloat(),
+                            texture.height.toFloat()
                         )
-
-                        drawText("DRAWING BOUNCING BALL INSIDE RENDER TEXTURE!", 10, screenHeight - 40, 20, BLACK)
-                        drawFPS(10, 10)
                     }
+                    val origin = loadedTexture.useContents {
+                        Vector2(texture.width / 2f, texture.height / 2f)
+                    }
+
+                    drawTexture(
+                        fillTexture().useContents { texture.readValue() },
+                        sourceRectangle,
+                        dstRectangle,
+                        origin,
+                        rotation,
+                        WHITE
+                    )
+
+                    drawText("DRAWING BOUNCING BALL INSIDE RENDER TEXTURE!", 10, screenHeight - 40, 20, BLACK)
+                    drawFPS(10, 10)
                 }
             }
         }

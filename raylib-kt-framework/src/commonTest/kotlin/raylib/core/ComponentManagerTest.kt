@@ -17,14 +17,11 @@ class ComponentManagerTest {
             isDirty = { isDirty },
             block = {
                 component("component1") {
-                    provideHandlers {}
                 }
                 component("component2") {
-                    provideHandlers {}
                 }
                 if (isAddComponent) {
                     component("component3") {
-                        provideHandlers {}
                     }
                 }
             }
@@ -48,15 +45,12 @@ class ComponentManagerTest {
             isDirty = { isDirty },
             {
                 component("component1") {
-                    provideHandlers {}
                 }
                 if (!isRemoveComponent) {
                     component("component2") {
-                        provideHandlers {}
                     }
                 }
                 component("component3") {
-                    provideHandlers {}
                 }
             }
         )
@@ -80,11 +74,9 @@ class ComponentManagerTest {
             {
                 component("component1") {
                     called++
-                    provideHandlers {}
                 }
                 if (!isRemoveComponent) {
                     component("component2") {
-                        provideHandlers {}
                     }
                 }
             }
@@ -103,10 +95,8 @@ class ComponentManagerTest {
             isDirty = { false },
             {
                 component("component1") {
-                    provideHandlers {}
                 }
                 component("component1") {
-                    provideHandlers {}
                 }
             }
         )
@@ -125,7 +115,6 @@ class ComponentManagerTest {
                     disposeOnClose {
                         called = true
                     }
-                    provideHandlers {}
                 }
             }
         )
@@ -148,11 +137,9 @@ class ComponentManagerTest {
                         disposeOnClose {
                             called++
                         }
-                        provideHandlers {}
                     }
                 }
                 component("component2") {
-                    provideHandlers {}
                 }
             }
         )

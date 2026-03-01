@@ -1,11 +1,11 @@
 package raylib.gui
 
+import raylib.core.ComponentScope
 import raylib.core.ContextRegistry
 import raylib.core.DrawContext
-import raylib.core.LoopHandlerBuilder
 import raylib.core.get
 
-fun LoopHandlerBuilder.onDrawGui(block: GuiContext.() -> Unit) {
+fun ComponentScope.onDrawGui(block: GuiContext.() -> Unit) {
     onDraw {
         with(get<GuiContext>()) {
             block()

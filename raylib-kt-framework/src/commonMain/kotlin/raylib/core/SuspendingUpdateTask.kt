@@ -19,10 +19,10 @@ import kotlin.coroutines.resume
  *
  * @return A [TaskController] to manually start or stop the task.
  */
-fun LoopHandlerBuilder.suspendingTask(block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
+fun ComponentScope.suspendingTask(block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
     return SuspendingUpdateTask(get<GameContext>(), block).also { handler ->
         onUpdate {
-            handler.update(this, it)
+            handler.update(it)
         }
     }
 }
@@ -112,7 +112,7 @@ internal class SuspendingUpdateTask(
         isInDispatch = false
     }
 
-    override fun update(gameContext: GameContext, deltaTime: Float) {
+    override fun update(deltaTime: Float) {
         dispatchUpdateEvent(deltaTime)
     }
 

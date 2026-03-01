@@ -3,6 +3,7 @@ package me.raylib.sample.shape
 import kotlinx.cinterop.FloatVar
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.ptr
+import kotlinx.cinterop.value
 import raylib.core.Colors
 import raylib.core.Rectangle
 import raylib.core.put
@@ -23,21 +24,19 @@ fun ringDrawing() {
         componentRegistry {
             component("A") {
                 val startAngle by stateOf { alloc<FloatVar>() }
-                provideHandlers {
-                    onUpdate {
+                onUpdate {
 
-                    }
+                }
 
-                    onDrawGui {
-                        guiSliderBar(
-                            bounds = Rectangle(600f, 40f, 120f, 20f),
-                            textLeft = "StartAngle",
-                            textRight = "$startAngle",
-                            value = startAngle.ptr,
-                            minValue = -450f,
-                            maxValue = 450f
-                        )
-                    }
+                onDrawGui {
+                    guiSliderBar(
+                        bounds = Rectangle(600f, 40f, 120f, 20f),
+                        textLeft = "StartAngle",
+                        textRight = "${startAngle.value}",
+                        value = startAngle.ptr,
+                        minValue = -450f,
+                        maxValue = 450f
+                    )
                 }
             }
         }

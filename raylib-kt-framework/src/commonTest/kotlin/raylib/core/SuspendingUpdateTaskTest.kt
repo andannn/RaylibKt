@@ -25,9 +25,9 @@ class SuspendingUpdateTaskTest {
         assertEquals(0, count)
         task.start()
         assertEquals(1, count)
-        task.update(gameContext, 1f)
+        task.update( 1f)
         assertEquals(2, count)
-        task.update(gameContext, 1f)
+        task.update( 1f)
         assertEquals(3, count)
     }
 
@@ -46,7 +46,7 @@ class SuspendingUpdateTaskTest {
         task.start()
         assertEquals(1, count)
         task.stop()
-        task.update(gameContext, 1f)
+        task.update( 1f)
         assertEquals(1, count)
     }
 
@@ -68,7 +68,7 @@ class SuspendingUpdateTaskTest {
         assertEquals(0, count)
         task.start()
         assertEquals(1, count)
-        task.update(gameContext, 1f)
+        task.update( 1f)
         assertEquals(4, count)
     }
 
@@ -86,7 +86,7 @@ class SuspendingUpdateTaskTest {
         task.start()
         assertEquals(1, count)
         assertFails("error") {
-            task.update(gameContext, 1f)
+            task.update( 1f)
         }
     }
 }

@@ -11,7 +11,7 @@ interface ComponentManager : Disposable {
 }
 
 interface ComponentFactory {
-    fun component(componentId: Any, block: ComponentScope.() -> LoopHandler)
+    fun component(componentId: Any, block: ComponentScope.() -> Unit)
 }
 
 internal class ComponentManagerImpl(
@@ -39,7 +39,7 @@ internal class ComponentManagerImpl(
     ) : ComponentFactory, DiffCallback {
         val after = mutableListOf<KeyWithBuilder>()
         private val componentKeys = mutableSetOf<Any>()
-        override fun component(componentId: Any, block: ComponentScope.() -> LoopHandler) {
+        override fun component(componentId: Any, block: ComponentScope.() -> Unit) {
             require(componentKeys.add(componentId)) {
                 "Error: Duplicate component key detected -> '$componentId'. " +
                         "Each component in the same scope must have a unique ID."
@@ -48,9 +48,7 @@ internal class ComponentManagerImpl(
                 KeyWithBuilder(
                     componentId = componentId,
                     builder = {
-                        Component(componentId, contextRegistry).apply {
-                            loopHandler = block()
-                        }
+                        Component(componentId, contextRegistry).apply(block)
                     }
                 )
             )

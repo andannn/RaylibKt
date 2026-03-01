@@ -24,13 +24,11 @@ fun randomObjectGenerator() {
             component("random object generator") {
                 var frameCount = 0
                 var newId = 0
-                provideHandlers {
-                    onUpdate {
-                        frameCount++
-                        if (frameCount % 5 == 0) {
-                            if (stateList.size <= 10000) {
-                                stateList.addState(stateOf { newId++ })
-                            }
+                onUpdate {
+                    frameCount++
+                    if (frameCount % 5 == 0) {
+                        if (stateList.size <= 10000) {
+                            stateList.addState(stateOf { newId++ })
                         }
                     }
                 }
@@ -54,19 +52,17 @@ private fun ComponentFactory.generatedObject(state: DisposableState<Int>) {
                 randomValue(0, screenHeight).toFloat()
             )
         }
-        provideHandlers {
-            onUpdate {
-                frameCount++
+        onUpdate {
+            frameCount++
 
-                if (frameCount > 60) {
-                    // make itself disappear
-                    state.dispose()
-                }
+            if (frameCount > 60) {
+                // make itself disappear
+                state.dispose()
             }
+        }
 
-            onDraw {
-                drawCircle(position.readValue(), radius.toFloat(), color)
-            }
+        onDraw {
+            drawCircle(position.readValue(), radius.toFloat(), color)
         }
     }
 }
