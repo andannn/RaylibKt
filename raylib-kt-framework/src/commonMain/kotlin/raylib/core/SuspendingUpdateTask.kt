@@ -11,6 +11,42 @@ import kotlin.coroutines.createCoroutine
 import kotlin.coroutines.resume
 
 /**
+ * Creates and registers a task that can use 'suspend' to pause execution until the next frame.
+ * This is useful for writing sequential logic (e.g., "Move for 2 seconds, then wait for a click")
+ * without manually managing state variables.
+ *
+ * @param block The suspending code to execute.
+ *
+ * @return A [TaskController] to manually start or stop the task.
+ */
+fun LoopHandlerBuilder.suspendingTask(block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
+    return SuspendingUpdateTask(get<GameContext>(), block).also { handler ->
+        onUpdate {
+            handler.update(this, it)
+        }
+    }
+}
+
+/**
+ * Controls the lifecycle of a registered suspending task.
+ */
+interface TaskController {
+    fun start()
+    fun stop()
+}
+
+/**
+ * The high-level scope for a suspending game task.
+ */
+@RestrictsSuspension
+interface SuspendingUpdateEventScope {
+    /**
+     * Enters a specialized scope where you can wait for frame updates.
+     */
+    suspend fun <R> awaitUpdateEventScope(block: suspend AwaitUpdateEventScope.() -> R): R
+}
+
+/**
  * Suspends the coroutine until the given [condition] is satisfied.
  *
  * This function polls the [condition] on every frame update. It is non-blocking
@@ -26,22 +62,17 @@ suspend inline fun SuspendingUpdateEventScope.await(crossinline condition: GameC
     }
 }
 
-@RestrictsSuspension
-interface SuspendingUpdateEventScope {
-    suspend fun <R> awaitUpdateEventScope(block: suspend AwaitUpdateEventScope.() -> R): R
-}
-
+/**
+ * A scope that provides access to the [GameContext] and the ability to wait for the next frame.
+ */
 @RestrictsSuspension
 interface AwaitUpdateEventScope : GameContext {
     /**
+     * Suspends the execution and resumes on the next frame update.
      *
+     * @return The deltaTime (time elapsed since last frame).
      */
     suspend fun awaitUpdateEvent(): Float
-}
-
-interface TaskController {
-    fun start()
-    fun stop()
 }
 
 internal class FinishHandleInputException : CancellationException(message = "task is cancelled by user")

@@ -13,10 +13,8 @@ class ComponentManagerTest {
     fun buildComponent_add() {
         var isAddComponent = false
         var isDirty = false
-        val manager = ComponentManagerImpl(
+        val manager = buildComponentManager(
             isDirty = { isDirty },
-            windowFunction = DummyWindowFunction(),
-            onRebuildFinished = {},
             block = {
                 component("component1") {
                     provideHandlers {}
@@ -46,10 +44,8 @@ class ComponentManagerTest {
     fun buildComponent_remove() {
         var isRemoveComponent = false
         var isDirty = false
-        val manager = ComponentManagerImpl(
-            windowFunction = DummyWindowFunction(),
+        val manager = buildComponentManager(
             isDirty = { isDirty },
-            onRebuildFinished = {},
             {
                 component("component1") {
                     provideHandlers {}
@@ -79,10 +75,8 @@ class ComponentManagerTest {
         var isRemoveComponent = false
         var isDirty = false
         var called = 0
-        val manager = ComponentManagerImpl(
-            windowFunction = DummyWindowFunction(),
+        val manager = buildComponentManager(
             isDirty = { isDirty },
-            onRebuildFinished = {},
             {
                 component("component1") {
                     called++
@@ -105,10 +99,8 @@ class ComponentManagerTest {
 
     @Test
     fun buildComponent_duplicate_component_will_throw_exception() {
-        val manager = ComponentManagerImpl(
-            windowFunction = DummyWindowFunction(),
+        val manager = buildComponentManager(
             isDirty = { false },
-            onRebuildFinished = {},
             {
                 component("component1") {
                     provideHandlers {}
@@ -126,10 +118,8 @@ class ComponentManagerTest {
     @Test
     fun buildComponent_component_is_disposed_when_manager_is_disposed() {
         var called = false
-        val manager = ComponentManagerImpl(
-            windowFunction = DummyWindowFunction(),
+        val manager = buildComponentManager(
             isDirty = { false },
-            onRebuildFinished = {},
             block = {
                 component("component1") {
                     disposeOnClose {
@@ -150,10 +140,8 @@ class ComponentManagerTest {
         var called = 0
         var isDirty = false
         var isAddComponent = true
-        val manager = ComponentManagerImpl(
-            windowFunction = DummyWindowFunction(),
+        val manager = buildComponentManager(
             isDirty = { isDirty },
-            onRebuildFinished = {},
             block = {
                 if (isAddComponent) {
                     component("component1") {
@@ -176,4 +164,22 @@ class ComponentManagerTest {
         manager.buildComponentsIfNeeded()
         assertEquals(1, called)
     }
+
 }
+
+private fun buildComponentManager(isDirty: () -> Boolean, block: ComponentFactory.() -> Unit) = ComponentManagerImpl(
+    contextRegistry = ContextRegistryImpl().apply {
+        val windowContext = WindowContextImpl(
+            contextRegistry = this,
+            windowFunction = DummyWindowFunction()
+        )
+        val gameContext = GameContext(windowContext)
+        val drawContext = DrawContext(windowContext)
+        put<WindowContext>(windowContext)
+        put(gameContext)
+        put(drawContext)
+    },
+    isDirty = isDirty,
+    onRebuildFinished = {},
+    block = block
+)

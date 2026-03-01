@@ -2,4 +2,4 @@ package = raygui.interop
 headers = raygui.h
 strictEnums = GuiState GuiTextAlignment GuiTextAlignmentVertical GuiTextWrapMode GuiControl GuiControlProperty GuiDefaultProperty GuiToggleProperty GuiSliderProperty GuiProgressBarProperty GuiScrollBarProperty GuiCheckBoxProperty GuiComboBoxProperty GuiDropdownBoxProperty GuiTextBoxProperty GuiValueBoxProperty GuiListViewProperty GuiColorPickerProperty
 
-compilerOpts = -DRAYGUI_STANDALONE -Dtrue=1 -Dfalse=0 -Dbool=_Bool
+compilerOpts = -Dtrue=1 -Dfalse=0 -Dbool=_Bool

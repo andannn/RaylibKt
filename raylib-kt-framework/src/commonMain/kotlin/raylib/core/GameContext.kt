@@ -1,6 +1,6 @@
 package raylib.core
 
-interface GameContext : WindowFunction, KeyboardFunction, MouseFunction, GestureFunction, GamepadFunction
+interface GameContext : Context, WindowFunction, KeyboardFunction, MouseFunction, GestureFunction, GamepadFunction
 
 internal fun GameContext(
     windowScope: WindowFunction,

@@ -27,4 +27,4 @@ internal fun DrawContext(
     TextureDrawFunction by textureDrawFunction,
     WindowFunction by windowScope {}
 
-interface DrawContext : BasicShapeDrawFunction, TextDrawFunction, TextureDrawFunction, WindowFunction
+interface DrawContext : Context, BasicShapeDrawFunction, TextDrawFunction, TextureDrawFunction, WindowFunction

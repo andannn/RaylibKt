@@ -3,21 +3,34 @@ package raylib.gui
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CStructVar
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.FloatVar
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.reinterpret
 import raylib.core.Font
+import raylib.core.Rectangle
 
-interface GuiFunctions {
+interface GuiFunction {
     var guiEnabled: Boolean
     var guiLocked: Boolean
     fun setGuiAlpha(alpha: Float)
     var guiState: GuiState
     var guiFont: CValue<Font>
+
+    fun guiSliderBar(
+        bounds: CValue<Rectangle>,
+        textLeft: String,
+        textRight: String,
+        value: CPointer<FloatVar>,
+        minValue: Float,
+        maxValue: Float
+    )
 }
 
-private class DefaultGuiFunctions : GuiFunctions {
+fun GuiFunction(): GuiFunction = DefaultGuiFunctions()
+
+private class DefaultGuiFunctions : GuiFunction {
     private var _guiEnabled = true
     override var guiEnabled: Boolean
         get() = _guiEnabled
@@ -54,6 +67,17 @@ private class DefaultGuiFunctions : GuiFunctions {
         set(value) {
             raygui.interop.GuiSetFont(value.reinterpret())
         }
+
+    override fun guiSliderBar(
+        bounds: CValue<Rectangle>,
+        textLeft: String,
+        textRight: String,
+        value: CPointer<FloatVar>,
+        minValue: Float,
+        maxValue: Float
+    ) {
+        raygui.interop.GuiSliderBar(bounds.reinterpret(), textLeft, textRight, value, minValue, maxValue)
+    }
 }
 
 private fun guiStateByValue(value: Int): GuiState? =
@@ -64,4 +88,3 @@ inline fun <reified S : CStructVar, reified T : CStructVar> CValue<S>.reinterpre
     val to: CPointer<T> = from.reinterpret()
     to.pointed.readValue()
 }
-

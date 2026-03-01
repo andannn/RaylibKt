@@ -31,7 +31,7 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
-            api(project(":raylib-core-ktx"))
+            api(project(":raylib-kt-core"))
             implementation(libs.kotlinx.coroutines.core)
         }
 

@@ -10,6 +10,7 @@ import raylib.core.RectangleAlloc
 import raylib.core.Vector2Alloc
 import raylib.core.await
 import raylib.core.stateOf
+import raylib.core.suspendingTask
 import raylib.core.window
 import raylib.easings.Ease
 import raylib.easings.animateTo

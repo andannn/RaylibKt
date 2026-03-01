@@ -15,7 +15,7 @@ interface ComponentFactory {
 }
 
 internal class ComponentManagerImpl(
-    private val windowFunction: WindowFunction,
+    private val contextRegistry: ContextRegistry,
     private val isDirty: () -> Boolean,
     private val onRebuildFinished: () -> Unit,
     private val block: ComponentFactory.() -> Unit
@@ -48,10 +48,8 @@ internal class ComponentManagerImpl(
                 KeyWithBuilder(
                     componentId = componentId,
                     builder = {
-                        val scope = ComponentScope(windowFunction)
-                        val handler = block(scope)
-                        Component(componentId, handler) {
-                            scope.dispose()
+                        Component(componentId, contextRegistry).apply {
+                            loopHandler = block()
                         }
                     }
                 )
@@ -89,14 +87,14 @@ internal class ComponentManagerImpl(
     }
 
     override fun performDraw() {
-        components.forEach { handler ->
-            with(handler) { draw() }
+        components.forEach { component ->
+            with(component.requireLoopHandler()) { draw() }
         }
     }
 
     override fun performUpdate(deltaTime: Float) {
-        components.forEach { handler ->
-            with(handler) { update(deltaTime) }
+        components.forEach { component ->
+            with(component.requireLoopHandler()) { update(deltaTime) }
         }
     }
 

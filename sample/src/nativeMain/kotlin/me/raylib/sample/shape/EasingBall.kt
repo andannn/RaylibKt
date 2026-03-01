@@ -6,6 +6,7 @@ import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
 import raylib.core.KeyboardKey
 import raylib.core.await
+import raylib.core.suspendingTask
 import raylib.core.window
 import raylib.easings.Ease
 import raylib.easings.awaitEasingAnimation
@@ -63,7 +64,7 @@ fun easingBall() {
                             ballAlpha = 0.0f
                             state = 0
                         }
-                    }
+                    }.apply { start() }
 
                     onDraw {
                         if (state >= 2) drawRectangle(0, 0, screenWidth, screenHeight, GREEN)

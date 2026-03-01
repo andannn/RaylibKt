@@ -30,11 +30,11 @@ dependencyResolutionManagement {
 }
 
 include(":raylib-core")
-include(":raylib-core-ktx")
+include(":raylib-kt-core")
 include(":raylib-easings")
-include(":raylib-easings-ktx")
+include(":raylib-kt-easings")
 include(":raylib-gui")
-include(":raylib-gui-ktx")
+include(":raylib-kt-gui")
 include(":raylib-kt-framework")
 include(":raylib-kt-components")
 include(":sample")

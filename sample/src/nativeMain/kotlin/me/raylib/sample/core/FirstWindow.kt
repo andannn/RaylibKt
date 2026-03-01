@@ -3,6 +3,7 @@ package me.raylib.sample.core
 import platform.posix.pthread_self
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
+import raylib.core.suspendingTask
 import raylib.core.window
 import kotlin.io.println
 

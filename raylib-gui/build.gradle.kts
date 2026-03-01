@@ -37,6 +37,7 @@ kmpExtension {
             configureEachTarget {
                 sources.from(project.layout.projectDirectory.dir("src/c/raygui.c"))
                 includes.from(project.layout.projectDirectory.dir("external/raygui/src"))
+                includes.from(rootProject.layout.projectDirectory.dir("raylib-core/external/raylib_c/src"))
             }
             configureTargets(requiredNativeTargets)
         }

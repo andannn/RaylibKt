@@ -38,7 +38,8 @@ fun main() {
 //    easingBall()
 //    easingBox()
 //    easingsRectangles()
-    mouseTrail()
+//    mouseTrail()
+    ringDrawing()
 
     // custom examples
 //    randomObjectGenerator()

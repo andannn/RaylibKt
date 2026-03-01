@@ -12,13 +12,13 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class MutableStateTest {
-    private lateinit var windowScope: DefaultWindowScope
+    private lateinit var windowScope: WindowContextImpl
 
     @BeforeTest
     fun setUp() {
-        windowScope = DefaultWindowScope(
-            windowFunction = DummyWindowFunction(),
-            memScope = MemScope()
+        windowScope = WindowContextImpl(
+            contextRegistry = ContextRegistryImpl(),
+            windowFunction = DummyWindowFunction()
         )
     }
 

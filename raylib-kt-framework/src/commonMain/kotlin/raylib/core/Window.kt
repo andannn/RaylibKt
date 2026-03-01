@@ -1,18 +1,13 @@
 package raylib.core
 
 import kotlinx.cinterop.CValue
-import kotlinx.cinterop.MemScope
-import kotlinx.cinterop.NativePlacement
-import kotlinx.cinterop.memScoped
 import raylib.interop.BeginDrawing
 import raylib.interop.ClearBackground
 import raylib.interop.CloseWindow
 import raylib.interop.EndDrawing
-import kotlin.reflect.KClass
-import kotlin.reflect.cast
 
 @MustUseReturnValues
-interface WindowContext : WindowFunction, ContextRegistry, DisposableRegistry {
+interface WindowContext : Context, WindowFunction, ContextRegistry, DisposableRegistry {
     @IgnorableReturnValue
     fun postFrameCallback(action: () -> Unit): Disposable
     fun invalidComponents()
@@ -26,7 +21,7 @@ fun window(
     initialFps: Int = 60,
     initialBackGroundColor: CValue<Color>? = null,
     block: WindowContext.() -> ComponentManager
-): WindowContext = memScoped {
+): WindowContext = run {
     val windowFunction = WindowFunction(
         initialFps = initialFps,
         title = title,
@@ -34,9 +29,17 @@ fun window(
         screenHeight = height,
         backGroundColor = initialBackGroundColor
     )
-    val windowScope = DefaultWindowScope(this, windowFunction)
-    val componentsManager = windowScope.block()
-    return windowScope
+
+    val contextRegistry = ContextRegistryImpl()
+    val windowContext = WindowContextImpl(contextRegistry, windowFunction)
+    with(contextRegistry) {
+        put<WindowContext>(windowContext)
+        put(GameContext(windowFunction))
+        put(DrawContext(windowFunction))
+    }
+
+    val componentsManager = windowContext.block()
+    return windowContext
         .apply {
             windowFunction.gameLoop {
                 onFrame()
@@ -82,20 +85,14 @@ fun interface DrawHandler {
     fun draw(drawContext: DrawContext)
 }
 
-class LoopHandlerBuilder(
-    private val windowFunction: WindowFunction,
-    private val gameContext: GameContext = GameContext(windowFunction),
-    private val drawContext: DrawContext = DrawContext(windowFunction),
-) {
+class LoopHandlerBuilder(contextRegistry: ContextRegistry) : ContextRegistry by contextRegistry {
     private var updateActions = mutableListOf<UpdateHandler>()
     private var drawActions = mutableListOf<DrawHandler>()
+    private val gameContext = contextRegistry.get<GameContext>()
+    private val drawContext = contextRegistry.get<DrawContext>()
 
     fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit) {
         updateActions.add(block)
-    }
-
-    fun suspendingTask(block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
-        return SuspendingUpdateTask(gameContext, block).also { updateActions.add(it) }
     }
 
     fun onDraw(block: DrawContext.() -> Unit) {
@@ -117,15 +114,13 @@ class LoopHandlerBuilder(
     }
 }
 
-
-internal class DefaultWindowScope(
-    memScope: MemScope,
-    val windowFunction: WindowFunction,
+internal class WindowContextImpl(
+    contextRegistry: ContextRegistry,
+    windowFunction: WindowFunction,
     private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl()
 ) : WindowContext,
-    ContextRegistry by ContextRegistryImpl(),
     WindowFunction by windowFunction,
-    NativePlacement by memScope,
+    ContextRegistry by contextRegistry,
     DisposableRegistry by disposableRegistry {
     var isDirty = false
 
@@ -156,7 +151,7 @@ internal class DefaultWindowScope(
 
     override fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager {
         return ComponentManagerImpl(
-            windowFunction,
+            this,
             isDirty = { isDirty },
             onRebuildFinished = { isDirty = false },
             block
