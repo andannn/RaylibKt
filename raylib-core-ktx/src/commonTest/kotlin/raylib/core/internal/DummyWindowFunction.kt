@@ -1,10 +1,15 @@
 package raylib.core.internal
 
+import kotlinx.cinterop.CValue
+import raylib.core.Color
 import raylib.core.ConfigFlags
 import raylib.core.KeyboardKey
 import raylib.core.WindowFunction
 
 class DummyWindowFunction: WindowFunction {
+    override var backGroundColor: CValue<Color>?
+        get() = TODO("Not yet implemented")
+        set(value) {}
     override val title: String
         get() = TODO("Not yet implemented")
     override val screenWidth: Int

@@ -29,7 +29,7 @@ fun easingBall() {
                 var state = 0
 
                 provideHandlers {
-                    suspendingScope {
+                    suspendingTask {
                         while (true) {
                             awaitEasingAnimation(
                                 start = ballPositionX.toFloat(),

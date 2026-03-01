@@ -17,7 +17,7 @@ internal fun firstWindow() {
         componentRegistry {
             component("key") {
                 provideHandlers {
-                    suspendingScope {
+                    suspendingTask {
                         awaitUpdateEventScope {
                             while (true) {
                                 awaitUpdateEvent()
