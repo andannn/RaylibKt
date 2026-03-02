@@ -25,36 +25,36 @@ fun basicScreenManager() {
         componentRegistry {
             component("updater") {
                 var framesCounter = 0
-                provideHandlers {
-                    onUpdate {
-                        when (currentScreen) {
-                            GameScreen.LOGO -> {
-                                framesCounter++
-                                if (framesCounter > 120) {
-                                    currentScreen = GameScreen.TITLE
-                                }
-                            }
 
-                            GameScreen.TITLE -> {
-                                if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                                    currentScreen = GameScreen.GAMEPLAY
-                                }
+                onUpdate {
+                    when (currentScreen) {
+                        GameScreen.LOGO -> {
+                            framesCounter++
+                            if (framesCounter > 120) {
+                                currentScreen = GameScreen.TITLE
                             }
+                        }
 
-                            GameScreen.GAMEPLAY -> {
-                                if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                                    currentScreen = GameScreen.ENDING
-                                }
+                        GameScreen.TITLE -> {
+                            if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
+                                currentScreen = GameScreen.GAMEPLAY
                             }
+                        }
 
-                            GameScreen.ENDING -> {
-                                if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                                    currentScreen = GameScreen.TITLE
-                                }
+                        GameScreen.GAMEPLAY -> {
+                            if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
+                                currentScreen = GameScreen.ENDING
+                            }
+                        }
+
+                        GameScreen.ENDING -> {
+                            if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
+                                currentScreen = GameScreen.TITLE
                             }
                         }
                     }
                 }
+
             }
             if (currentScreen == GameScreen.LOGO) screen(GameScreen.LOGO)
             if (currentScreen == GameScreen.TITLE) screen(GameScreen.TITLE)
@@ -66,35 +66,33 @@ fun basicScreenManager() {
 
 private fun ComponentFactory.screen(screen: GameScreen) {
     component(screen) {
-        provideHandlers {
-            onDraw {
-                when (screen) {
-                    GameScreen.LOGO -> {
-                        // TODO: Draw LOGO screen here!
-                        drawText("LOGO SCREEN", 20, 20, 40, LIGHTGRAY)
-                        drawText("WAIT for 2 SECONDS...", 290, 220, 20, GRAY)
-                    }
+        onDraw {
+            when (screen) {
+                GameScreen.LOGO -> {
+                    // TODO: Draw LOGO screen here!
+                    drawText("LOGO SCREEN", 20, 20, 40, LIGHTGRAY)
+                    drawText("WAIT for 2 SECONDS...", 290, 220, 20, GRAY)
+                }
 
-                    GameScreen.TITLE -> {
-                        // TODO: draw TITLE screen here!
-                        drawRectangle(0, 0, screenWidth, screenHeight, GREEN)
-                        drawText("TITLE SCREEN", 20, 20, 40, DARKGREEN)
-                        drawText("PRESS ENTER or TAP to JUMP to GAMEPLAY SCREEN", 120, 220, 20, DARKGREEN)
-                    }
+                GameScreen.TITLE -> {
+                    // TODO: draw TITLE screen here!
+                    drawRectangle(0, 0, screenWidth, screenHeight, GREEN)
+                    drawText("TITLE SCREEN", 20, 20, 40, DARKGREEN)
+                    drawText("PRESS ENTER or TAP to JUMP to GAMEPLAY SCREEN", 120, 220, 20, DARKGREEN)
+                }
 
-                    GameScreen.GAMEPLAY -> {
-                        // TODO: draw GAMEPLAY screen here!
-                        drawRectangle(0, 0, screenWidth, screenHeight, PURPLE)
-                        drawText("GAMEPLAY SCREEN", 20, 20, 40, MAROON)
-                        drawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20, MAROON)
-                    }
+                GameScreen.GAMEPLAY -> {
+                    // TODO: draw GAMEPLAY screen here!
+                    drawRectangle(0, 0, screenWidth, screenHeight, PURPLE)
+                    drawText("GAMEPLAY SCREEN", 20, 20, 40, MAROON)
+                    drawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20, MAROON)
+                }
 
-                    GameScreen.ENDING -> {
-                        // TODO: draw ENDING screen here!
-                        drawRectangle(0, 0, screenWidth, screenHeight, BLUE)
-                        drawText("ENDING SCREEN", 20, 20, 40, DARKBLUE)
-                        drawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20, DARKBLUE)
-                    }
+                GameScreen.ENDING -> {
+                    // TODO: draw ENDING screen here!
+                    drawRectangle(0, 0, screenWidth, screenHeight, BLUE)
+                    drawText("ENDING SCREEN", 20, 20, 40, DARKBLUE)
+                    drawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20, DARKBLUE)
                 }
             }
         }

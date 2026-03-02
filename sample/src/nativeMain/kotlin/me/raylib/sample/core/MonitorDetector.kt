@@ -12,9 +12,6 @@ fun monitorDetector() {
     ) {
         componentRegistry {
             component("key") {
-                provideHandlers {
-
-                }
             }
         }
     }

@@ -33,59 +33,57 @@ fun collisionArea() {
                 var pause = false
                 var collision = false
 
-                provideHandlers {
-                    onUpdate {
-                        if (!pause) boxA.x += boxASpeedX
-                        if (((boxA.x + boxA.width) >= screenWidth) || (boxA.x <= 0)) boxASpeedX *= -1
-                        boxB.x = mouseX - boxB.width / 2;
-                        boxB.y = mouseY - boxB.height / 2;
+                onUpdate {
+                    if (!pause) boxA.x += boxASpeedX
+                    if (((boxA.x + boxA.width) >= screenWidth) || (boxA.x <= 0)) boxASpeedX *= -1
+                    boxB.x = mouseX - boxB.width / 2;
+                    boxB.y = mouseY - boxB.height / 2;
 
-                        if ((boxB.x + boxB.width) >= screenWidth) {
-                            boxB.x = screenWidth - boxB.width;
-                        } else if (boxB.x <= 0) {
-                            boxB.x = 0f
-                        }
-
-                        if ((boxB.y + boxB.height) >= screenHeight) {
-                            boxB.y = screenHeight - boxB.height
-                        } else if (boxB.y <= screenUpperLimit) {
-                            boxB.y = screenUpperLimit.toFloat()
-                        }
-
-                        collision = boxA.readValue().isCollisionWith(boxB.readValue())
-                        if (collision){
-                            boxCollision.set(boxA.readValue().getCollisionRec(boxB.readValue()))
-                        }
-                        if (KeyboardKey.KEY_SPACE.isPressed()) pause = !pause;
+                    if ((boxB.x + boxB.width) >= screenWidth) {
+                        boxB.x = screenWidth - boxB.width;
+                    } else if (boxB.x <= 0) {
+                        boxB.x = 0f
                     }
 
-                    onDraw {
-                        drawRectangle(0, 0, screenWidth, screenUpperLimit, if (collision) RED else BLACK)
-                        drawRectangle(boxA.readValue(), GOLD)
-                        drawRectangle(boxB.readValue(), BLUE)
-                        if (collision) {
-                            // Draw collision area
-                            drawRectangle(boxCollision.readValue(), LIME)
+                    if ((boxB.y + boxB.height) >= screenHeight) {
+                        boxB.y = screenHeight - boxB.height
+                    } else if (boxB.y <= screenUpperLimit) {
+                        boxB.y = screenUpperLimit.toFloat()
+                    }
 
-                            // Draw collision message
-                            drawText(
-                                "COLLISION!",
-                                screenWidth / 2 - MeasureText("COLLISION!", 20) / 2,
-                                screenUpperLimit / 2 - 10,
-                                20,
-                                BLACK
-                            )
+                    collision = boxA.readValue().isCollisionWith(boxB.readValue())
+                    if (collision) {
+                        boxCollision.set(boxA.readValue().getCollisionRec(boxB.readValue()))
+                    }
+                    if (KeyboardKey.KEY_SPACE.isPressed()) pause = !pause;
+                }
 
-                            // Draw collision area
-                            drawText(
-                                "Collision Area: ${boxCollision.width * boxCollision.height}",
-                                screenWidth / 2 - 100,
-                                screenUpperLimit + 10,
-                                20,
-                                BLACK
-                            )
-                            drawFPS(10, 10);
-                        }
+                onDraw {
+                    drawRectangle(0, 0, screenWidth, screenUpperLimit, if (collision) RED else BLACK)
+                    drawRectangle(boxA.readValue(), GOLD)
+                    drawRectangle(boxB.readValue(), BLUE)
+                    if (collision) {
+                        // Draw collision area
+                        drawRectangle(boxCollision.readValue(), LIME)
+
+                        // Draw collision message
+                        drawText(
+                            "COLLISION!",
+                            screenWidth / 2 - MeasureText("COLLISION!", 20) / 2,
+                            screenUpperLimit / 2 - 10,
+                            20,
+                            BLACK
+                        )
+
+                        // Draw collision area
+                        drawText(
+                            "Collision Area: ${boxCollision.width * boxCollision.height}",
+                            screenWidth / 2 - 100,
+                            screenUpperLimit + 10,
+                            20,
+                            BLACK
+                        )
+                        drawFPS(10, 10);
                     }
                 }
             }

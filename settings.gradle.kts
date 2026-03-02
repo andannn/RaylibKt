@@ -30,9 +30,12 @@ dependencyResolutionManagement {
 }
 
 include(":raylib-core")
+include(":raylib-kt-core")
 include(":raylib-easings")
-include(":raylib-easings-ktx")
-include(":raylib-core-ktx")
-include(":raylib-components-ktx")
+include(":raylib-kt-easings")
+include(":raylib-gui")
+include(":raylib-kt-gui")
+include(":raylib-kt-framework")
+include(":raylib-kt-components")
 include(":sample")
 include(":sample-android-app")

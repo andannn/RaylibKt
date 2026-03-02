@@ -30,9 +30,6 @@ fun bulletHell() {
                 val bulletSpeed = 3.0f
                 val bulletRows = 6
 
-                provideHandlers {
-
-                }
             }
         }
     }

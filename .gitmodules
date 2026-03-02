@@ -4,3 +4,6 @@
 [submodule "raylib-easings/external/reasings"]
 	path = raylib-easings/external/reasings
 	url = https://github.com/raylib-extras/reasings.git
+[submodule "raylib-gui/external/raygui"]
+	path = raylib-gui/external/raygui
+	url = https://github.com/raysan5/raygui.git

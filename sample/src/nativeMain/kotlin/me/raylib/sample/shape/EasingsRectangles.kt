@@ -10,6 +10,7 @@ import raylib.core.RectangleAlloc
 import raylib.core.Vector2Alloc
 import raylib.core.await
 import raylib.core.stateOf
+import raylib.core.suspendingTask
 import raylib.core.window
 import raylib.easings.Ease
 import raylib.easings.animateTo
@@ -52,43 +53,41 @@ fun easingsRectangles() {
             var rotation = 0f
             var isWaitingKey = false
             component("AA") {
-                provideHandlers {
-                    suspendingTask {
-                        while (true) {
-                            awaitDuration(4.seconds) { fraction ->
-                                recs.forEach { rec ->
-                                    rec.height = RECS_HEIGHT.toFloat().animateTo(0f, fraction, Ease.CircOut)
-                                    rec.width = RECS_WIDTH.toFloat().animateTo(0f, fraction, Ease.CircOut)
-                                    rotation = 0f.animateTo(360f, fraction, Ease.LinearIn)
-                                }
-                            }
-
-                            isWaitingKey = true
-                            await { KeyboardKey.KEY_SPACE.isPressed() }
-                            isWaitingKey = false
-
+                suspendingTask {
+                    while (true) {
+                        awaitDuration(4.seconds) { fraction ->
                             recs.forEach { rec ->
-                                rec.height = RECS_HEIGHT.toFloat()
-                                rec.width = RECS_WIDTH.toFloat()
-                                rotation = 0f
+                                rec.height = RECS_HEIGHT.toFloat().animateTo(0f, fraction, Ease.CircOut)
+                                rec.width = RECS_WIDTH.toFloat().animateTo(0f, fraction, Ease.CircOut)
+                                rotation = 0f.animateTo(360f, fraction, Ease.LinearIn)
                             }
                         }
-                    }.start()
 
-                    onDraw {
+                        isWaitingKey = true
+                        await { KeyboardKey.KEY_SPACE.isPressed() }
+                        isWaitingKey = false
+
                         recs.forEach { rec ->
-                            memScoped {
-                                drawRectangle(
-                                    rectangle = rec.readValue(),
-                                    origin = Vector2Alloc(rec.width / 2f, rec.height / 2f).readValue(),
-                                    rotation = rotation,
-                                    color = RED
-                                )
-                            }
+                            rec.height = RECS_HEIGHT.toFloat()
+                            rec.width = RECS_WIDTH.toFloat()
+                            rotation = 0f
                         }
-                        if (isWaitingKey) {
-                            drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20, GRAY)
+                    }
+                }.start()
+
+                onDraw {
+                    recs.forEach { rec ->
+                        memScoped {
+                            drawRectangle(
+                                rectangle = rec.readValue(),
+                                origin = Vector2Alloc(rec.width / 2f, rec.height / 2f).readValue(),
+                                rotation = rotation,
+                                color = RED
+                            )
                         }
+                    }
+                    if (isWaitingKey) {
+                        drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20, GRAY)
                     }
                 }
             }

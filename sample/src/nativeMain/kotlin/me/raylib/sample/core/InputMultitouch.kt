@@ -18,23 +18,21 @@ fun inputMultitouch() {
         componentRegistry {
             component("key") {
                 var pointers = emptyList<CValue<Vector2>>()
-                provideHandlers {
-                    onUpdate {
-                        pointers = touchPositions().toList()
-                    }
-                    onDraw {
-                        pointers.forEachIndexed { index, position ->
-                            position.useContents {
-                                if (x > 0 && y > 0) {
-                                    drawCircle(position, 34f, ORANGE)
-                                    drawText(
-                                        index.toString(),
-                                        (x - 10).toInt(),
-                                        (y - 70).toInt(),
-                                        40,
-                                        BLACK
-                                    )
-                                }
+                onUpdate {
+                    pointers = touchPositions().toList()
+                }
+                onDraw {
+                    pointers.forEachIndexed { index, position ->
+                        position.useContents {
+                            if (x > 0 && y > 0) {
+                                drawCircle(position, 34f, ORANGE)
+                                drawText(
+                                    index.toString(),
+                                    (x - 10).toInt(),
+                                    (y - 70).toInt(),
+                                    40,
+                                    BLACK
+                                )
                             }
                         }
                     }

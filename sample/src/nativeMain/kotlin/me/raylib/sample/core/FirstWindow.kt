@@ -3,6 +3,7 @@ package me.raylib.sample.core
 import platform.posix.pthread_self
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
+import raylib.core.suspendingTask
 import raylib.core.window
 import kotlin.io.println
 
@@ -16,18 +17,16 @@ internal fun firstWindow() {
     ) {
         componentRegistry {
             component("key") {
-                provideHandlers {
-                    suspendingTask {
-                        awaitUpdateEventScope {
-                            while (true) {
-                                awaitUpdateEvent()
-                                println("Native Thread ID: ${pthread_self()}")
-                            }
+                suspendingTask {
+                    awaitUpdateEventScope {
+                        while (true) {
+                            awaitUpdateEvent()
+                            println("Native Thread ID: ${pthread_self()}")
                         }
                     }
-                    onDraw {
-                        drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-                    }
+                }
+                onDraw {
+                    drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
                 }
             }
         }

@@ -21,7 +21,6 @@ import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.add
 import raylib.core.RectangleAlloc
-import raylib.core.internal.LeakDetector
 import raylib.core.length
 import raylib.core.mode2d
 import raylib.core.scale
@@ -64,11 +63,9 @@ fun towDCameraPlatformer() {
 
         componentRegistry {
             component("changeCameraOption") {
-                provideHandlers {
-                    onUpdate {
-                        if (KeyboardKey.KEY_C.isPressed()) {
-                            cameraOption.value = cameraOption.value.next()
-                        }
+                onUpdate {
+                    if (KeyboardKey.KEY_C.isPressed()) {
+                        cameraOption.value = cameraOption.value.next()
                     }
                 }
             }
@@ -96,11 +93,9 @@ fun towDCameraPlatformer() {
 
 private fun ComponentFactory.envItemsComponent(camera: Camera2D, item: EnvItem) {
     component(item) {
-        provideHandlers {
-            onDraw {
-                mode2d(camera) {
-                    drawRectangle(item.rect.readValue(), item.color)
-                }
+        onDraw {
+            mode2d(camera) {
+                drawRectangle(item.rect.readValue(), item.color)
             }
         }
     }
@@ -122,33 +117,31 @@ private fun ComponentFactory.followTargetCenterClampedCamera(
         val minY: Float
     )
     component("followPlayerCenterClampedCamera") {
-        provideHandlers {
-            onUpdate {
-                camera.target.x = target.x
-                camera.target.y = target.y
-                camera.offset.x = screenWidth / 2.0f
-                camera.offset.y = screenHeight / 2.0f
+        onUpdate {
+            camera.target.x = target.x
+            camera.target.y = target.y
+            camera.offset.x = screenWidth / 2.0f
+            camera.offset.y = screenHeight / 2.0f
 
-                val (maxX, maxY, minX, minY) = worldRect.useContents {
-                    RectMinMax(minX = x, maxX = x + width, minY = y, maxY = y + height)
-                }
-                val cameraValue = camera.readValue()
-                val maxScreen = cameraValue.worldToScreenPosition(Vector2(maxX, maxY))
-                val minScreen = cameraValue.worldToScreenPosition(Vector2(minX, minY))
-                val (maxScreenX, maxScreenY) = maxScreen.useContents { x to y }
-                val (minScreenX, minScreenY) = minScreen.useContents { x to y }
-                if (maxScreenX < screenWidth) {
-                    camera.offset.x = screenWidth - (maxScreenX - screenWidth / 2f)
-                }
-                if (maxScreenY < screenHeight) {
-                    camera.offset.y = screenHeight - (maxScreenY - screenHeight / 2f)
-                }
-                if (minScreenX > 0) {
-                    camera.offset.x = screenWidth / 2f - minScreenX
-                }
-                if (minScreenY > 0) {
-                    camera.offset.y = screenHeight / 2f - minScreenY
-                }
+            val (maxX, maxY, minX, minY) = worldRect.useContents {
+                RectMinMax(minX = x, maxX = x + width, minY = y, maxY = y + height)
+            }
+            val cameraValue = camera.readValue()
+            val maxScreen = cameraValue.worldToScreenPosition(Vector2(maxX, maxY))
+            val minScreen = cameraValue.worldToScreenPosition(Vector2(minX, minY))
+            val (maxScreenX, maxScreenY) = maxScreen.useContents { x to y }
+            val (minScreenX, minScreenY) = minScreen.useContents { x to y }
+            if (maxScreenX < screenWidth) {
+                camera.offset.x = screenWidth - (maxScreenX - screenWidth / 2f)
+            }
+            if (maxScreenY < screenHeight) {
+                camera.offset.y = screenHeight - (maxScreenY - screenHeight / 2f)
+            }
+            if (minScreenX > 0) {
+                camera.offset.x = screenWidth / 2f - minScreenX
+            }
+            if (minScreenY > 0) {
+                camera.offset.y = screenHeight / 2f - minScreenY
             }
         }
     }
@@ -159,13 +152,11 @@ private fun ComponentFactory.followTargetCamera(
     position: Vector2
 ) {
     component("followTargetCamera") {
-        provideHandlers {
-            onUpdate {
-                camera.offset.x = screenWidth.div(2f)
-                camera.offset.y = screenHeight.div(2f)
-                camera.target.x = position.x
-                camera.target.y = position.y
-            }
+        onUpdate {
+            camera.offset.x = screenWidth.div(2f)
+            camera.offset.y = screenHeight.div(2f)
+            camera.target.x = position.x
+            camera.target.y = position.y
         }
     }
 }
@@ -179,18 +170,16 @@ private fun ComponentFactory.followTargetSmoothCamera(
         val minEffectLength = 10;
         val fractionSpeed = 0.8f;
 
-        provideHandlers {
-            onUpdate { delta ->
-                camera.offset.x = screenWidth / 2.0f
-                camera.offset.y = screenHeight / 2.0f
-                val diff = position.readValue().subtract(camera.target.readValue())
-                val length = diff.length()
-                if (length > minEffectLength) {
-                    val speed: Float = fmaxf(fractionSpeed * length, minSpeed)
-                    camera.target.readValue().add(diff.scale(speed * delta / length)).useContents {
-                        camera.target.x = x
-                        camera.target.y = y
-                    }
+        onUpdate { delta ->
+            camera.offset.x = screenWidth / 2.0f
+            camera.offset.y = screenHeight / 2.0f
+            val diff = position.readValue().subtract(camera.target.readValue())
+            val length = diff.length()
+            if (length > minEffectLength) {
+                val speed: Float = fmaxf(fractionSpeed * length, minSpeed)
+                camera.target.readValue().add(diff.scale(speed * delta / length)).useContents {
+                    camera.target.x = x
+                    camera.target.y = y
                 }
             }
         }
@@ -202,37 +191,35 @@ private fun ComponentFactory.playerPushCamera(
     position: Vector2
 ) {
     component("playerPushCamera") {
-        provideHandlers {
-            onUpdate {
-                val bbox = Vector2(0.2f, 0.2f)
-                val bbox_x = bbox.useContents { x }
-                val bbox_y = bbox.useContents { y }
-                val bboxWorldMin = camera.readValue()
-                    .screenToWorldPosition(
-                        Vector2(
-                            (1 - bbox.useContents { x }) * 0.5f * screenWidth,
-                            (1 - bbox.useContents { y }) * 0.5f * screenHeight
-                        )
+        onUpdate {
+            val bbox = Vector2(0.2f, 0.2f)
+            val bbox_x = bbox.useContents { x }
+            val bbox_y = bbox.useContents { y }
+            val bboxWorldMin = camera.readValue()
+                .screenToWorldPosition(
+                    Vector2(
+                        (1 - bbox.useContents { x }) * 0.5f * screenWidth,
+                        (1 - bbox.useContents { y }) * 0.5f * screenHeight
                     )
-                val bboxWorldMax = camera.readValue()
-                    .screenToWorldPosition(
-                        Vector2(
-                            (1 + bbox_x) * 0.5f * screenWidth,
-                            (1 + bbox_y) * 0.5f * screenHeight
-                        )
+                )
+            val bboxWorldMax = camera.readValue()
+                .screenToWorldPosition(
+                    Vector2(
+                        (1 + bbox_x) * 0.5f * screenWidth,
+                        (1 + bbox_y) * 0.5f * screenHeight
                     )
-                Vector2((1 - bbox_x) * 0.5f * screenWidth, (1 - bbox_y) * 0.5f * screenHeight).useContents {
-                    camera.offset.x = x
-                    camera.offset.y = y
-                }
-
-                if (position.x < bboxWorldMin.useContents { x }) camera.target.x = position.x;
-                if (position.y < bboxWorldMin.useContents { y }) camera.target.y = position.y;
-                if (position.x > bboxWorldMax.useContents { x }) camera.target.x =
-                    bboxWorldMin.useContents { x } + (position.x - bboxWorldMax.useContents { x })
-                if (position.y > bboxWorldMax.useContents { y }) camera.target.y =
-                    bboxWorldMin.useContents { y } + (position.y - bboxWorldMax.useContents { y })
+                )
+            Vector2((1 - bbox_x) * 0.5f * screenWidth, (1 - bbox_y) * 0.5f * screenHeight).useContents {
+                camera.offset.x = x
+                camera.offset.y = y
             }
+
+            if (position.x < bboxWorldMin.useContents { x }) camera.target.x = position.x;
+            if (position.y < bboxWorldMin.useContents { y }) camera.target.y = position.y;
+            if (position.x > bboxWorldMax.useContents { x }) camera.target.x =
+                bboxWorldMin.useContents { x } + (position.x - bboxWorldMax.useContents { x })
+            if (position.y > bboxWorldMax.useContents { y }) camera.target.y =
+                bboxWorldMin.useContents { y } + (position.y - bboxWorldMax.useContents { y })
         }
     }
 }
@@ -246,32 +233,30 @@ private fun ComponentFactory.followPlayerCenterHorizontallyCamera(
         var eveningOut = false
         var evenOutTarget = 0f
 
-        provideHandlers {
-            onUpdate { delta ->
-                camera.offset.x = screenWidth / 2.0f
-                camera.offset.y = screenHeight / 2.0f
-                camera.target.x = player.position.x
-                if (eveningOut) {
-                    if (evenOutTarget > camera.target.y) {
-                        camera.target.y += evenOutSpeed * delta
+        onUpdate { delta ->
+            camera.offset.x = screenWidth / 2.0f
+            camera.offset.y = screenHeight / 2.0f
+            camera.target.x = player.position.x
+            if (eveningOut) {
+                if (evenOutTarget > camera.target.y) {
+                    camera.target.y += evenOutSpeed * delta
 
-                        if (camera.target.y > evenOutTarget) {
-                            camera.target.y = evenOutTarget
-                            eveningOut = false
-                        }
-                    } else {
-                        camera.target.y -= evenOutSpeed * delta
-
-                        if (camera.target.y < evenOutTarget) {
-                            camera.target.y = evenOutTarget
-                            eveningOut = false
-                        }
+                    if (camera.target.y > evenOutTarget) {
+                        camera.target.y = evenOutTarget
+                        eveningOut = false
                     }
                 } else {
-                    if (player.canJump && player.speed == 0f && (player.position.y != camera.target.y)) {
-                        eveningOut = true
-                        evenOutTarget = player.position.y
+                    camera.target.y -= evenOutSpeed * delta
+
+                    if (camera.target.y < evenOutTarget) {
+                        camera.target.y = evenOutTarget
+                        eveningOut = false
                     }
+                }
+            } else {
+                if (player.canJump && player.speed == 0f && (player.position.y != camera.target.y)) {
+                    eveningOut = true
+                    evenOutTarget = player.position.y
                 }
             }
         }
@@ -280,57 +265,55 @@ private fun ComponentFactory.followPlayerCenterHorizontallyCamera(
 
 private fun ComponentFactory.playerComponent(camera: Camera2D, player: Player, envItem: List<EnvItem>) {
     component("player") {
-        provideHandlers {
-            onUpdate {
-                if (KeyboardKey.KEY_R.isPressed()) {
-                    camera.zoom = 1.0f
-                    player.position.x = 400f
-                    player.position.y = 280f
-                }
+        onUpdate {
+            if (KeyboardKey.KEY_R.isPressed()) {
+                camera.zoom = 1.0f
+                player.position.x = 400f
+                player.position.y = 280f
             }
-            onUpdate { delta ->
-                if (KeyboardKey.KEY_LEFT.isDown()) {
-                    player.position.x -= PLAYER_HOR_SPD * delta
-                }
-                if (KeyboardKey.KEY_RIGHT.isDown()) {
-                    player.position.x += PLAYER_HOR_SPD * delta
-                }
-                if (KeyboardKey.KEY_SPACE.isDown() && player.canJump) {
-                    player.speed = -PLAYER_JUMP_SPD
-                    player.canJump = false
-                }
+        }
+        onUpdate { delta ->
+            if (KeyboardKey.KEY_LEFT.isDown()) {
+                player.position.x -= PLAYER_HOR_SPD * delta
+            }
+            if (KeyboardKey.KEY_RIGHT.isDown()) {
+                player.position.x += PLAYER_HOR_SPD * delta
+            }
+            if (KeyboardKey.KEY_SPACE.isDown() && player.canJump) {
+                player.speed = -PLAYER_JUMP_SPD
+                player.canJump = false
+            }
 
-                var hitObstacle = false
-                for (item in envItem) {
-                    val rect = item.rect
-                    if (item.blocking &&
-                        rect.x <= player.position.x &&
-                        rect.x + rect.width >= player.position.x &&
-                        rect.y >= player.position.y &&
-                        rect.y <= player.position.y + player.speed * delta
-                    ) {
-                        hitObstacle = true
-                        player.speed = 0.0f
-                        player.position.y = rect.y
-                        break
-                    }
-                }
-
-                if (!hitObstacle) {
-                    player.position.y += player.speed * delta
-                    player.speed += G * delta
-                    player.canJump = false
-                } else {
-                    player.canJump = true
+            var hitObstacle = false
+            for (item in envItem) {
+                val rect = item.rect
+                if (item.blocking &&
+                    rect.x <= player.position.x &&
+                    rect.x + rect.width >= player.position.x &&
+                    rect.y >= player.position.y &&
+                    rect.y <= player.position.y + player.speed * delta
+                ) {
+                    hitObstacle = true
+                    player.speed = 0.0f
+                    player.position.y = rect.y
+                    break
                 }
             }
 
-            onDraw {
-                mode2d(camera) {
-                    val playerRect = Rectangle(player.position.x - 20, player.position.y - 40, 40.0f, 40.0f)
-                    drawRectangle(playerRect, RED)
-                    drawCircle(player.position.readValue(), 5.0f, GOLD)
-                }
+            if (!hitObstacle) {
+                player.position.y += player.speed * delta
+                player.speed += G * delta
+                player.canJump = false
+            } else {
+                player.canJump = true
+            }
+        }
+
+        onDraw {
+            mode2d(camera) {
+                val playerRect = Rectangle(player.position.x - 20, player.position.y - 40, 40.0f, 40.0f)
+                drawRectangle(playerRect, RED)
+                drawCircle(player.position.readValue(), 5.0f, GOLD)
             }
         }
     }
@@ -338,17 +321,15 @@ private fun ComponentFactory.playerComponent(camera: Camera2D, player: Player, e
 
 private fun ComponentFactory.infoComponent(cameraOption: MutableState<CameraOption>) {
     component("info") {
-        provideHandlers {
-            onDraw {
-                drawText("Controls:", 20, 20, 10, BLACK);
-                drawText("- Right/Left to move", 40, 40, 10, DARKGRAY);
-                drawText("- Space to jump", 40, 60, 10, DARKGRAY);
-                drawText("- Mouse Wheel to Zoom in-out", 40, 80, 10, DARKGRAY);
-                drawText("- R to reset position + zoom", 40, 100, 10, DARKGRAY);
-                drawText("- C to change camera mode", 40, 120, 10, DARKGRAY);
-                drawText("Current camera mode:", 20, 140, 10, BLACK);
-                drawText(cameraOption.value.description, 40, 160, 10, DARKGRAY)
-            }
+        onDraw {
+            drawText("Controls:", 20, 20, 10, BLACK);
+            drawText("- Right/Left to move", 40, 40, 10, DARKGRAY);
+            drawText("- Space to jump", 40, 60, 10, DARKGRAY);
+            drawText("- Mouse Wheel to Zoom in-out", 40, 80, 10, DARKGRAY);
+            drawText("- R to reset position + zoom", 40, 100, 10, DARKGRAY);
+            drawText("- C to change camera mode", 40, 120, 10, DARKGRAY);
+            drawText("Current camera mode:", 20, 140, 10, BLACK);
+            drawText(cameraOption.value.description, 40, 160, 10, DARKGRAY)
         }
     }
 }
