@@ -48,9 +48,9 @@ fun towDCameraPlatformer() {
         height = 450,
         initialBackGroundColor = Colors.RAYWHITE
     ) {
+        val cameraOption = mutableStateOf(CameraOption.FollowPlayerCenter)
         val player by stateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }
         val camera by stateOf { alloc<Camera2D> { zoom = 1f } }
-        val cameraOption = mutableStateOf(CameraOption.FollowPlayerCenter)
         val envItems by stateOf {
             listOf(
                 EnvItem(RectangleAlloc(0f, 0f, 1000f, 400f), false, LIGHTGRAY),

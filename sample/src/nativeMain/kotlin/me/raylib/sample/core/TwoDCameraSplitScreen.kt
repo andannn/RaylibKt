@@ -27,20 +27,8 @@ import raylib.core.window
 
 private const val PLAYER_SIZE = 40
 
-fun twoDCameraSplitScreen() {
-    window(
-        title = "raylib [core] example - 2d camera split screen",
-        width = 800,
-        height = 450,
-        initialBackGroundColor = Colors.BLACK
-    ) {
-        componentRegistry {
-            component()
-        }
-    }
-}
 
-private fun ComponentFactory.component() {
+fun ComponentFactory.twoDCameraSplitScreen() {
     component("components") {
         val player1 by stateOf {
             alloc<Rectangle> {

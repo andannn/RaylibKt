@@ -1,18 +1,8 @@
 package me.raylib.sample.core
 
-import raylib.core.Colors.BLACK
-import raylib.core.window
+import raylib.core.ComponentFactory
 
-fun monitorDetector() {
-    window(
-        title = "raylib [core] example - monitor detector",
-        width = 800,
-        height = 450,
-        initialBackGroundColor = BLACK
-    ) {
-        componentRegistry {
-            component("key") {
-            }
-        }
+fun ComponentFactory.monitorDetector() {
+    component("key") {
     }
 }
