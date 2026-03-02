@@ -63,7 +63,7 @@ fun easingBall() {
                         ballAlpha = 0.0f
                         state = 0
                     }
-                }.apply { start() }
+                }
 
                 onDraw {
                     if (state >= 2) drawRectangle(0, 0, screenWidth, screenHeight, GREEN)

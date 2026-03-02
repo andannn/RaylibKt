@@ -73,7 +73,7 @@ fun easingsRectangles() {
                             rotation = 0f
                         }
                     }
-                }.start()
+                }
 
                 onDraw {
                     recs.forEach { rec ->

@@ -1,34 +1,18 @@
 package me.raylib.sample.core
 
-import platform.posix.pthread_self
+import kotlinx.cinterop.CValue
+import raylib.core.Color
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
-import raylib.core.suspendingTask
-import raylib.core.window
-import kotlin.io.println
+import raylib.core.ComponentFactory
 
-internal fun firstWindow() {
-    window(
-        title = "raylib [core] example - basic window",
-        initialFps = 60,
-        width = 800,
-        height = 450,
-        initialBackGroundColor = Colors.RAYWHITE
-    ) {
-        componentRegistry {
-            component("key") {
-                suspendingTask {
-                    awaitUpdateEventScope {
-                        while (true) {
-                            awaitUpdateEvent()
-                            println("Native Thread ID: ${pthread_self()}")
-                        }
-                    }
-                }
-                onDraw {
-                    drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-                }
-            }
+internal fun ComponentFactory.firstWindow(
+    initialBackGroundColor: CValue<Color> = Colors.RAYWHITE,
+) {
+    component("key") {
+        backGroundColor = initialBackGroundColor
+        onDraw {
+            drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         }
     }
 }

@@ -19,6 +19,7 @@ interface BasicShapeDrawFunction {
         size: CValue<raylib.interop.Vector2>,
         color: CValue<raylib.interop.Color>
     )
+
     fun drawRectangle(
         rectangle: CValue<Rectangle>,
         origin: CValue<raylib.interop.Vector2>,
@@ -77,8 +78,36 @@ interface BasicShapeDrawFunction {
         thick: Float,
         color: CValue<Color>
     )
-}
 
+    fun drawRing(
+        center: CValue<Vector2>,
+        innerRadius: Float,
+        outerRadius: Float,
+        startAngle: Float,
+        endAngle: Float,
+        segments: Int,
+        color: CValue<Color>
+    )
+
+    fun drawRingLines(
+        center: CValue<Vector2>,
+        innerRadius: Float,
+        outerRadius: Float,
+        startAngle: Float,
+        endAngle: Float,
+        segments: Int,
+        color: CValue<Color>
+    )
+
+    fun drawCircleSectorLines(
+        center: CValue<raylib.interop.Vector2>,
+        radius: Float,
+        startAngle: Float,
+        endAngle: Float,
+        segments: Int,
+        color: CValue<Color>
+    )
+}
 
 fun BasicShapeDrawFunction(): BasicShapeDrawFunction {
     return DefaultBasicShapeDrawFunction()
@@ -203,6 +232,41 @@ private class DefaultBasicShapeDrawFunction() : BasicShapeDrawFunction {
 
     override fun drawLineBezier(start: CValue<Vector2>, end: CValue<Vector2>, thick: Float, color: CValue<Color>) {
         raylib.interop.DrawLineBezier(start, end, thick, color)
+    }
+
+    override fun drawRing(
+        center: CValue<Vector2>,
+        innerRadius: Float,
+        outerRadius: Float,
+        startAngle: Float,
+        endAngle: Float,
+        segments: Int,
+        color: CValue<Color>
+    ) {
+        raylib.interop.DrawRing(center, innerRadius, outerRadius, startAngle, endAngle, segments, color)
+    }
+
+    override fun drawRingLines(
+        center: CValue<Vector2>,
+        innerRadius: Float,
+        outerRadius: Float,
+        startAngle: Float,
+        endAngle: Float,
+        segments: Int,
+        color: CValue<Color>
+    ) {
+        raylib.interop.DrawRingLines(center, innerRadius, outerRadius, startAngle, endAngle, segments, color)
+    }
+
+    override fun drawCircleSectorLines(
+        center: CValue<raylib.interop.Vector2>,
+        radius: Float,
+        startAngle: Float,
+        endAngle: Float,
+        segments: Int,
+        color: CValue<Color>
+    ) {
+        raylib.interop.DrawCircleSectorLines(center, radius, startAngle, endAngle, segments, color)
     }
 
     override fun drawRectangleLines(x: Int, y: Int, width: Int, height: Int, color: CValue<Color>) {

@@ -9,7 +9,6 @@ import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.TaskController
 import raylib.core.Vector2Alloc
-import raylib.core.await
 import raylib.core.stateOf
 import raylib.core.suspendingTask
 import raylib.core.window
@@ -71,7 +70,7 @@ fun easingBox() {
                     awaitDuration(2.8.seconds) { fraction ->
                         alpha = 1f.animateTo(0f, fraction, Ease.SineOut)
                     }
-                }.apply { start() }
+                }
 
                 onDraw {
                     memScoped {
