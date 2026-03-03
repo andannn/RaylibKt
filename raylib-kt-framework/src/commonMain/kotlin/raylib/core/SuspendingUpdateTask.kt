@@ -15,15 +15,18 @@ import kotlin.coroutines.resume
  * This is useful for writing sequential logic (e.g., "Move for 2 seconds, then wait for a click")
  * without manually managing state variables.
  *
+ * @param startImmediately Whether to start the task immediately.
  * @param block The suspending code to execute.
  *
  * @return A [TaskController] to manually start or stop the task.
  */
-fun ComponentScope.suspendingTask(block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
+fun ComponentScope.suspendingTask(startImmediately: Boolean = true, block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
     return SuspendingUpdateTask(get<GameContext>(), block).also { handler ->
         onUpdate {
             handler.update(it)
         }
+    }.also {
+        if (startImmediately) it.start()
     }
 }
 

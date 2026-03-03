@@ -1,46 +1,149 @@
 package me.raylib.sample
 
+import kotlinx.cinterop.IntVar
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.value
 import me.raylib.sample.core.*
-import me.raylib.sample.custom.*
-import me.raylib.sample.shape.*
+import me.raylib.sample.custom.randomObjectGenerator
+import me.raylib.sample.shape.basicShapes
+import me.raylib.sample.shape.bouncingBall
+import me.raylib.sample.shape.collisionArea
+import me.raylib.sample.shape.easingBall
+import me.raylib.sample.shape.easingBox
+import me.raylib.sample.shape.easingsRectangles
+import me.raylib.sample.shape.followingEyes
+import me.raylib.sample.shape.linesBezier
+import me.raylib.sample.shape.mouseTrail
+import me.raylib.sample.shape.rectangleScaling
+import me.raylib.sample.shape.ringDrawing
+import raylib.core.Colors
+import raylib.core.KeyboardKey
+import raylib.core.Rectangle
+import raylib.core.mutableStateOf
+import raylib.core.put
+import raylib.core.stateOf
+import raylib.core.window
+import raylib.gui.GuiContext
+import raylib.gui.onDrawGui
 import kotlin.experimental.ExperimentalNativeApi
+
+enum class Example(val title: String) {
+    FIRST_WINDOW("First Window"),
+    DELTA_TIME("Delta Time"),
+    INPUT_KEYS("Input Keys"),
+    INPUT_MOUSE("Input mouse"),
+    INPUT_MOUSE_WHEEL("Input Mouse Wheel"),
+    INPUT_MULTITOUCH("Input Multitouch"),
+    INPUT_GESTURES("Input Gestures"),
+    TWO_D_CAMERA("2D Camera"),
+    TWO_D_CAMERA_MOUSE_ZOOM("2D Camera mouse zoom"),
+    TWO_D_CAMERA_SPLIT_SCREEN("2D Camera split screen"),
+    WINDOW_SHOULD_CLOSE("Window should close"),
+    WINDOW_FLAGS("Window flags"),
+    MONITOR_DETECTOR("Monitor detector"),
+    SCISSOR_TEST("Scissor Test"),
+    BASIC_SCREEN_MANAGER("Basic Screen Manager"),
+    RANDOM_SEQUENCE("Random sequence"),
+    TOW_D_CAMERA_PLATFORMER("2D Camera platformer"),
+    RENDER_TEXTURE("Render texture"),
+    BOUNCING_BALL("Bouncing ball"),
+    RANDOM_OBJECT_GENERATOR("Random object generator"),
+    BASIC_SHAPES("Basic shapes"),
+    RECTANGLE_SCALING("Rectangle scaling"),
+    LINES_BEZIER("Lines bezier"),
+    COLLISION_AREA("Collision area"),
+    FOLLOWING_EYES("Following eyes"),
+    EASING_BALL("Easing ball"),
+    EASING_BOX("Easing box"),
+    EASINGS_RECTANGLES("Easings rectangles"),
+    MOUSE_TRAIL("Mouse trail"),
+    RING_DRAWING("Ring drawing"),
+    INPUT_ACTIONS("Input actions"),
+}
 
 @OptIn(ExperimentalNativeApi::class)
 @CName(externName = "raylib_android_main")
 fun main() {
-//    firstWindow()
-//    deltaTime()
-//    inputKeys()
-//    inputMouse()
-//    inputMouseWheel()
-//    inputMultitouch()
-//    inputGestures()
-//    twoDCamera()
-//    twoDCameraMouseZoom()
-//    twoDCameraSplitScreen()
-//    windowShouldClose()
-//    windowFlags()
-//    monitorDetector()
-//    scissorTest()
+    window(
+        title = "raylib [core] example - input gestures",
+        width = 800,
+        height = 450,
+        initialBackGroundColor = Colors.RAYWHITE
+    ) {
+        put(GuiContext())
+
+        val currentExample = mutableStateOf<Example?>(null)
+        val active by stateOf { alloc<IntVar> { value = -1 } }
+
+        componentRegistry {
+            component("menu_control") {
+                onUpdate {
+                    if (KeyboardKey.KEY_B.isPressed()) {
+                        currentExample.value = null
+                        active.value = -1
+                    }
+                }
+                onUpdate {
+                    if (active.value != -1) {
+                        currentExample.value = Example.entries[active.value]
+                    } else {
+                        currentExample.value = null
+                    }
+                }
+            }
+
+            when (currentExample.value) {
+                null -> {
+                    component("menu") {
+                        val bounds = Rectangle(0f, 0f, 400f, screenHeight.toFloat())
+                        val scrollIndex by stateOf { alloc<IntVar> {} }
+                        onDrawGui {
+                            guiListView(
+                                bounds = bounds,
+                                text = Example.entries.joinToString(";") { it.title },
+                                scrollIndex = scrollIndex.ptr,
+                                active = active.ptr
+                            )
+                        }
+                    }
+                }
+
+                Example.FIRST_WINDOW -> firstWindow()
+                Example.DELTA_TIME -> deltaTime()
+                Example.INPUT_KEYS -> inputKeys()
+                Example.INPUT_MOUSE -> inputMouse()
+                Example.INPUT_MOUSE_WHEEL -> inputMouseWheel()
+                Example.INPUT_MULTITOUCH -> inputMultitouch()
+                Example.INPUT_GESTURES -> inputGestures()
+                Example.TWO_D_CAMERA -> twoDCamera()
+                Example.TWO_D_CAMERA_MOUSE_ZOOM -> twoDCameraMouseZoom()
+                Example.TWO_D_CAMERA_SPLIT_SCREEN -> twoDCameraSplitScreen()
+                Example.WINDOW_SHOULD_CLOSE -> windowShouldClose()
+                Example.WINDOW_FLAGS -> windowFlags()
+                Example.MONITOR_DETECTOR -> monitorDetector()
+                Example.SCISSOR_TEST -> scissorTest()
+                Example.BASIC_SCREEN_MANAGER -> TODO()
+                Example.RANDOM_SEQUENCE -> randomSequence()
+                Example.TOW_D_CAMERA_PLATFORMER -> TODO()
+                Example.RENDER_TEXTURE -> renderTexture()
+                Example.BOUNCING_BALL -> bouncingBall()
+                Example.RANDOM_OBJECT_GENERATOR -> TODO()
+                Example.BASIC_SHAPES -> basicShapes()
+                Example.RECTANGLE_SCALING -> rectangleScaling()
+                Example.LINES_BEZIER -> linesBezier()
+                Example.COLLISION_AREA -> collisionArea()
+                Example.FOLLOWING_EYES -> followingEyes()
+                Example.EASING_BALL -> easingBall()
+                Example.EASING_BOX -> easingBox()
+                Example.EASINGS_RECTANGLES -> easingsRectangles()
+                Example.MOUSE_TRAIL -> mouseTrail()
+                Example.RING_DRAWING -> ringDrawing()
+                Example.INPUT_ACTIONS -> inputActions()
+            }
+        }
+    }
 //    basicScreenManager()
-//    randomSequence()
 //    towDCameraPlatformer()
-//    renderTexture()
-//    inputActions()
-
-    // shape examples
-//    bouncingBall()
-//    basicShapes()
-//    rectangleScaling()
-//    linesBezier()
-//    collisionArea()
-//    followingEyes()
-//    easingBall()
-//    easingBox()
-//    easingsRectangles()
-//    mouseTrail()
-    ringDrawing()
-
-    // custom examples
 //    randomObjectGenerator()
 }

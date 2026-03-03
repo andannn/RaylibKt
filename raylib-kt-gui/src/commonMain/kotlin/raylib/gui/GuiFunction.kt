@@ -1,9 +1,11 @@
 package raylib.gui
 
+import kotlinx.cinterop.BooleanVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CStructVar
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.FloatVar
+import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.readValue
@@ -26,6 +28,10 @@ interface GuiFunction {
         minValue: Float,
         maxValue: Float
     )
+
+    fun guiCheckBox(bounds: CValue<Rectangle>, text: String, checked: CPointer<BooleanVar>)
+
+    fun guiListView(bounds: CValue<Rectangle>, text: String?, scrollIndex: CPointer<IntVar>, active: CPointer<IntVar>)
 }
 
 fun GuiFunction(): GuiFunction = DefaultGuiFunctions()
@@ -77,6 +83,23 @@ private class DefaultGuiFunctions : GuiFunction {
         maxValue: Float
     ) {
         raygui.interop.GuiSliderBar(bounds.reinterpret(), textLeft, textRight, value, minValue, maxValue)
+    }
+
+    override fun guiCheckBox(
+        bounds: CValue<Rectangle>,
+        text: String,
+        checked: CPointer<BooleanVar>
+    ) {
+        raygui.interop.GuiCheckBox(bounds.reinterpret(), text, checked)
+    }
+
+    override fun guiListView(
+        bounds: CValue<Rectangle>,
+        text: String?,
+        scrollIndex: CPointer<IntVar>,
+        active: CPointer<IntVar>
+    ) {
+        raygui.interop.GuiListView(bounds.reinterpret(), text, scrollIndex, active)
     }
 }
 
