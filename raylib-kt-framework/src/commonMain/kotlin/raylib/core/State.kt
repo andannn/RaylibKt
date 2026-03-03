@@ -27,8 +27,8 @@ internal abstract class MutableStateBox<T>(
         }
 }
 
-fun <T> WindowContext.mutableStateListOf(vararg items: DisposableState<T>) =
-    ManagedStateList<T>(this)
+fun <T> mutableStateListOf(vararg items: DisposableState<T>) =
+    ManagedStateList<T>()
         .apply {
             items.forEach { addState(it) }
         }
@@ -39,22 +39,14 @@ fun <T> DisposableRegistry.nativeStateOf(initialValue: NativePlacement.() -> T):
     }
 
 class ManagedStateList<T>(
-    private val windowContext: WindowContext,
     private val innerList: MutableList<DisposableState<T>> = mutableListOf()
 ) : List<DisposableState<T>> by innerList {
 
     fun addState(state: DisposableState<T>): Disposable = innerList.add(state).let {
         state.onDispose = {
-            removeObjectOnNextFrame(state)
+            innerList.remove(state)
         }
         state
-    }
-
-    private fun removeObjectOnNextFrame(state: DisposableState<T>) {
-        windowContext.postFrameCallback {
-            innerList.remove(state)
-            state.clearNative()
-        }
     }
 }
 
@@ -72,16 +64,17 @@ class DisposableState<T>(
         return value
     }
 
-    internal fun clearNative() {
-        isFreed = true
-        arena.clear()
-    }
-
     override fun dispose() {
         if (isDisposed) return
         isDisposed = true
 
-        onDispose?.invoke()  // this is not null when managed by state list.
-            ?: clearNative() // clear immediately.
+        onDispose?.invoke()
+        clearNative()
+    }
+
+
+    private fun clearNative() {
+        isFreed = true
+        arena.clear()
     }
 }

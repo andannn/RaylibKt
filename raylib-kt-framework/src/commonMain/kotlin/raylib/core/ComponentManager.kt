@@ -1,15 +1,15 @@
 package raylib.core
 
-interface ComponentManager : Disposable {
-    fun beforeFrame()
-    fun performUpdate(deltaTime: Float)
-    fun performDraw()
-    fun endFrame()
-}
-
 interface ComponentRegistry {
     fun <R> remember(id: Any, block: ComponentScope.() -> R): R
     fun component(id: Any, block: ComponentScope.() -> Unit)
+}
+
+internal interface ComponentManager : ComponentRegistry, Disposable {
+    fun initComponents()
+    fun performUpdate(deltaTime: Float)
+    fun reBuildComponents()
+    fun performDraw()
 }
 
 internal class ComponentRegistryImpl(
@@ -18,7 +18,11 @@ internal class ComponentRegistryImpl(
 ) : ComponentManager {
     private val componentsBuilder = ComponentsBuilder(contextRegistry)
     internal val components
-        get() = componentsBuilder.pendingStates.values
+        get() = componentsBuilder.activeStates.values
+
+    override fun initComponents() {
+        reBuildComponents()
+    }
 
     private class ComponentsBuilder(
         private val contextRegistry: ContextRegistry
@@ -49,7 +53,7 @@ internal class ComponentRegistryImpl(
             pendingStates[id] = component
         }
 
-        fun endFrame() {
+        fun endBuild() {
             componentKeys.clear()
 
             if (activeStates.isNotEmpty()) {
@@ -66,8 +70,9 @@ internal class ComponentRegistryImpl(
         }
     }
 
-    override fun beforeFrame() {
+    override fun reBuildComponents() {
         componentsBuilder.apply(block)
+        componentsBuilder.endBuild()
     }
 
     override fun performDraw() {
@@ -82,13 +87,17 @@ internal class ComponentRegistryImpl(
         }
     }
 
-    override fun endFrame() {
-        componentsBuilder.endFrame()
-    }
-
     override fun dispose() {
         components.forEach {
             it.dispose()
         }
+    }
+
+    override fun <R> remember(id: Any, block: ComponentScope.() -> R): R {
+        return componentsBuilder.remember(id, block)
+    }
+
+    override fun component(id: Any, block: ComponentScope.() -> Unit) {
+        return componentsBuilder.component(id, block)
     }
 }

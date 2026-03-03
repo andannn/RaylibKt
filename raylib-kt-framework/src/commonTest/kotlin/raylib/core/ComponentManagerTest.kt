@@ -26,15 +26,15 @@ class ComponentManagerTest {
             }
         )
         assertEquals(0, manager.components.size)
-        manager.beforeFrame()
+
+        manager.initComponents()
+        manager.reBuildComponents()
         assertEquals(listOf("component1", "component2"), manager.components.map { it.componentId })
-        manager.endFrame()
 
         isAddComponent = true
-        manager.beforeFrame()
+        manager.reBuildComponents()
         assertEquals(3, manager.components.size)
         assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
-        manager.endFrame()
     }
 
     @Test
@@ -53,14 +53,14 @@ class ComponentManagerTest {
             }
         )
         assertEquals(0, manager.components.size)
-        manager.beforeFrame()
+
+        manager.initComponents()
+        manager.reBuildComponents()
         assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
-        manager.endFrame()
 
         isRemoveComponent = true
-        manager.beforeFrame()
+        manager.reBuildComponents()
         assertEquals(listOf("component1", "component3"), manager.components.map { it.componentId })
-        manager.endFrame()
     }
 
     @Test
@@ -78,14 +78,16 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.beforeFrame()
+        manager.initComponents()
+
+        manager.reBuildComponents()
         assertEquals(1, called)
-        manager.endFrame()
+
 
         isRemoveComponent = true
-        manager.beforeFrame()
+        manager.reBuildComponents()
         assertEquals(1, called)
-        manager.endFrame()
+
     }
 
     @Test
@@ -99,7 +101,7 @@ class ComponentManagerTest {
             }
         )
         assertFails("Duplicate component key detected -> 'component1'. Each component in the same scope must have a unique ID.") {
-            manager.beforeFrame()
+            manager.reBuildComponents()
         }
     }
 
@@ -115,7 +117,8 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.beforeFrame()
+        manager.initComponents()
+        manager.reBuildComponents()
         assertFalse(called)
         manager.dispose()
         assertTrue(called)
@@ -138,13 +141,14 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.beforeFrame()
+        manager.initComponents()
+        manager.reBuildComponents()
         assertEquals(0, called)
-        manager.endFrame()
+
 
         isAddComponent = false
-        manager.beforeFrame()
-        manager.endFrame()
+        manager.reBuildComponents()
+
         assertEquals(1, called)
     }
 
@@ -165,18 +169,19 @@ class ComponentManagerTest {
             }
         )
 
-        manager.beforeFrame()
+        manager.initComponents()
+        manager.reBuildComponents()
         assertEquals("A", currentValue?.value)
-        manager.endFrame()
 
-        manager.beforeFrame()
+
+        manager.reBuildComponents()
         manager.performUpdate(2f)
         assertEquals("B", currentValue?.value)
-        manager.endFrame()
 
-        manager.beforeFrame()
+
+        manager.reBuildComponents()
         assertEquals("B", currentValue?.value)
-        manager.endFrame()
+
     }
 
     @Test
@@ -193,13 +198,14 @@ class ComponentManagerTest {
             }
         )
 
-        manager.beforeFrame()
+        manager.initComponents()
+        manager.reBuildComponents()
         assertEquals(100f, value?.value?.x)
-        manager.endFrame()
+
 
         isValue = false
-        manager.beforeFrame()
-        manager.endFrame()
+        manager.reBuildComponents()
+
         assertEquals(true, value?.isDisposed)
     }
 }
@@ -207,7 +213,6 @@ class ComponentManagerTest {
 private fun buildComponentManager(block: ComponentRegistry.() -> Unit) = ComponentRegistryImpl(
     contextRegistry = ContextRegistryImpl().apply {
         val windowContext = WindowContextImpl(
-            contextRegistry = this,
             windowFunction = DummyWindowFunction()
         )
         val gameContext = GameContext(windowContext)

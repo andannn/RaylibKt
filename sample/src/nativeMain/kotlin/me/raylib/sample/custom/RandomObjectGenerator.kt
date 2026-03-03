@@ -1,7 +1,6 @@
 package me.raylib.sample.custom
 
 import kotlinx.cinterop.readValue
-import raylib.core.Colors.BLACK
 import raylib.core.ComponentRegistry
 import raylib.core.DisposableState
 import raylib.core.Vector2Alloc
@@ -9,34 +8,26 @@ import raylib.core.randomColor
 import raylib.core.randomValue
 import raylib.core.mutableStateListOf
 import raylib.core.nativeStateOf
-import raylib.core.window
 
-fun randomObjectGenerator() {
-    window(
-        title = "custom example - random object generator",
-        width = 800,
-        height = 450,
-        initialBackGroundColor = BLACK
-    ) {
-        val stateList = mutableStateListOf<Int>()
-        componentRegistry {
-            component("random object generator") {
-                var frameCount = 0
-                var newId = 0
-                onUpdate {
-                    frameCount++
-                    if (frameCount % 5 == 0) {
-                        if (stateList.size <= 10000) {
-                            stateList.addState(nativeStateOf { newId++ })
-                        }
-                    }
+fun ComponentRegistry.randomObjectGenerator() {
+    val stateList = remember("component container") {
+        mutableStateListOf<Int>()
+    }
+    component("random object generator") {
+        var frameCount = 0
+        var newId = 0
+        onUpdate {
+            frameCount++
+            if (frameCount % 5 == 0) {
+                if (stateList.size <= 10000) {
+                    stateList.addState(nativeStateOf { newId++ })
                 }
             }
-
-            stateList.forEach { state ->
-                generatedObject(state)
-            }
         }
+    }
+
+    stateList.forEach { state ->
+        generatedObject(state)
     }
 }
 
