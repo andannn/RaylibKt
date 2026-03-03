@@ -4,27 +4,25 @@ import kotlinx.cinterop.readValue
 import platform.posix.atan2f
 import platform.posix.cosf
 import platform.posix.sinf
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.BROWN
 import raylib.core.Colors.DARKGREEN
 import raylib.core.Colors.LIGHTGRAY
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Vector2Alloc
 import raylib.core.isCollisionWith
 import raylib.core.set
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 
-fun ComponentFactory.followingEyes() {
+fun ComponentRegistry.followingEyes() {
     component("A") {
-        val scleraLeftPosition by stateOf {
+        val scleraLeftPosition by nativeStateOf {
             Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
         }
-        val scleraRightPosition by stateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+        val scleraRightPosition by nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
         val scleraRadius = 80f
-        val irisLeftPosition by stateOf { Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f) }
-        val irisRightPosition by stateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+        val irisLeftPosition by nativeStateOf { Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f) }
+        val irisRightPosition by nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
         val irisRadius = 24f
 
         var angle = 0.0f

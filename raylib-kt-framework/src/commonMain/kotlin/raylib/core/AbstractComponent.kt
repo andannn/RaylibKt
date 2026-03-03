@@ -21,7 +21,12 @@ fun interface DrawHandler {
 
 internal interface LoopHandler : UpdateHandler, DrawHandler
 
-internal class Component(
+internal fun Component(
+    id: Any,
+    contextRegistry: ContextRegistry,
+): AbstractComponent = object : AbstractComponent(id, contextRegistry) {}
+
+internal abstract class AbstractComponent(
     val componentId: Any,
     private val contextRegistry: ContextRegistry,
 ) : ComponentScope, ContextRegistry by contextRegistry, WindowFunction by contextRegistry.get<WindowContext>(),
@@ -81,3 +86,17 @@ internal class Component(
         }
     }
 }
+
+internal class StateComponent<R>(
+    componentId: Any,
+    contextRegistry: ContextRegistry,
+) : AbstractComponent(
+    componentId,
+    contextRegistry,
+) {
+    var internalValue: R? = null
+    val value: R
+        get() = internalValue ?: error("value not init")
+}
+
+internal  fun <R> AbstractComponent.value() = (this as StateComponent<*>).value as R

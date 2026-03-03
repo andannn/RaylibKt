@@ -5,7 +5,6 @@ import kotlinx.cinterop.alloc
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import me.raylib.sample.core.*
-import me.raylib.sample.custom.randomObjectGenerator
 import me.raylib.sample.shape.basicShapes
 import me.raylib.sample.shape.bouncingBall
 import me.raylib.sample.shape.collisionArea
@@ -22,7 +21,7 @@ import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.mutableStateOf
 import raylib.core.put
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
 import raylib.core.window
 import raylib.gui.GuiContext
 import raylib.gui.onDrawGui
@@ -73,20 +72,25 @@ fun main() {
     ) {
         put(GuiContext())
 
-        val currentExample = mutableStateOf<Example?>(null)
-        val active by stateOf { alloc<IntVar> { value = -1 } }
-
         componentRegistry {
+            val active = remember("selected menu index") {
+                nativeStateOf { alloc<IntVar> { value = -1 } }
+            }
+
+            val currentExample = remember("current example") {
+                mutableStateOf<Example?>(null)
+            }
+
             component("menu_control") {
                 onUpdate {
                     if (KeyboardKey.KEY_B.isPressed()) {
                         currentExample.value = null
-                        active.value = -1
+                        active.value.value = -1
                     }
                 }
                 onUpdate {
-                    if (active.value != -1) {
-                        currentExample.value = Example.entries[active.value]
+                    if (active.value.value != -1) {
+                        currentExample.value = Example.entries[active.value.value]
                     } else {
                         currentExample.value = null
                     }
@@ -97,13 +101,13 @@ fun main() {
                 null -> {
                     component("menu") {
                         val bounds = Rectangle(0f, 0f, 400f, screenHeight.toFloat())
-                        val scrollIndex by stateOf { alloc<IntVar> {} }
+                        val scrollIndex by nativeStateOf { alloc<IntVar> {} }
                         onDrawGui {
                             guiListView(
                                 bounds = bounds,
                                 text = Example.entries.joinToString(";") { it.title },
                                 scrollIndex = scrollIndex.ptr,
-                                active = active.ptr
+                                active = active.value.ptr
                             )
                         }
                     }
@@ -123,7 +127,7 @@ fun main() {
                 Example.WINDOW_FLAGS -> windowFlags()
                 Example.MONITOR_DETECTOR -> monitorDetector()
                 Example.SCISSOR_TEST -> scissorTest()
-                Example.BASIC_SCREEN_MANAGER -> TODO()
+                Example.BASIC_SCREEN_MANAGER -> basicScreenManager()
                 Example.RANDOM_SEQUENCE -> randomSequence()
                 Example.TOW_D_CAMERA_PLATFORMER -> TODO()
                 Example.RENDER_TEXTURE -> renderTexture()
@@ -143,7 +147,7 @@ fun main() {
             }
         }
     }
-//    basicScreenManager()
+
 //    towDCameraPlatformer()
 //    randomObjectGenerator()
 }

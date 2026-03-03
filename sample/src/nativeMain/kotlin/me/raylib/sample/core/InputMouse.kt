@@ -2,13 +2,12 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.CValue
 import raylib.core.Colors
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
-import raylib.core.window
 
-fun ComponentFactory.inputMouse() {
+fun ComponentRegistry.inputMouse() {
     component("key") {
         var ballPosition: CValue<Vector2> = Vector2()
         var ballColor = Colors.DARKBLUE

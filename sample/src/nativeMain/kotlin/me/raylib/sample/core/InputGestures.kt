@@ -5,7 +5,7 @@ import raylib.core.Colors.GRAY
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.MAROON
 import raylib.core.Colors.RAYWHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Gesture
 import raylib.core.Rectangle
 import raylib.core.Vector2
@@ -13,7 +13,7 @@ import raylib.core.isCollisionWith
 import raylib.interop.Fade
 
 private const val MAX_GESTURE_STRINGS = 20
-fun ComponentFactory.inputGestures() {
+fun ComponentRegistry.inputGestures() {
     component("key") {
         var touchPosition = Vector2()
         val touchArea = Rectangle(220f, 10f, screenWidth - 230.0f, screenHeight - 20.0f)

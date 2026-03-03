@@ -7,11 +7,10 @@ import raylib.interop.CloseWindow
 import raylib.interop.EndDrawing
 
 @MustUseReturnValues
-interface WindowContext : Context, WindowFunction, ContextRegistry, DisposableRegistry {
+interface WindowContext : Context, WindowFunction, ContextRegistry {
     @IgnorableReturnValue
     fun postFrameCallback(action: () -> Unit): Disposable
-    fun invalidComponents()
-    fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager
+    fun componentRegistry(block: ComponentRegistry.() -> Unit): ComponentManager
 }
 
 fun window(
@@ -44,7 +43,7 @@ fun window(
             windowFunction.gameLoop {
                 onFrame()
 
-                componentsManager.buildComponentsIfNeeded()
+                componentsManager.beforeFrame()
 
                 // update state
                 componentsManager.performUpdate(frameTimeSeconds)
@@ -56,6 +55,8 @@ fun window(
                 }
                 componentsManager.performDraw()
                 EndDrawing()
+
+                componentsManager.endFrame()
             }
         }
         .also { windowScope ->
@@ -75,13 +76,10 @@ internal fun WindowFunction.gameLoop(
 internal class WindowContextImpl(
     contextRegistry: ContextRegistry,
     windowFunction: WindowFunction,
-    private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl()
 ) : WindowContext,
     WindowFunction by windowFunction,
-    ContextRegistry by contextRegistry,
-    DisposableRegistry by disposableRegistry {
-    var isDirty = false
-
+    ContextRegistry by contextRegistry {
+    private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl()
     private val callBacks = mutableListOf<FrameCallBack>()
 
     override fun postFrameCallback(action: () -> Unit): Disposable {
@@ -103,15 +101,9 @@ internal class WindowContextImpl(
         }
     }
 
-    override fun invalidComponents() {
-        isDirty = true
-    }
-
-    override fun componentRegistry(block: ComponentFactory.() -> Unit): ComponentManager {
-        return ComponentManagerImpl(
+    override fun componentRegistry(block: ComponentRegistry.() -> Unit): ComponentManager {
+        return ComponentRegistryImpl(
             this,
-            isDirty = { isDirty },
-            onRebuildFinished = { isDirty = false },
             block
         ).also { componentManager ->
             disposableRegistry.disposeOnClose(componentManager)

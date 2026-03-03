@@ -1,6 +1,5 @@
 package me.raylib.sample.core
 
-import raylib.core.Colors
 import raylib.core.Colors.BLUE
 import raylib.core.Colors.DARKBLUE
 import raylib.core.Colors.DARKGREEN
@@ -9,62 +8,56 @@ import raylib.core.Colors.GREEN
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.MAROON
 import raylib.core.Colors.PURPLE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Gesture
 import raylib.core.KeyboardKey
-import raylib.core.window
+import raylib.core.mutableStateOf
 
-fun basicScreenManager() {
-    window(
-        title = "raylib [core] example - basic screen manager",
-        width = 800,
-        height = 450,
-        initialBackGroundColor = Colors.RAYWHITE
-    ) {
-        var currentScreen = GameScreen.LOGO
-        componentRegistry {
-            component("updater") {
-                var framesCounter = 0
+fun ComponentRegistry.basicScreenManager() {
+    val currentScreen = remember("currentScreen") {
+        mutableStateOf(GameScreen.LOGO)
+    }
 
-                onUpdate {
-                    when (currentScreen) {
-                        GameScreen.LOGO -> {
-                            framesCounter++
-                            if (framesCounter > 120) {
-                                currentScreen = GameScreen.TITLE
-                            }
-                        }
+    component("updater") {
+        var framesCounter = 0
 
-                        GameScreen.TITLE -> {
-                            if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                                currentScreen = GameScreen.GAMEPLAY
-                            }
-                        }
-
-                        GameScreen.GAMEPLAY -> {
-                            if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                                currentScreen = GameScreen.ENDING
-                            }
-                        }
-
-                        GameScreen.ENDING -> {
-                            if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                                currentScreen = GameScreen.TITLE
-                            }
-                        }
+        onUpdate {
+            when (currentScreen.value) {
+                GameScreen.LOGO -> {
+                    framesCounter++
+                    if (framesCounter > 120) {
+                        currentScreen.value = GameScreen.TITLE
                     }
                 }
 
+                GameScreen.TITLE -> {
+                    if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
+                        currentScreen.value = GameScreen.GAMEPLAY
+                    }
+                }
+
+                GameScreen.GAMEPLAY -> {
+                    if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
+                        currentScreen.value = GameScreen.ENDING
+                    }
+                }
+
+                GameScreen.ENDING -> {
+                    if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
+                        currentScreen.value = GameScreen.TITLE
+                    }
+                }
             }
-            if (currentScreen == GameScreen.LOGO) screen(GameScreen.LOGO)
-            if (currentScreen == GameScreen.TITLE) screen(GameScreen.TITLE)
-            if (currentScreen == GameScreen.GAMEPLAY) screen(GameScreen.GAMEPLAY)
-            if (currentScreen == GameScreen.ENDING) screen(GameScreen.ENDING)
         }
+
     }
+    if (currentScreen.value == GameScreen.LOGO) screen(GameScreen.LOGO)
+    if (currentScreen.value == GameScreen.TITLE) screen(GameScreen.TITLE)
+    if (currentScreen.value == GameScreen.GAMEPLAY) screen(GameScreen.GAMEPLAY)
+    if (currentScreen.value == GameScreen.ENDING) screen(GameScreen.ENDING)
 }
 
-private fun ComponentFactory.screen(screen: GameScreen) {
+private fun ComponentRegistry.screen(screen: GameScreen) {
     component(screen) {
         onDraw {
             when (screen) {

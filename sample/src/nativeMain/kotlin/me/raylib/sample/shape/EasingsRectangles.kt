@@ -2,17 +2,15 @@ package me.raylib.sample.shape
 
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.readValue
-import raylib.core.Colors
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.RED
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.Vector2Alloc
 import raylib.core.await
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
 import raylib.core.suspendingTask
-import raylib.core.window
 import raylib.easings.Ease
 import raylib.easings.animateTo
 import raylib.easings.awaitDuration
@@ -22,11 +20,11 @@ import kotlin.time.Duration.Companion.seconds
 private const val RECS_HEIGHT = 50
 private const val RECS_WIDTH = 50
 
-fun ComponentFactory.easingsRectangles() {
+fun ComponentRegistry.easingsRectangles() {
     component("AA") {
         val maxRecsX = screenWidth.div(RECS_WIDTH)
         val maxRecsY = screenHeight.div(RECS_HEIGHT)
-        val recs: List<Rectangle> by stateOf {
+        val recs: List<Rectangle> by nativeStateOf {
             val list = mutableListOf<Rectangle>()
 
             for (y in 0 until maxRecsY) {

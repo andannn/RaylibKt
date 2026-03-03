@@ -3,9 +3,9 @@ package me.raylib.sample.core
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.MAROON
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 
-fun ComponentFactory.inputMouseWheel() {
+fun ComponentRegistry.inputMouseWheel() {
     component("key") {
         var boxPositionY = screenHeight.div(2f) - 40
         val scrollSpeed = 4f

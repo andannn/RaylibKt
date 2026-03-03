@@ -1,5 +1,6 @@
 package raylib.core
 
+import kotlinx.cinterop.alloc
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -12,9 +13,7 @@ class ComponentManagerTest {
     @Test
     fun buildComponent_add() {
         var isAddComponent = false
-        var isDirty = false
         val manager = buildComponentManager(
-            isDirty = { isDirty },
             block = {
                 component("component1") {
                 }
@@ -27,22 +26,21 @@ class ComponentManagerTest {
             }
         )
         assertEquals(0, manager.components.size)
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertEquals(listOf("component1", "component2"), manager.components.map { it.componentId })
+        manager.endFrame()
 
-        isDirty = true
         isAddComponent = true
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertEquals(3, manager.components.size)
         assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
+        manager.endFrame()
     }
 
     @Test
     fun buildComponent_remove() {
         var isRemoveComponent = false
-        var isDirty = false
         val manager = buildComponentManager(
-            isDirty = { isDirty },
             {
                 component("component1") {
                 }
@@ -55,22 +53,21 @@ class ComponentManagerTest {
             }
         )
         assertEquals(0, manager.components.size)
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
+        manager.endFrame()
 
-        isDirty = true
         isRemoveComponent = true
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertEquals(listOf("component1", "component3"), manager.components.map { it.componentId })
+        manager.endFrame()
     }
 
     @Test
     fun buildComponent_same_component_will_not_be_initialized_again() {
         var isRemoveComponent = false
-        var isDirty = false
         var called = 0
         val manager = buildComponentManager(
-            isDirty = { isDirty },
             {
                 component("component1") {
                     called++
@@ -81,18 +78,19 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertEquals(1, called)
-        isDirty = true
+        manager.endFrame()
+
         isRemoveComponent = true
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertEquals(1, called)
+        manager.endFrame()
     }
 
     @Test
     fun buildComponent_duplicate_component_will_throw_exception() {
         val manager = buildComponentManager(
-            isDirty = { false },
             {
                 component("component1") {
                 }
@@ -101,7 +99,7 @@ class ComponentManagerTest {
             }
         )
         assertFails("Duplicate component key detected -> 'component1'. Each component in the same scope must have a unique ID.") {
-            manager.buildComponentsIfNeeded()
+            manager.beforeFrame()
         }
     }
 
@@ -109,7 +107,6 @@ class ComponentManagerTest {
     fun buildComponent_component_is_disposed_when_manager_is_disposed() {
         var called = false
         val manager = buildComponentManager(
-            isDirty = { false },
             block = {
                 component("component1") {
                     disposeOnClose {
@@ -118,7 +115,7 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertFalse(called)
         manager.dispose()
         assertTrue(called)
@@ -127,10 +124,8 @@ class ComponentManagerTest {
     @Test
     fun buildComponent_component_is_disposed_not_included_in_rebuild() {
         var called = 0
-        var isDirty = false
         var isAddComponent = true
         val manager = buildComponentManager(
-            isDirty = { isDirty },
             block = {
                 if (isAddComponent) {
                     component("component1") {
@@ -143,18 +138,73 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
         assertEquals(0, called)
+        manager.endFrame()
 
-        isDirty = true
         isAddComponent = false
-        manager.buildComponentsIfNeeded()
+        manager.beforeFrame()
+        manager.endFrame()
         assertEquals(1, called)
     }
 
+    @Test
+    fun buildComponent_remember_state_component() {
+        var currentValue: MutableState<String>? = null
+        val manager = buildComponentManager(
+            block = {
+                val value = remember("value 1") {
+                    mutableStateOf("A")
+                }
+                currentValue = value
+                component("component2") {
+                    onUpdate {
+                        value.value = "B"
+                    }
+                }
+            }
+        )
+
+        manager.beforeFrame()
+        assertEquals("A", currentValue?.value)
+        manager.endFrame()
+
+        manager.beforeFrame()
+        manager.performUpdate(2f)
+        assertEquals("B", currentValue?.value)
+        manager.endFrame()
+
+        manager.beforeFrame()
+        assertEquals("B", currentValue?.value)
+        manager.endFrame()
+    }
+
+    @Test
+    fun buildComponent_remembered_state_is_disposed_component_disposed() {
+        var value: DisposableState<Vector2>? = null
+        var isValue = true
+        val manager = buildComponentManager(
+            block = {
+                if (isValue) {
+                    value = remember("value 1") {
+                        nativeStateOf { alloc<Vector2> { x = 100f } }
+                    }
+                }
+            }
+        )
+
+        manager.beforeFrame()
+        assertEquals(100f, value?.value?.x)
+        manager.endFrame()
+
+        isValue = false
+        manager.beforeFrame()
+        manager.endFrame()
+        assertEquals(true, value?.isDisposed)
+    }
 }
 
-private fun buildComponentManager(isDirty: () -> Boolean, block: ComponentFactory.() -> Unit) = ComponentManagerImpl(
+private fun buildComponentManager(block: ComponentRegistry.() -> Unit) = ComponentRegistryImpl(
     contextRegistry = ContextRegistryImpl().apply {
         val windowContext = WindowContextImpl(
             contextRegistry = this,
@@ -166,7 +216,5 @@ private fun buildComponentManager(isDirty: () -> Boolean, block: ComponentFactor
         put(gameContext)
         put(drawContext)
     },
-    isDirty = isDirty,
-    onRebuildFinished = {},
     block = block
 )

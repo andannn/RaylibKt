@@ -2,24 +2,22 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import raylib.core.Colors.BLACK
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.LIME
 import raylib.core.Colors.MAROON
 import raylib.core.Colors.RAYWHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.ConfigFlags
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 import raylib.interop.DrawText
 
-fun ComponentFactory.windowFlags() {
+fun ComponentRegistry.windowFlags() {
     component("key") {
-        val ballPosition by stateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) } }
-        val ballSpeed by stateOf { alloc<Vector2> { x = 5f; y = 4f } }
+        val ballPosition by nativeStateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) } }
+        val ballSpeed by nativeStateOf { alloc<Vector2> { x = 5f; y = 4f } }
         val ballRadius = 20
         var framesCounter = 0
 

@@ -4,21 +4,19 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
-import raylib.core.Colors
 import raylib.core.Colors.BLUE
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.RED
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.MouseButton
 import raylib.core.Vector2
 import raylib.core.isCollisionWith
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 
-fun ComponentFactory.linesBezier() {
+fun ComponentRegistry.linesBezier() {
     component("k") {
-        val startPoint by stateOf { alloc<Vector2> { x = 30f; y = 30f } }
-        val endPoint by stateOf { alloc<Vector2> { x = screenWidth - 30f; y = screenHeight - 30f } }
+        val startPoint by nativeStateOf { alloc<Vector2> { x = 30f; y = 30f } }
+        val endPoint by nativeStateOf { alloc<Vector2> { x = screenWidth - 30f; y = screenHeight - 30f } }
         var moveStartPoint = false
         var moveEndPoint = false
         var mousePosition: CValue<Vector2>? = null

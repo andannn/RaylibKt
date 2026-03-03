@@ -4,10 +4,10 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.ORANGE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Vector2
 
-fun ComponentFactory.inputMultitouch() {
+fun ComponentRegistry.inputMultitouch() {
     component("key") {
         var pointers = emptyList<CValue<Vector2>>()
         onUpdate {

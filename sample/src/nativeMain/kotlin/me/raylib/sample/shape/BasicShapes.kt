@@ -13,10 +13,10 @@ import raylib.core.Colors.RED
 import raylib.core.Colors.SKYBLUE
 import raylib.core.Colors.VIOLET
 import raylib.core.Colors.YELLOW
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Vector2
 
-fun ComponentFactory.basicShapes() {
+fun ComponentRegistry.basicShapes() {
     component("key") {
         var rotation = 0.0f
 

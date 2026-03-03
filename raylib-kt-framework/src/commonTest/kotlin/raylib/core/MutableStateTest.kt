@@ -1,13 +1,11 @@
 package raylib.core
 
-import kotlinx.cinterop.MemScope
 import kotlinx.cinterop.alloc
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
@@ -28,40 +26,32 @@ class MutableStateTest {
     }
 
     @Test
-    fun mutableStateTest_invalid_required_when_set_value() {
-        val state = windowScope.mutableStateOf(0)
-        assertFalse(windowScope.isDirty)
-        state.value = 1
-        assertTrue(windowScope.isDirty)
-    }
-
-    @Test
     fun managedStateListTest_build() = with(windowScope) {
-        val list = stateListOf(
-            stateOf { "1" }
+        val list = mutableStateListOf(
+            nativeStateOf { "1" }
         )
         assertEquals(1, list.size)
     }
 
     @Test
     fun managedStateListTest_add(): Unit = with(windowScope) {
-        val list = stateListOf(
-            stateOf { alloc<Vector2> { x = 1f } }
+        val list = mutableStateListOf(
+            nativeStateOf { alloc<Vector2> { x = 1f } }
         )
         assertEquals(1, list.size)
 
-        list.addState(stateOf { alloc<Vector2> { x = 2f } })
+        list.addState(nativeStateOf { alloc<Vector2> { x = 2f } })
         assertEquals(2, list.size)
     }
 
     @Test
     fun managedStateListTest_remove(): Unit = with(windowScope) {
-        val state1 = stateOf {
+        val state1 = nativeStateOf {
             alloc<Vector2>().apply { x = 1f }
         }
-        val list = stateListOf(
+        val list = mutableStateListOf(
             state1,
-            stateOf {
+            nativeStateOf {
                 alloc<Vector2>()
             }
         )
@@ -80,7 +70,7 @@ class MutableStateTest {
 
     @Test
     fun disposableStateTest_dispose(): Unit = with(windowScope) {
-        val state = stateOf {
+        val state = nativeStateOf {
             alloc<Vector2> { x = 100f }
         }
         assertEquals(100f, state.value.x)
@@ -92,7 +82,7 @@ class MutableStateTest {
 
     @Test
     fun disposableStateTest_disposed_when_container_dispose() = with(windowScope) {
-        val state = stateOf { alloc<Vector2> { x = 100f } }
+        val state = nativeStateOf { alloc<Vector2> { x = 100f } }
         assertEquals(100f, state.value.x)
 
         this.dispose()

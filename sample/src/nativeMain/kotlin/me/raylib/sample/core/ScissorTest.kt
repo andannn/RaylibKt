@@ -5,17 +5,15 @@ import kotlinx.cinterop.readValue
 import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.LIGHTGRAY
-import raylib.core.Colors.RAYWHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.scissorMode
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 
-fun ComponentFactory.scissorTest() {
+fun ComponentRegistry.scissorTest() {
     component("key") {
-        val scissorArea by stateOf { alloc<Rectangle> { x = 0f; y = 0f; width = 300f; height = 300f } }
+        val scissorArea by nativeStateOf { alloc<Rectangle> { x = 0f; y = 0f; width = 300f; height = 300f } }
         var scissorMode = true
 
         onUpdate {
