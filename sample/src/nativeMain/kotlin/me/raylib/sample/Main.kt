@@ -10,7 +10,10 @@ import me.raylib.sample.shape.*
 import me.raylib.sample.textures.*
 import raylib.core.Colors
 import raylib.core.KeyboardKey
+import raylib.core.MouseButton
 import raylib.core.Rectangle
+import raylib.core.Vector2
+import raylib.core.isCollisionWith
 import raylib.core.mutableStateOf
 import raylib.core.put
 import raylib.core.nativeStateOf
@@ -78,12 +81,6 @@ fun main() = window(
 
     component("menu_control") {
         onUpdate {
-            if (KeyboardKey.KEY_B.isPressed()) {
-                currentExample.value = null
-                active.value.value = -1
-            }
-        }
-        onUpdate {
             if (active.value.value != -1) {
                 currentExample.value = Example.entries[active.value.value]
             } else {
@@ -143,5 +140,21 @@ fun main() = window(
         Example.SRCREC_DSTREC -> srcrecDstrec()
         Example.SPRITE_ANIMATION_SAMPLE -> spriteAnimationSample()
         Example.SPRITE_EXPLOSION -> spriteExplosion()
+    }
+
+    if (currentExample.value != null) {
+        component("back") {
+            val center = Vector2(screenWidth - 20f, 20f)
+            val radius = 15f
+            onUpdate {
+                if (MouseButton.MOUSE_BUTTON_LEFT.isPressed() && mousePosition.isCollisionWith(center, radius)) {
+                    currentExample.value = null
+                    active.value.value = -1
+                }
+            }
+            onDraw {
+                drawCircle(center, radius, Colors.RED)
+            }
+        }
     }
 }

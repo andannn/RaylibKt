@@ -6,7 +6,6 @@ import raylib.core.Rectangle
 import raylib.core.RectangleAlloc
 import raylib.core.Vector2
 import raylib.core.components.spriteAnimationComponent
-import raylib.core.getValue
 import raylib.core.loadTexture
 import raylib.core.mutableStateListOf
 import raylib.core.mutableStateOf

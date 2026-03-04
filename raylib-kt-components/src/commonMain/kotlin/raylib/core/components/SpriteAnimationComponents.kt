@@ -50,10 +50,16 @@ fun ComponentRegistry.spriteAnimationComponent(
 
         suspendingTask {
             while (true) {
-                awaitDuration(1f.div(framesSpeed.value).times(1000).toInt().milliseconds)
-                if (currentFrame + 1 == frameCount) onRestart()
+                val speed = framesSpeed.value.coerceAtLeast(1)
+                val frameDurationMs = (1000 / speed).toLong()
+                awaitDuration(frameDurationMs.milliseconds)
 
-                currentFrame = (currentFrame + 1) % frameCount
+                currentFrame = (currentFrame + 1)
+                if (currentFrame >= frameCount) {
+                    currentFrame = 0
+                    onRestart()
+                }
+
                 frameRec.x = (currentFrame % numFramePerLine) * frameRec.width
                 frameRec.y = (currentFrame / numFramePerLine).toFloat() * frameRec.height
             }

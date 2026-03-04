@@ -51,10 +51,8 @@ internal class ComponentsBuilder(
     private val componentKeys = mutableSetOf<Any>()
 
     override fun <R> remember(id: Any, block: ComponentScope.() -> R): R {
-        require(componentKeys.add(id)) {
-            "Error: Duplicate component key detected -> '$id'. " +
-                    "Each component in the same scope must have a unique ID."
-        }
+        checkUniqueKey(id)
+
         val component = activeStates.remove(id) ?: StateComponent<R>(id, contextRegistry).apply {
             internalValue = block()
         }
@@ -63,10 +61,7 @@ internal class ComponentsBuilder(
     }
 
     override fun component(id: Any, block: ComponentScope.() -> Unit) {
-        require(componentKeys.add(id)) {
-            "Error: Duplicate component key detected -> '$id'. " +
-                    "Each component in the same scope must have a unique ID."
-        }
+        checkUniqueKey(id)
 
         val component = activeStates.remove(id) ?: Component(id, contextRegistry).apply(block)
         pendingStates[id] = component
@@ -86,5 +81,11 @@ internal class ComponentsBuilder(
         val temp = activeStates
         activeStates = pendingStates
         pendingStates = temp
+    }
+
+    private fun checkUniqueKey(id: Any) {
+        require(componentKeys.add(id)) {
+            "Duplicate component key in same build scope: '$id' (${id::class})."
+        }
     }
 }
