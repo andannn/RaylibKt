@@ -32,8 +32,9 @@ fun ComponentRegistry.spriteAnimationComponent(
     spriteGrid: SpriteGrid,
     framesSpeed: State<Int>,
     dest: Rectangle,
-    tag: String = "spriteAnimation",
     origin: CValue<Vector2> = Vector2(),
+    tag: String = "spriteAnimation",
+    onRestart: () -> Unit = {},
 ) {
     component("spriteAnimation_$tag") {
         val (textureWidth, textureHeight) = texture.useContents { width to height }
@@ -50,8 +51,11 @@ fun ComponentRegistry.spriteAnimationComponent(
         suspendingTask {
             while (true) {
                 awaitDuration(1f.div(framesSpeed.value).times(1000).toInt().milliseconds)
+                if (currentFrame + 1 == frameCount) onRestart()
+
                 currentFrame = (currentFrame + 1) % frameCount
-                frameRec.x = currentFrame.toFloat() * frameRec.width
+                frameRec.x = (currentFrame % numFramePerLine) * frameRec.width
+                frameRec.y = (currentFrame / numFramePerLine).toFloat() * frameRec.height
             }
         }
 
