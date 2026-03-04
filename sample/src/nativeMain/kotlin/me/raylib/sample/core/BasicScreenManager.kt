@@ -11,10 +11,12 @@ import raylib.core.Colors.PURPLE
 import raylib.core.ComponentRegistry
 import raylib.core.Gesture
 import raylib.core.KeyboardKey
+import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.setValue
 
 fun ComponentRegistry.basicScreenManager() {
-    val currentScreen = remember("currentScreen") {
+    var currentScreen by remember("currentScreen") {
         mutableStateOf(GameScreen.LOGO)
     }
 
@@ -22,39 +24,39 @@ fun ComponentRegistry.basicScreenManager() {
         var framesCounter = 0
 
         onUpdate {
-            when (currentScreen.value) {
+            when (currentScreen) {
                 GameScreen.LOGO -> {
                     framesCounter++
                     if (framesCounter > 120) {
-                        currentScreen.value = GameScreen.TITLE
+                        currentScreen = GameScreen.TITLE
                     }
                 }
 
                 GameScreen.TITLE -> {
                     if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                        currentScreen.value = GameScreen.GAMEPLAY
+                        currentScreen = GameScreen.GAMEPLAY
                     }
                 }
 
                 GameScreen.GAMEPLAY -> {
                     if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                        currentScreen.value = GameScreen.ENDING
+                        currentScreen = GameScreen.ENDING
                     }
                 }
 
                 GameScreen.ENDING -> {
                     if (KeyboardKey.KEY_ENTER.isPressed() || Gesture.GESTURE_TAP.isDetected()) {
-                        currentScreen.value = GameScreen.TITLE
+                        currentScreen = GameScreen.TITLE
                     }
                 }
             }
         }
 
     }
-    if (currentScreen.value == GameScreen.LOGO) screen(GameScreen.LOGO)
-    if (currentScreen.value == GameScreen.TITLE) screen(GameScreen.TITLE)
-    if (currentScreen.value == GameScreen.GAMEPLAY) screen(GameScreen.GAMEPLAY)
-    if (currentScreen.value == GameScreen.ENDING) screen(GameScreen.ENDING)
+    if (currentScreen == GameScreen.LOGO) screen(GameScreen.LOGO)
+    if (currentScreen == GameScreen.TITLE) screen(GameScreen.TITLE)
+    if (currentScreen == GameScreen.GAMEPLAY) screen(GameScreen.GAMEPLAY)
+    if (currentScreen == GameScreen.ENDING) screen(GameScreen.ENDING)
 }
 
 private fun ComponentRegistry.screen(screen: GameScreen) {

@@ -27,12 +27,11 @@ class ComponentManagerTest {
         )
         assertEquals(0, manager.components.size)
 
-        manager.initComponents()
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(listOf("component1", "component2"), manager.components.map { it.componentId })
 
         isAddComponent = true
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(3, manager.components.size)
         assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
     }
@@ -54,12 +53,11 @@ class ComponentManagerTest {
         )
         assertEquals(0, manager.components.size)
 
-        manager.initComponents()
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
 
         isRemoveComponent = true
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(listOf("component1", "component3"), manager.components.map { it.componentId })
     }
 
@@ -78,14 +76,12 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.initComponents()
 
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(1, called)
 
-
         isRemoveComponent = true
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(1, called)
 
     }
@@ -101,7 +97,7 @@ class ComponentManagerTest {
             }
         )
         assertFails("Duplicate component key detected -> 'component1'. Each component in the same scope must have a unique ID.") {
-            manager.reBuildComponents()
+            manager.buildComponents()
         }
     }
 
@@ -117,8 +113,7 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.initComponents()
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertFalse(called)
         manager.dispose()
         assertTrue(called)
@@ -141,13 +136,12 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.initComponents()
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(0, called)
 
 
         isAddComponent = false
-        manager.reBuildComponents()
+        manager.buildComponents()
 
         assertEquals(1, called)
     }
@@ -169,17 +163,16 @@ class ComponentManagerTest {
             }
         )
 
-        manager.initComponents()
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals("A", currentValue?.value)
 
 
-        manager.reBuildComponents()
+        manager.buildComponents()
         manager.performUpdate(2f)
         assertEquals("B", currentValue?.value)
 
 
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals("B", currentValue?.value)
 
     }
@@ -198,13 +191,11 @@ class ComponentManagerTest {
             }
         )
 
-        manager.initComponents()
-        manager.reBuildComponents()
+        manager.buildComponents()
         assertEquals(100f, value?.value?.x)
 
-
         isValue = false
-        manager.reBuildComponents()
+        manager.buildComponents()
 
         assertEquals(true, value?.isDisposed)
     }

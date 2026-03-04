@@ -31,7 +31,7 @@ fun window(
 
     val componentManager = ComponentRegistryImpl(contextRegistry, block)
     with(componentManager) {
-        initComponents()
+        buildComponents()
 
         try {
             windowFunction.gameLoop {
@@ -39,7 +39,7 @@ fun window(
                 performUpdate(windowFunction.frameTimeSeconds)
 
                 // rebuild components
-                reBuildComponents()
+                buildComponents()
 
                 // Draw
                 BeginDrawing()

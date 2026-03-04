@@ -99,4 +99,5 @@ internal class StateComponent<R>(
         get() = internalValue ?: error("value not init")
 }
 
+
 internal  fun <R> AbstractComponent.value() = (this as StateComponent<*>).value as R

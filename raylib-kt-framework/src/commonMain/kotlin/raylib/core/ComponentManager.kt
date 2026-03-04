@@ -6,71 +6,20 @@ interface ComponentRegistry {
 }
 
 internal interface ComponentManager : ComponentRegistry, Disposable {
-    fun initComponents()
     fun performUpdate(deltaTime: Float)
-    fun reBuildComponents()
+    fun buildComponents()
     fun performDraw()
 }
 
 internal class ComponentRegistryImpl(
     contextRegistry: ContextRegistry,
-    private val block: ComponentRegistry.() -> Unit
-) : ComponentManager {
-    private val componentsBuilder = ComponentsBuilder(contextRegistry)
+    private val block: ComponentRegistry.() -> Unit,
+    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry)
+) : ComponentManager, ComponentRegistry by componentsBuilder {
     internal val components
         get() = componentsBuilder.activeStates.values
 
-    override fun initComponents() {
-        reBuildComponents()
-    }
-
-    private class ComponentsBuilder(
-        private val contextRegistry: ContextRegistry
-    ) : ComponentRegistry {
-        var activeStates = HashMap<Any, AbstractComponent>()
-        var pendingStates = HashMap<Any, AbstractComponent>()
-        private val componentKeys = mutableSetOf<Any>()
-
-        override fun <R> remember(id: Any, block: ComponentScope.() -> R): R {
-            require(componentKeys.add(id)) {
-                "Error: Duplicate component key detected -> '$id'. " +
-                        "Each component in the same scope must have a unique ID."
-            }
-            val component = activeStates.remove(id) ?: StateComponent<R>(id, contextRegistry).apply {
-                internalValue = block()
-            }
-            pendingStates[id] = component
-            return component.value()
-        }
-
-        override fun component(id: Any, block: ComponentScope.() -> Unit) {
-            require(componentKeys.add(id)) {
-                "Error: Duplicate component key detected -> '$id'. " +
-                        "Each component in the same scope must have a unique ID."
-            }
-
-            val component = activeStates.remove(id) ?: Component(id, contextRegistry).apply(block)
-            pendingStates[id] = component
-        }
-
-        fun endBuild() {
-            componentKeys.clear()
-
-            if (activeStates.isNotEmpty()) {
-                activeStates.values.forEach {
-                    println("Component [${it.componentId}] has been disposed.")
-                    it.dispose()
-                }
-                activeStates.clear()
-            }
-
-            val temp = activeStates
-            activeStates = pendingStates
-            pendingStates = temp
-        }
-    }
-
-    override fun reBuildComponents() {
+    override fun buildComponents() {
         componentsBuilder.apply(block)
         componentsBuilder.endBuild()
     }
@@ -92,12 +41,50 @@ internal class ComponentRegistryImpl(
             it.dispose()
         }
     }
+}
+
+internal class ComponentsBuilder(
+    private val contextRegistry: ContextRegistry
+) : ComponentRegistry {
+    var activeStates = HashMap<Any, AbstractComponent>()
+    var pendingStates = HashMap<Any, AbstractComponent>()
+    private val componentKeys = mutableSetOf<Any>()
 
     override fun <R> remember(id: Any, block: ComponentScope.() -> R): R {
-        return componentsBuilder.remember(id, block)
+        require(componentKeys.add(id)) {
+            "Error: Duplicate component key detected -> '$id'. " +
+                    "Each component in the same scope must have a unique ID."
+        }
+        val component = activeStates.remove(id) ?: StateComponent<R>(id, contextRegistry).apply {
+            internalValue = block()
+        }
+        pendingStates[id] = component
+        return component.value()
     }
 
     override fun component(id: Any, block: ComponentScope.() -> Unit) {
-        return componentsBuilder.component(id, block)
+        require(componentKeys.add(id)) {
+            "Error: Duplicate component key detected -> '$id'. " +
+                    "Each component in the same scope must have a unique ID."
+        }
+
+        val component = activeStates.remove(id) ?: Component(id, contextRegistry).apply(block)
+        pendingStates[id] = component
+    }
+
+    fun endBuild() {
+        componentKeys.clear()
+
+        if (activeStates.isNotEmpty()) {
+            activeStates.values.forEach {
+                println("Component [${it.componentId}] has been disposed.")
+                it.dispose()
+            }
+            activeStates.clear()
+        }
+
+        val temp = activeStates
+        activeStates = pendingStates
+        pendingStates = temp
     }
 }

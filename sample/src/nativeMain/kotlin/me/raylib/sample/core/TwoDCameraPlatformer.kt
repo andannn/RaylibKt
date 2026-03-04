@@ -20,12 +20,14 @@ import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.add
 import raylib.core.RectangleAlloc
+import raylib.core.getValue
 import raylib.core.length
 import raylib.core.mode2d
 import raylib.core.scale
 import raylib.core.screenToWorldPosition
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.core.subtract
 import raylib.core.worldToScreenPosition
 
@@ -43,13 +45,13 @@ fun ComponentRegistry.towDCameraPlatformer() {
     val cameraOption = remember("camera option") {
         mutableStateOf(CameraOption.FollowPlayerCenter)
     }
-    val player = remember("player_state") {
+    val player by remember("player_state") {
         nativeStateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }
-    }.value
-    val camera = remember("camera") {
+    }
+    val camera by remember("camera") {
         nativeStateOf { alloc<Camera2D> { zoom = 1f } }
-    }.value
-    val envItems = remember("aaa") {
+    }
+    val envItems by remember("aaa") {
         nativeStateOf {
             listOf(
                 EnvItem(RectangleAlloc(0f, 0f, 1000f, 400f), false, LIGHTGRAY),
@@ -59,7 +61,7 @@ fun ComponentRegistry.towDCameraPlatformer() {
                 EnvItem(RectangleAlloc(650f, 300f, 100f, 10f), true, GRAY),
             )
         }
-    }.value
+    }
 
     component("changeCameraOption") {
         onUpdate {

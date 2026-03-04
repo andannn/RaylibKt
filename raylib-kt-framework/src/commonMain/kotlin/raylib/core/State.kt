@@ -12,6 +12,18 @@ interface MutableState<T> : State<T> {
     override var value: T
 }
 
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> MutableState<T>.setValue(
+    thisObj: Any?,
+    property: KProperty<*>,
+    value: T,
+) {
+    this.value = value
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T = value
+
 fun <T> mutableStateOf(initialValue: T): MutableState<T> =
     object : MutableStateBox<T>(initialValue) {}
 
