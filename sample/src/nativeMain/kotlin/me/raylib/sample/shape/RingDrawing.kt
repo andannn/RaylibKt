@@ -8,23 +8,23 @@ import kotlinx.cinterop.value
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.MAROON
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Rectangle
 import raylib.core.Vector2
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
 import raylib.gui.onDrawGui
 import raylib.interop.Fade
 
-fun ComponentFactory.ringDrawing() {
+fun ComponentRegistry.ringDrawing() {
     component("A") {
-        val startAngle by stateOf { alloc<FloatVar>() }
-        val endAngle by stateOf { alloc<FloatVar>() }
-        val drawRing by stateOf { alloc<BooleanVar>() }
-        val drawRingLines by stateOf { alloc<BooleanVar>() }
-        val drawCircleLines by stateOf { alloc<BooleanVar>() }
-        val innerRadius by stateOf { alloc<FloatVar> { value = 80f } }
-        val outerRadius by stateOf { alloc<FloatVar> { value = 190f } }
-        val segments by stateOf { alloc<FloatVar> {} }
+        val startAngle by nativeStateOf { alloc<FloatVar>() }
+        val endAngle by nativeStateOf { alloc<FloatVar>() }
+        val drawRing by nativeStateOf { alloc<BooleanVar>() }
+        val drawRingLines by nativeStateOf { alloc<BooleanVar>() }
+        val drawCircleLines by nativeStateOf { alloc<BooleanVar>() }
+        val innerRadius by nativeStateOf { alloc<FloatVar> { value = 80f } }
+        val outerRadius by nativeStateOf { alloc<FloatVar> { value = 190f } }
+        val segments by nativeStateOf { alloc<FloatVar> {} }
         val center = Vector2((screenWidth - 300) / 2.0f, screenHeight / 2.0f)
 
         onDrawGui {

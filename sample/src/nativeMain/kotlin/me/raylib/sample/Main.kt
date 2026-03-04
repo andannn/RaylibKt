@@ -22,7 +22,7 @@ import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.mutableStateOf
 import raylib.core.put
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
 import raylib.core.window
 import raylib.gui.GuiContext
 import raylib.gui.onDrawGui
@@ -64,86 +64,85 @@ enum class Example(val title: String) {
 
 @OptIn(ExperimentalNativeApi::class)
 @CName(externName = "raylib_android_main")
-fun main() {
-    window(
-        title = "raylib [core] example - input gestures",
-        width = 800,
-        height = 450,
-        initialBackGroundColor = Colors.RAYWHITE
-    ) {
+fun main() = window(
+    title = "raylib [core] example - input gestures",
+    width = 800,
+    height = 450,
+    initialBackGroundColor = Colors.RAYWHITE,
+    initContext = {
         put(GuiContext())
+    }
+) {
+    val active = remember("selected menu index") {
+        nativeStateOf { alloc<IntVar> { value = -1 } }
+    }
 
-        val currentExample = mutableStateOf<Example?>(null)
-        val active by stateOf { alloc<IntVar> { value = -1 } }
+    val currentExample = remember("current example") {
+        mutableStateOf<Example?>(null)
+    }
 
-        componentRegistry {
-            component("menu_control") {
-                onUpdate {
-                    if (KeyboardKey.KEY_B.isPressed()) {
-                        currentExample.value = null
-                        active.value = -1
-                    }
-                }
-                onUpdate {
-                    if (active.value != -1) {
-                        currentExample.value = Example.entries[active.value]
-                    } else {
-                        currentExample.value = null
-                    }
-                }
+    component("menu_control") {
+        onUpdate {
+            if (KeyboardKey.KEY_B.isPressed()) {
+                currentExample.value = null
+                active.value.value = -1
             }
-
-            when (currentExample.value) {
-                null -> {
-                    component("menu") {
-                        val bounds = Rectangle(0f, 0f, 400f, screenHeight.toFloat())
-                        val scrollIndex by stateOf { alloc<IntVar> {} }
-                        onDrawGui {
-                            guiListView(
-                                bounds = bounds,
-                                text = Example.entries.joinToString(";") { it.title },
-                                scrollIndex = scrollIndex.ptr,
-                                active = active.ptr
-                            )
-                        }
-                    }
-                }
-
-                Example.FIRST_WINDOW -> firstWindow()
-                Example.DELTA_TIME -> deltaTime()
-                Example.INPUT_KEYS -> inputKeys()
-                Example.INPUT_MOUSE -> inputMouse()
-                Example.INPUT_MOUSE_WHEEL -> inputMouseWheel()
-                Example.INPUT_MULTITOUCH -> inputMultitouch()
-                Example.INPUT_GESTURES -> inputGestures()
-                Example.TWO_D_CAMERA -> twoDCamera()
-                Example.TWO_D_CAMERA_MOUSE_ZOOM -> twoDCameraMouseZoom()
-                Example.TWO_D_CAMERA_SPLIT_SCREEN -> twoDCameraSplitScreen()
-                Example.WINDOW_SHOULD_CLOSE -> windowShouldClose()
-                Example.WINDOW_FLAGS -> windowFlags()
-                Example.MONITOR_DETECTOR -> monitorDetector()
-                Example.SCISSOR_TEST -> scissorTest()
-                Example.BASIC_SCREEN_MANAGER -> TODO()
-                Example.RANDOM_SEQUENCE -> randomSequence()
-                Example.TOW_D_CAMERA_PLATFORMER -> TODO()
-                Example.RENDER_TEXTURE -> renderTexture()
-                Example.BOUNCING_BALL -> bouncingBall()
-                Example.RANDOM_OBJECT_GENERATOR -> TODO()
-                Example.BASIC_SHAPES -> basicShapes()
-                Example.RECTANGLE_SCALING -> rectangleScaling()
-                Example.LINES_BEZIER -> linesBezier()
-                Example.COLLISION_AREA -> collisionArea()
-                Example.FOLLOWING_EYES -> followingEyes()
-                Example.EASING_BALL -> easingBall()
-                Example.EASING_BOX -> easingBox()
-                Example.EASINGS_RECTANGLES -> easingsRectangles()
-                Example.MOUSE_TRAIL -> mouseTrail()
-                Example.RING_DRAWING -> ringDrawing()
-                Example.INPUT_ACTIONS -> inputActions()
+        }
+        onUpdate {
+            if (active.value.value != -1) {
+                currentExample.value = Example.entries[active.value.value]
+            } else {
+                currentExample.value = null
             }
         }
     }
-//    basicScreenManager()
-//    towDCameraPlatformer()
-//    randomObjectGenerator()
+
+    when (currentExample.value) {
+        null -> {
+            component("menu") {
+                val bounds = Rectangle(0f, 0f, 400f, screenHeight.toFloat())
+                val scrollIndex by nativeStateOf { alloc<IntVar> {} }
+                onDrawGui {
+                    guiListView(
+                        bounds = bounds,
+                        text = Example.entries.joinToString(";") { it.title },
+                        scrollIndex = scrollIndex.ptr,
+                        active = active.value.ptr
+                    )
+                }
+            }
+        }
+
+        Example.FIRST_WINDOW -> firstWindow()
+        Example.DELTA_TIME -> deltaTime()
+        Example.INPUT_KEYS -> inputKeys()
+        Example.INPUT_MOUSE -> inputMouse()
+        Example.INPUT_MOUSE_WHEEL -> inputMouseWheel()
+        Example.INPUT_MULTITOUCH -> inputMultitouch()
+        Example.INPUT_GESTURES -> inputGestures()
+        Example.TWO_D_CAMERA -> twoDCamera()
+        Example.TWO_D_CAMERA_MOUSE_ZOOM -> twoDCameraMouseZoom()
+        Example.TWO_D_CAMERA_SPLIT_SCREEN -> twoDCameraSplitScreen()
+        Example.WINDOW_SHOULD_CLOSE -> windowShouldClose()
+        Example.WINDOW_FLAGS -> windowFlags()
+        Example.MONITOR_DETECTOR -> monitorDetector()
+        Example.SCISSOR_TEST -> scissorTest()
+        Example.BASIC_SCREEN_MANAGER -> basicScreenManager()
+        Example.RANDOM_SEQUENCE -> randomSequence()
+        Example.TOW_D_CAMERA_PLATFORMER -> towDCameraPlatformer()
+        Example.RENDER_TEXTURE -> renderTexture()
+        Example.BOUNCING_BALL -> bouncingBall()
+        Example.RANDOM_OBJECT_GENERATOR -> randomObjectGenerator()
+        Example.BASIC_SHAPES -> basicShapes()
+        Example.RECTANGLE_SCALING -> rectangleScaling()
+        Example.LINES_BEZIER -> linesBezier()
+        Example.COLLISION_AREA -> collisionArea()
+        Example.FOLLOWING_EYES -> followingEyes()
+        Example.EASING_BALL -> easingBall()
+        Example.EASING_BOX -> easingBox()
+        Example.EASINGS_RECTANGLES -> easingsRectangles()
+        Example.MOUSE_TRAIL -> mouseTrail()
+        Example.RING_DRAWING -> ringDrawing()
+        Example.INPUT_ACTIONS -> inputActions()
+    }
 }

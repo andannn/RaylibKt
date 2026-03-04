@@ -6,11 +6,10 @@ import kotlinx.cinterop.useContents
 import platform.posix.expf
 import platform.posix.logf
 import raylib.core.Camera2D
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.DARKGRAY
 import raylib.core.Colors.MAROON
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
@@ -21,16 +20,15 @@ import raylib.core.scale
 import raylib.core.screenToWorldPosition
 import raylib.core.setOffset
 import raylib.core.setTarget
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 import raylib.interop.Clamp
 import raylib.interop.DrawGrid
 import raylib.interop.rlRotatef
 import raylib.interop.rlTranslatef
 
-fun ComponentFactory.twoDCameraMouseZoom() {
+fun ComponentRegistry.twoDCameraMouseZoom() {
     component("key") {
-        val camera: Camera2D by stateOf { alloc<Camera2D>() }
+        val camera: Camera2D by nativeStateOf { alloc<Camera2D>() }
         camera.zoom = 1.0f
         // 0-Mouse Wheel, 1-Mouse Move
         var zoomMode = 0

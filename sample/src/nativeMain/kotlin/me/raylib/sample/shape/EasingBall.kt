@@ -3,7 +3,7 @@ package me.raylib.sample.shape
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.await
 import raylib.core.suspendingTask
@@ -12,7 +12,7 @@ import raylib.easings.awaitEasingAnimation
 import raylib.interop.Fade
 import kotlin.time.Duration.Companion.seconds
 
-fun ComponentFactory.easingBall() {
+fun ComponentRegistry.easingBall() {
     component("A") {
         var ballPositionX = -100
         var ballRadius = 20

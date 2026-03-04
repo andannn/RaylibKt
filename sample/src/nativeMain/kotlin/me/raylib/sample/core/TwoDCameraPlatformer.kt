@@ -7,28 +7,28 @@ import kotlinx.cinterop.useContents
 import platform.posix.fmaxf
 import raylib.core.Camera2D
 import raylib.core.Color
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.DARKGRAY
 import raylib.core.Colors.GOLD
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.RED
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.MutableState
 import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.add
 import raylib.core.RectangleAlloc
+import raylib.core.getValue
 import raylib.core.length
 import raylib.core.mode2d
 import raylib.core.scale
 import raylib.core.screenToWorldPosition
 import raylib.core.mutableStateOf
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.core.subtract
-import raylib.core.window
 import raylib.core.worldToScreenPosition
 
 private enum class CameraOption(val description: String) {
@@ -41,17 +41,18 @@ private enum class CameraOption(val description: String) {
     fun next() = entries[(ordinal + 1) % entries.size]
 }
 
-fun towDCameraPlatformer() {
-    window(
-        title = "raylib [core] example - raylib [core] example - 2d camera platformer",
-        width = 800,
-        height = 450,
-        initialBackGroundColor = Colors.RAYWHITE
-    ) {
-        val cameraOption = mutableStateOf(CameraOption.FollowPlayerCenter)
-        val player by stateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }
-        val camera by stateOf { alloc<Camera2D> { zoom = 1f } }
-        val envItems by stateOf {
+fun ComponentRegistry.towDCameraPlatformer() {
+    val cameraOption = remember("camera option") {
+        mutableStateOf(CameraOption.FollowPlayerCenter)
+    }
+    val player by remember("player_state") {
+        nativeStateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }
+    }
+    val camera by remember("camera") {
+        nativeStateOf { alloc<Camera2D> { zoom = 1f } }
+    }
+    val envItems by remember("aaa") {
+        nativeStateOf {
             listOf(
                 EnvItem(RectangleAlloc(0f, 0f, 1000f, 400f), false, LIGHTGRAY),
                 EnvItem(RectangleAlloc(0f, 400f, 1000f, 200f), true, GRAY),
@@ -60,38 +61,36 @@ fun towDCameraPlatformer() {
                 EnvItem(RectangleAlloc(650f, 300f, 100f, 10f), true, GRAY),
             )
         }
+    }
 
-        componentRegistry {
-            component("changeCameraOption") {
-                onUpdate {
-                    if (KeyboardKey.KEY_C.isPressed()) {
-                        cameraOption.value = cameraOption.value.next()
-                    }
-                }
+    component("changeCameraOption") {
+        onUpdate {
+            if (KeyboardKey.KEY_C.isPressed()) {
+                cameraOption.value = cameraOption.value.next()
             }
-            when (cameraOption.value) {
-                CameraOption.FollowPlayerCenter -> followTargetCamera(camera, player.position)
-                CameraOption.FollowPlayerCenterClamped -> followTargetCenterClampedCamera(
-                    camera,
-                    player.position,
-                    Rectangle(0f, 0f, height = 600f, width = 1000f)
-                )
-
-                CameraOption.FollowPlayerCenterSmooth -> followTargetSmoothCamera(camera, player.position)
-                CameraOption.FollowPlayerCenterHorizontally -> followPlayerCenterHorizontallyCamera(camera, player)
-                CameraOption.PlayerPushCamera -> playerPushCamera(camera, player.position)
-            }
-
-            envItems.forEach {
-                envItemsComponent(camera, it)
-            }
-            playerComponent(camera, player, envItems)
-            infoComponent(cameraOption)
         }
     }
+    when (cameraOption.value) {
+        CameraOption.FollowPlayerCenter -> followTargetCamera(camera, player.position)
+        CameraOption.FollowPlayerCenterClamped -> followTargetCenterClampedCamera(
+            camera,
+            player.position,
+            Rectangle(0f, 0f, height = 600f, width = 1000f)
+        )
+
+        CameraOption.FollowPlayerCenterSmooth -> followTargetSmoothCamera(camera, player.position)
+        CameraOption.FollowPlayerCenterHorizontally -> followPlayerCenterHorizontallyCamera(camera, player)
+        CameraOption.PlayerPushCamera -> playerPushCamera(camera, player.position)
+    }
+
+    envItems.forEach {
+        envItemsComponent(camera, it)
+    }
+    playerComponent(camera, player, envItems)
+    infoComponent(cameraOption)
 }
 
-private fun ComponentFactory.envItemsComponent(camera: Camera2D, item: EnvItem) {
+private fun ComponentRegistry.envItemsComponent(camera: Camera2D, item: EnvItem) {
     component(item) {
         onDraw {
             mode2d(camera) {
@@ -105,7 +104,7 @@ const val PLAYER_HOR_SPD = 200.0f
 const val PLAYER_JUMP_SPD = 350.0f
 const val G = 400
 
-private fun ComponentFactory.followTargetCenterClampedCamera(
+private fun ComponentRegistry.followTargetCenterClampedCamera(
     camera: Camera2D,
     target: Vector2,
     worldRect: CValue<Rectangle>
@@ -147,7 +146,7 @@ private fun ComponentFactory.followTargetCenterClampedCamera(
     }
 }
 
-private fun ComponentFactory.followTargetCamera(
+private fun ComponentRegistry.followTargetCamera(
     camera: Camera2D,
     position: Vector2
 ) {
@@ -161,7 +160,7 @@ private fun ComponentFactory.followTargetCamera(
     }
 }
 
-private fun ComponentFactory.followTargetSmoothCamera(
+private fun ComponentRegistry.followTargetSmoothCamera(
     camera: Camera2D,
     position: Vector2
 ) {
@@ -186,7 +185,7 @@ private fun ComponentFactory.followTargetSmoothCamera(
     }
 }
 
-private fun ComponentFactory.playerPushCamera(
+private fun ComponentRegistry.playerPushCamera(
     camera: Camera2D,
     position: Vector2
 ) {
@@ -224,7 +223,7 @@ private fun ComponentFactory.playerPushCamera(
     }
 }
 
-private fun ComponentFactory.followPlayerCenterHorizontallyCamera(
+private fun ComponentRegistry.followPlayerCenterHorizontallyCamera(
     camera: Camera2D,
     player: Player,
 ) {
@@ -263,7 +262,7 @@ private fun ComponentFactory.followPlayerCenterHorizontallyCamera(
     }
 }
 
-private fun ComponentFactory.playerComponent(camera: Camera2D, player: Player, envItem: List<EnvItem>) {
+private fun ComponentRegistry.playerComponent(camera: Camera2D, player: Player, envItem: List<EnvItem>) {
     component("player") {
         onUpdate {
             if (KeyboardKey.KEY_R.isPressed()) {
@@ -319,7 +318,7 @@ private fun ComponentFactory.playerComponent(camera: Camera2D, player: Player, e
     }
 }
 
-private fun ComponentFactory.infoComponent(cameraOption: MutableState<CameraOption>) {
+private fun ComponentRegistry.infoComponent(cameraOption: MutableState<CameraOption>) {
     component("info") {
         onDraw {
             drawText("Controls:", 20, 20, 10, BLACK);

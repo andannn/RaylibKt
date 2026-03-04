@@ -6,22 +6,19 @@ import kotlinx.cinterop.pointed
 import kotlinx.cinterop.useContents
 import kotlinx.cinterop.value
 import raylib.core.Color
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.MAROON
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.ComponentScope
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2
-import raylib.core.WindowContext
 import raylib.core.randomColor
-import raylib.core.window
 import raylib.interop.LoadRandomSequence
 import raylib.interop.Remap
 import raylib.interop.UnloadRandomSequence
 
-fun ComponentFactory.randomSequence() {
+fun ComponentRegistry.randomSequence() {
     component("key") {
         var rectCount = 20
         var rectSize = screenWidth.toFloat() / rectCount

@@ -6,14 +6,13 @@ import platform.posix.expf
 import platform.posix.logf
 import raylib.core.Camera2D
 import raylib.core.Color
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.BLUE
 import raylib.core.Colors.DARKGRAY
 import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
 import raylib.core.Colors.SKYBLUE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.RectangleAlloc
@@ -21,15 +20,14 @@ import raylib.core.mode2d
 import raylib.core.randomValue
 import raylib.core.setOffset
 import raylib.core.setTarget
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 import raylib.interop.DrawLine
 import raylib.interop.Fade
 
 private const val MAX_BUILDINGS = 100
-fun ComponentFactory.twoDCamera() {
+fun ComponentRegistry.twoDCamera() {
     component("key") {
-        val player by stateOf { RectangleAlloc(400f, 280f, 40f, 40f) }
+        val player by nativeStateOf { RectangleAlloc(400f, 280f, 40f, 40f) }
         var spacex = 0f
         val buildings = List(MAX_BUILDINGS) { index ->
             val width = randomValue(50, 200).toFloat()
@@ -48,7 +46,7 @@ fun ComponentFactory.twoDCamera() {
                     spacex += width
                 }
         }
-        val camera by stateOf {
+        val camera by nativeStateOf {
             alloc<Camera2D>().apply {
                 setTarget(player.x + 20.0f, player.y + 20.0f)
                 setOffset(screenWidth / 2.0f, screenHeight / 2.0f)

@@ -2,12 +2,11 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.copy
 import raylib.core.Colors
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Vector2
-import raylib.core.window
 import raylib.interop.KeyboardKey
 
-internal fun ComponentFactory.deltaTime() {
+internal fun ComponentRegistry.deltaTime() {
     component("key") {
         var deltaCircle = Vector2(y = screenHeight.div(3f))
         var frameCircle = Vector2(y = screenHeight.div(3f).times(2f))

@@ -1,87 +1,27 @@
 package raylib.core
 
-import raylib.core.internal.DiffCallback
-import raylib.core.internal.executeDiff
+interface ComponentRegistry {
+    fun <R> remember(id: Any, block: ComponentScope.() -> R): R
+    fun component(id: Any, block: ComponentScope.() -> Unit)
+}
 
-
-interface ComponentManager : Disposable {
-    fun buildComponentsIfNeeded()
+internal interface ComponentManager : ComponentRegistry, Disposable {
     fun performUpdate(deltaTime: Float)
+    fun buildComponents()
     fun performDraw()
 }
 
-interface ComponentFactory {
-    fun component(componentId: Any, block: ComponentScope.() -> Unit)
-}
+internal class ComponentRegistryImpl(
+    contextRegistry: ContextRegistry,
+    private val block: ComponentRegistry.() -> Unit,
+    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry)
+) : ComponentManager, ComponentRegistry by componentsBuilder {
+    internal val components
+        get() = componentsBuilder.activeStates.values
 
-internal class ComponentManagerImpl(
-    private val contextRegistry: ContextRegistry,
-    private val isDirty: () -> Boolean,
-    private val onRebuildFinished: () -> Unit,
-    private val block: ComponentFactory.() -> Unit
-) : ComponentManager {
-    internal val components = mutableListOf<Component>()
-
-    override fun buildComponentsIfNeeded() {
-        if (components.isEmpty() || isDirty()) {
-            buildComponents()
-            onRebuildFinished()
-        }
-    }
-
-    private class KeyWithBuilder(
-        val componentId: Any,
-        val builder: () -> Component
-    )
-
-    private inner class Differ(
-        val before: List<Component>
-    ) : ComponentFactory, DiffCallback {
-        val after = mutableListOf<KeyWithBuilder>()
-        private val componentKeys = mutableSetOf<Any>()
-        override fun component(componentId: Any, block: ComponentScope.() -> Unit) {
-            require(componentKeys.add(componentId)) {
-                "Error: Duplicate component key detected -> '$componentId'. " +
-                        "Each component in the same scope must have a unique ID."
-            }
-            after.add(
-                KeyWithBuilder(
-                    componentId = componentId,
-                    builder = {
-                        Component(componentId, contextRegistry).apply(block)
-                    }
-                )
-            )
-        }
-
-        override fun areItemsTheSame(oldIndex: Int, newIndex: Int): Boolean {
-            return before[oldIndex].componentId == after[newIndex].componentId
-        }
-
-        override fun insert(newIndex: Int) {
-            println("insert ${after[newIndex].componentId} $newIndex")
-            components.add(newIndex, after[newIndex].builder())
-        }
-
-        override fun remove(atIndex: Int, oldIndex: Int) {
-            println("remove ${before[oldIndex].componentId} $atIndex")
-            components.removeAt(atIndex).dispose()
-        }
-
-        override fun same(oldIndex: Int, newIndex: Int) {
-            println("same $oldIndex $newIndex")
-        }
-    }
-
-    private fun buildComponents() {
-        Differ(components.toList()).apply(block)
-            .also { newComponentsBuilder ->
-                executeDiff(
-                    oldSize = components.size,
-                    newSize = newComponentsBuilder.after.size,
-                    callback = newComponentsBuilder
-                )
-            }
+    override fun buildComponents() {
+        componentsBuilder.apply(block)
+        componentsBuilder.endBuild()
     }
 
     override fun performDraw() {
@@ -100,6 +40,51 @@ internal class ComponentManagerImpl(
         components.forEach {
             it.dispose()
         }
-        components.clear()
+    }
+}
+
+internal class ComponentsBuilder(
+    private val contextRegistry: ContextRegistry
+) : ComponentRegistry {
+    var activeStates = HashMap<Any, AbstractComponent>()
+    var pendingStates = HashMap<Any, AbstractComponent>()
+    private val componentKeys = mutableSetOf<Any>()
+
+    override fun <R> remember(id: Any, block: ComponentScope.() -> R): R {
+        require(componentKeys.add(id)) {
+            "Error: Duplicate component key detected -> '$id'. " +
+                    "Each component in the same scope must have a unique ID."
+        }
+        val component = activeStates.remove(id) ?: StateComponent<R>(id, contextRegistry).apply {
+            internalValue = block()
+        }
+        pendingStates[id] = component
+        return component.value()
+    }
+
+    override fun component(id: Any, block: ComponentScope.() -> Unit) {
+        require(componentKeys.add(id)) {
+            "Error: Duplicate component key detected -> '$id'. " +
+                    "Each component in the same scope must have a unique ID."
+        }
+
+        val component = activeStates.remove(id) ?: Component(id, contextRegistry).apply(block)
+        pendingStates[id] = component
+    }
+
+    fun endBuild() {
+        componentKeys.clear()
+
+        if (activeStates.isNotEmpty()) {
+            activeStates.values.forEach {
+                println("Component [${it.componentId}] has been disposed.")
+                it.dispose()
+            }
+            activeStates.clear()
+        }
+
+        val temp = activeStates
+        activeStates = pendingStates
+        pendingStates = temp
     }
 }

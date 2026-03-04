@@ -1,52 +1,42 @@
 package me.raylib.sample.custom
 
 import kotlinx.cinterop.readValue
-import kotlinx.cinterop.reinterpret
-import raylib.core.Colors.BLACK
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.DisposableState
 import raylib.core.Vector2Alloc
 import raylib.core.randomColor
 import raylib.core.randomValue
-import raylib.core.stateListOf
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.mutableStateListOf
+import raylib.core.nativeStateOf
 
-fun randomObjectGenerator() {
-    window(
-        title = "custom example - random object generator",
-        width = 800,
-        height = 450,
-        initialBackGroundColor = BLACK
-    ) {
-        val stateList = stateListOf<Int>()
-        componentRegistry {
-            component("random object generator") {
-                var frameCount = 0
-                var newId = 0
-                onUpdate {
-                    frameCount++
-                    if (frameCount % 5 == 0) {
-                        if (stateList.size <= 10000) {
-                            stateList.addState(stateOf { newId++ })
-                        }
-                    }
+fun ComponentRegistry.randomObjectGenerator() {
+    val stateList = remember("component container") {
+        mutableStateListOf<Int>()
+    }
+    component("random object generator") {
+        var frameCount = 0
+        var newId = 0
+        onUpdate {
+            frameCount++
+            if (frameCount % 5 == 0) {
+                if (stateList.size <= 10000) {
+                    stateList.addState(nativeStateOf { newId++ })
                 }
-            }
-
-            stateList.forEach { state ->
-                generatedObject(state)
             }
         }
     }
+
+    stateList.forEach { state ->
+        generatedObject(state)
+    }
 }
 
-private fun ComponentFactory.generatedObject(state: DisposableState<Int>) {
+private fun ComponentRegistry.generatedObject(state: DisposableState<Int>) {
     component(state.value) {
         var frameCount = 0f
         val color = randomColor()
         val radius = randomValue(1, 10)
-        val position by stateOf {
+        val position by nativeStateOf {
             Vector2Alloc(
                 randomValue(0, screenWidth).toFloat(),
                 randomValue(0, screenHeight).toFloat()

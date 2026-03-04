@@ -4,9 +4,9 @@ import kotlinx.cinterop.CValue
 import raylib.core.Color
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 
-internal fun ComponentFactory.firstWindow(
+internal fun ComponentRegistry.firstWindow(
     initialBackGroundColor: CValue<Color> = Colors.RAYWHITE,
 ) {
     component("key") {

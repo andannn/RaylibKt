@@ -1,28 +1,26 @@
 package me.raylib.sample.shape
 
 import kotlinx.cinterop.readValue
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.BLUE
 import raylib.core.Colors.GOLD
 import raylib.core.Colors.LIME
 import raylib.core.Colors.RED
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.getCollisionRec
 import raylib.core.isCollisionWith
 import raylib.core.set
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 import raylib.interop.MeasureText
 
-fun ComponentFactory.collisionArea() {
+fun ComponentRegistry.collisionArea() {
     component("K") {
-        val boxA by stateOf { RectangleAlloc(10f, screenHeight / 2.0f - 50, 200f, 100f) }
+        val boxA by nativeStateOf { RectangleAlloc(10f, screenHeight / 2.0f - 50, 200f, 100f) }
         var boxASpeedX = 4
-        val boxB by stateOf { RectangleAlloc(screenWidth / 2.0f - 30, screenHeight / 2.0f - 30, 60f, 60f) }
-        val boxCollision by stateOf { RectangleAlloc() }
+        val boxB by nativeStateOf { RectangleAlloc(screenWidth / 2.0f - 30, screenHeight / 2.0f - 30, 60f, 60f) }
+        val boxCollision by nativeStateOf { RectangleAlloc() }
         val screenUpperLimit = 40
         var pause = false
         var collision = false

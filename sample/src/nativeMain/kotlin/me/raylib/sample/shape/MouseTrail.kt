@@ -2,19 +2,17 @@ package me.raylib.sample.shape
 
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.zeroValue
-import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.SKYBLUE
 import raylib.core.Colors.WHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Vector2
 import raylib.core.forEachContentsIndexed
-import raylib.core.window
 import raylib.interop.Fade
 
 const val MAX_TRAIL_LENGTH = 30
 
-fun ComponentFactory.mouseTrail() {
+fun ComponentRegistry.mouseTrail() {
     val trailPositions = List<CValue<Vector2>>(MAX_TRAIL_LENGTH) { zeroValue() }.toMutableList()
 
     component("AA") {

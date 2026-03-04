@@ -2,17 +2,15 @@ package me.raylib.sample.shape
 
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.readValue
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.LIGHTGRAY
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.TaskController
 import raylib.core.Vector2Alloc
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
 import raylib.core.suspendingTask
-import raylib.core.window
 import raylib.easings.Ease
 import raylib.easings.animateTo
 import raylib.easings.awaitDuration
@@ -20,9 +18,9 @@ import raylib.easings.awaitEasingAnimation
 import raylib.interop.Fade
 import kotlin.time.Duration.Companion.seconds
 
-fun ComponentFactory.easingBox() {
+fun ComponentRegistry.easingBox() {
     component("A") {
-        val rec by stateOf { RectangleAlloc(screenWidth / 2.0f, -100f, 100f, 100f) }
+        val rec by nativeStateOf { RectangleAlloc(screenWidth / 2.0f, -100f, 100f, 100f) }
         var rotation = 0.0f
         var alpha = 1.0f
         var animationTaskController: TaskController? = null

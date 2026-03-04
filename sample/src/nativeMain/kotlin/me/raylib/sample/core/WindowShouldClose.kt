@@ -2,13 +2,11 @@ package me.raylib.sample.core
 
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.WHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
-import raylib.core.WindowContext
-import raylib.core.window
 import raylib.interop.WindowShouldClose
 
-fun ComponentFactory.windowShouldClose(
+fun ComponentRegistry.windowShouldClose(
     exitKey: KeyboardKey = KeyboardKey.KEY_ESCAPE,
 ) = component("key") {
     setExitKey(exitKey)

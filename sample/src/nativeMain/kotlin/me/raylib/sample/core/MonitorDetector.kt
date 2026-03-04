@@ -1,8 +1,8 @@
 package me.raylib.sample.core
 
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 
-fun ComponentFactory.monitorDetector() {
+fun ComponentRegistry.monitorDetector() {
     component("key") {
     }
 }

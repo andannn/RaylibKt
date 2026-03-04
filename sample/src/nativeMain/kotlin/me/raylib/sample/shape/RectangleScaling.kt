@@ -2,26 +2,24 @@ package me.raylib.sample.shape
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import raylib.core.Colors
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.MouseButton
 import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.isCollisionWith
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 import raylib.interop.Fade
 
 private const val MOUSE_SCALE_MARK_SIZE = 12
 
-fun ComponentFactory.rectangleScaling() {
+fun ComponentRegistry.rectangleScaling() {
     component("key") {
-        val rec by stateOf { alloc<Rectangle> { x = 100f; y = 100f; width = 200f; height = 80f } }
+        val rec by nativeStateOf { alloc<Rectangle> { x = 100f; y = 100f; width = 200f; height = 80f } }
 
-        val mousePosition by stateOf { alloc<Vector2>() }
+        val mousePosition by nativeStateOf { alloc<Vector2>() }
 
         var mouseScaleReady = false
         var mouseScaleMode = false

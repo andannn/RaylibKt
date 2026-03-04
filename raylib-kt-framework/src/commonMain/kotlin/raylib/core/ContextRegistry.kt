@@ -7,7 +7,6 @@ interface Context
 
 interface ContextProvider {
     fun <T : Context> get(type: KClass<T>): T
-
 }
 
 interface ContextRegistry : ContextProvider {

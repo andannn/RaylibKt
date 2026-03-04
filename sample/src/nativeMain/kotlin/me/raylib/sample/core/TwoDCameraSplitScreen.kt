@@ -5,13 +5,12 @@ import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import raylib.core.Camera2D
-import raylib.core.Colors
 import raylib.core.Colors.BLUE
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.RAYWHITE
 import raylib.core.Colors.RED
 import raylib.core.Colors.WHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.DrawContext
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
@@ -21,16 +20,15 @@ import raylib.core.loadRenderTexture
 import raylib.core.mode2d
 import raylib.core.setOffset
 import raylib.core.setTarget
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
 import raylib.core.textureDrawScope
-import raylib.core.window
 
 private const val PLAYER_SIZE = 40
 
 
-fun ComponentFactory.twoDCameraSplitScreen() {
+fun ComponentRegistry.twoDCameraSplitScreen() {
     component("components") {
-        val player1 by stateOf {
+        val player1 by nativeStateOf {
             alloc<Rectangle> {
                 width = PLAYER_SIZE.toFloat()
                 height = PLAYER_SIZE.toFloat()
@@ -38,7 +36,7 @@ fun ComponentFactory.twoDCameraSplitScreen() {
                 y = 200.0f
             }
         }
-        val player2 by stateOf {
+        val player2 by nativeStateOf {
             alloc<Rectangle> {
                 width = PLAYER_SIZE.toFloat()
                 height = PLAYER_SIZE.toFloat()
@@ -46,7 +44,7 @@ fun ComponentFactory.twoDCameraSplitScreen() {
                 y = 200.0f
             }
         }
-        val camera1 by stateOf {
+        val camera1 by nativeStateOf {
             alloc<Camera2D> {
                 setTarget(player1.x, player1.y)
                 setOffset(200.0f, 200.0f)
@@ -54,7 +52,7 @@ fun ComponentFactory.twoDCameraSplitScreen() {
                 zoom = 1.0f
             }
         }
-        val camera2 by stateOf {
+        val camera2 by nativeStateOf {
             alloc<Camera2D> {
                 setTarget(player2.x, player2.y)
                 setOffset(200.0f, 200.0f)

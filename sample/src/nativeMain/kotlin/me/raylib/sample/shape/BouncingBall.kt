@@ -2,22 +2,20 @@ package me.raylib.sample.shape
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import raylib.core.Colors
 import raylib.core.Colors.DARKGREEN
 import raylib.core.Colors.GRAY
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.MAROON
 import raylib.core.Colors.RED
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 
-fun ComponentFactory.bouncingBall() {
+fun ComponentRegistry.bouncingBall() {
     component("key") {
-        val ballPosition by stateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) } }
-        val ballSpeed by stateOf { alloc<Vector2> { x = 5f; y = 4f } }
+        val ballPosition by nativeStateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) } }
+        val ballSpeed by nativeStateOf { alloc<Vector2> { x = 5f; y = 4f } }
         var useGravity = true
         var pause = false
 

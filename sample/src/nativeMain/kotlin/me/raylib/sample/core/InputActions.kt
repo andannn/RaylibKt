@@ -3,16 +3,14 @@ package me.raylib.sample.core
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
 import raylib.core.Colors.BLUE
-import raylib.core.Colors.GRAY
 import raylib.core.Colors.GREEN
 import raylib.core.Colors.RED
 import raylib.core.Colors.WHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.GameContext
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
-import raylib.core.stateOf
-import raylib.core.window
+import raylib.core.nativeStateOf
 import raylib.interop.GamepadButton
 
 private enum class ActionType {
@@ -57,10 +55,10 @@ private fun GameContext.isPressed(type: ActionType) =
 private fun GameContext.isReleased(type: ActionType) =
     currentKeySet[type]!!.key.isReleased() || currentKeySet[type]!!.button.isReleased(0)
 
-fun ComponentFactory.inputActions() {
+fun ComponentRegistry.inputActions() {
     component("key") {
-        val position: Vector2 by stateOf { alloc { x = 400.0f; y = 200.0f } }
-        val size: Vector2 by stateOf { alloc { x = 40.0f; y = 40.0f } }
+        val position: Vector2 by nativeStateOf { alloc { x = 400.0f; y = 200.0f } }
+        val size: Vector2 by nativeStateOf { alloc { x = 40.0f; y = 40.0f } }
         var actionSet = false
         var releaseAction = false
         onUpdate {

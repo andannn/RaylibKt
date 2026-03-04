@@ -3,31 +3,29 @@ package me.raylib.sample.core
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
-import raylib.core.Colors
 import raylib.core.Colors.BLACK
 import raylib.core.Colors.MAROON
 import raylib.core.Colors.RED
 import raylib.core.Colors.SKYBLUE
 import raylib.core.Colors.WHITE
-import raylib.core.ComponentFactory
+import raylib.core.ComponentRegistry
 import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.loadRenderTexture
-import raylib.core.stateOf
+import raylib.core.nativeStateOf
 import raylib.core.textureDrawScope
-import raylib.core.window
 
-fun ComponentFactory.renderTexture() {
+fun ComponentRegistry.renderTexture() {
     component("ballMovement") {
         val renderTextureWidth = 300
         val renderTextureHeight = 300
         val loadedTexture = loadRenderTexture(renderTextureWidth, renderTextureHeight)
-        val ballPosition: Vector2 by stateOf {
+        val ballPosition: Vector2 by nativeStateOf {
             alloc {
                 x = renderTextureWidth / 2.0f; y = renderTextureHeight / 2.0f
             }
         }
-        val ballSpeed by stateOf { alloc<Vector2> { x = 5.0f; y = 4.0f } }
+        val ballSpeed by nativeStateOf { alloc<Vector2> { x = 5.0f; y = 4.0f } }
         val ballRadius = 20
         var rotation = 0.0f
 
