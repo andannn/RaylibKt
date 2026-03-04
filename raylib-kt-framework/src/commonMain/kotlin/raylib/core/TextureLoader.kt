@@ -13,7 +13,7 @@ fun DisposableRegistry.loadRenderTexture(
     return texture
 }
 
-fun DisposableRegistry.loadRenderTexture(
+fun DisposableRegistry.loadTexture(
     fileName: String,
 ): CValue<Texture> {
     val texture = raylib.interop.LoadTexture(fileName)
