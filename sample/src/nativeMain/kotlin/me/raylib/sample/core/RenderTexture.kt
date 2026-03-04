@@ -67,8 +67,8 @@ fun ComponentRegistry.renderTexture() {
                 sourceRectangle,
                 dstRectangle,
                 origin,
+                WHITE,
                 rotation,
-                WHITE
             )
 
             drawText("DRAWING BOUNCING BALL INSIDE RENDER TEXTURE!", 10, screenHeight - 40, 20, BLACK)

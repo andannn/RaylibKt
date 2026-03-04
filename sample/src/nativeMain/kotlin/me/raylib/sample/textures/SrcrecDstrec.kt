@@ -20,7 +20,7 @@ fun ComponentRegistry.srcrecDstrec() {
         onUpdate { rotation++; }
 
         onDraw {
-            drawTexture(scarfy, sourceRec, destRec, origin, rotation, WHITE)
+            drawTexture(scarfy, sourceRec, destRec, origin, WHITE, rotation)
 
             val (destRecX, destRecY) = destRec.useContents { x.toInt() to y.toInt() }
             drawLine(destRecX, 0, destRecX, screenHeight, GRAY)

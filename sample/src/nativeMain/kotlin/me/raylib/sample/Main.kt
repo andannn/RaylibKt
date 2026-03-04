@@ -53,6 +53,7 @@ enum class Example(val title: String) {
     INPUT_ACTIONS("Input actions"),
     LOGO_RAYLIB("Logo Raylib"),
     SRCREC_DSTREC("srcrec dstrec"),
+    SPRITE_ANIMATION_SAMPLE("Sprite Animation"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -139,5 +140,6 @@ fun main() = window(
         Example.INPUT_ACTIONS -> inputActions()
         Example.LOGO_RAYLIB -> logoRaylib()
         Example.SRCREC_DSTREC -> srcrecDstrec()
+        Example.SPRITE_ANIMATION_SAMPLE -> spriteAnimationSample()
     }
 }
