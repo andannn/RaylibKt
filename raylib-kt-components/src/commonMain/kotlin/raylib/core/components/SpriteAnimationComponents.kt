@@ -15,11 +15,13 @@ import raylib.core.suspendingTask
 import raylib.easings.awaitDuration
 import kotlin.time.Duration.Companion.milliseconds
 
+typealias SpriteGrid = Pair<Int, Int>
+
 /**
  * Coroutine-driven spritesheet animation.
  *
  * @param texture The spritesheet texture.
- * @param frameCount Total number of frames.
+ * @param spriteGrid The grid layout of the spritesheet (columns to rows).
  * @param framesSpeed Playback speed (FPS). Reactive via [State].
  * @param dest Position and scale on screen.
  * @param tag Unique ID to persist state (current frame) and prevent collisions.
@@ -27,7 +29,7 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 fun ComponentRegistry.spriteAnimationComponent(
     texture: CValue<Texture2D>,
-    frameCount: Int,
+    spriteGrid: SpriteGrid,
     framesSpeed: State<Int>,
     dest: Rectangle,
     tag: String = "spriteAnimation",
@@ -35,13 +37,13 @@ fun ComponentRegistry.spriteAnimationComponent(
 ) {
     component("spriteAnimation_$tag") {
         val (textureWidth, textureHeight) = texture.useContents { width to height }
+        val (numFramePerLine, numLine) = spriteGrid
+        val frameWidth = textureWidth.toFloat() / numFramePerLine
+        val frameHeight = textureHeight.toFloat() / numLine
+        val frameCount = numFramePerLine * numLine
+
         val frameRec by nativeStateOf {
-            RectangleAlloc(
-                0.0f,
-                0.0f,
-                textureWidth.toFloat() / frameCount,
-                textureHeight.toFloat()
-            )
+            RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
         }
         var currentFrame = 0
 
