@@ -12,3 +12,13 @@ fun DisposableRegistry.loadRenderTexture(
     }
     return texture
 }
+
+fun DisposableRegistry.loadRenderTexture(
+    fileName: String,
+): CValue<Texture> {
+    val texture = raylib.interop.LoadTexture(fileName)
+    disposeOnClose {
+        raylib.interop.UnloadTexture(texture)
+    }
+    return texture
+}

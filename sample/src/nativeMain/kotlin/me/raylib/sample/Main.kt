@@ -5,18 +5,9 @@ import kotlinx.cinterop.alloc
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import me.raylib.sample.core.*
-import me.raylib.sample.custom.randomObjectGenerator
-import me.raylib.sample.shape.basicShapes
-import me.raylib.sample.shape.bouncingBall
-import me.raylib.sample.shape.collisionArea
-import me.raylib.sample.shape.easingBall
-import me.raylib.sample.shape.easingBox
-import me.raylib.sample.shape.easingsRectangles
-import me.raylib.sample.shape.followingEyes
-import me.raylib.sample.shape.linesBezier
-import me.raylib.sample.shape.mouseTrail
-import me.raylib.sample.shape.rectangleScaling
-import me.raylib.sample.shape.ringDrawing
+import me.raylib.sample.custom.*
+import me.raylib.sample.shape.*
+import me.raylib.sample.textures.*
 import raylib.core.Colors
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
@@ -60,6 +51,7 @@ enum class Example(val title: String) {
     MOUSE_TRAIL("Mouse trail"),
     RING_DRAWING("Ring drawing"),
     INPUT_ACTIONS("Input actions"),
+    LOGO_RAYLIB("Logo Raylib"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -144,5 +136,6 @@ fun main() = window(
         Example.MOUSE_TRAIL -> mouseTrail()
         Example.RING_DRAWING -> ringDrawing()
         Example.INPUT_ACTIONS -> inputActions()
+        Example.LOGO_RAYLIB -> logoRaylib()
     }
 }

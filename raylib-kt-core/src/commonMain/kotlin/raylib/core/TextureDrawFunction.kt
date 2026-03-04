@@ -19,6 +19,10 @@ interface TextureDrawFunction {
         rotation: Float,
         tint: CValue<Color>
     )
+
+    fun drawTexture(
+        texture: CValue<Texture>, posX: Int, posY: Int, tint: CValue<Color>
+    )
 }
 
 fun TextureDrawFunction(): TextureDrawFunction {
@@ -44,5 +48,14 @@ private class DefaultTextureDrawFunction : TextureDrawFunction {
         tint: CValue<Color>
     ) {
         raylib.interop.DrawTexturePro(texture, source, dest, origin, rotation, tint)
+    }
+
+    override fun drawTexture(
+        texture: CValue<Texture>,
+        posX: Int,
+        posY: Int,
+        tint: CValue<Color>
+    ) {
+        raylib.interop.DrawTexture(texture, posX, posY, tint)
     }
 }
