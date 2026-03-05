@@ -3,7 +3,6 @@ package raylib.core
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-@MustUseReturnValues
 interface ComponentScope : DisposableRegistry, WindowFunction, ContextProvider {
     fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit)
 
@@ -32,10 +31,10 @@ internal abstract class AbstractComponent(
 ) : ComponentScope, ContextRegistry by contextRegistry, WindowFunction by contextRegistry.get<WindowContext>(),
     Disposable {
 
-    private var loopHandler: LoopHandler? = null
-    private val builder = LoopHandlerBuilder(contextRegistry)
-    fun requireLoopHandler() = loopHandler ?: builder.build().also {
-        loopHandler = it
+    private var _loopHandler: LoopHandler? = null
+    private val loopHandler = LoopHandlerBuilder(contextRegistry)
+    fun requireLoopHandler() = _loopHandler ?: loopHandler.build().also {
+        _loopHandler = it
     }
 
     @OptIn(ExperimentalNativeApi::class)
@@ -52,11 +51,11 @@ internal abstract class AbstractComponent(
     }
 
     override fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit) {
-        builder.onUpdate(block)
+        loopHandler.onUpdate(block)
     }
 
     override fun onDraw(block: DrawContext.() -> Unit) {
-        builder.onDraw(block)
+        loopHandler.onDraw(block)
     }
 
     private class LoopHandlerBuilder(contextRegistry: ContextRegistry) {

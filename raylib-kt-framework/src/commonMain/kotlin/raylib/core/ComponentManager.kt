@@ -16,7 +16,7 @@ internal class ComponentRegistryImpl(
     private val block: ComponentRegistry.() -> Unit,
     private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry)
 ) : ComponentManager, ComponentRegistry by componentsBuilder {
-    internal val components
+    internal val children
         get() = componentsBuilder.activeStates.values
 
     override fun buildComponents() {
@@ -25,19 +25,19 @@ internal class ComponentRegistryImpl(
     }
 
     override fun performDraw() {
-        components.forEach { component ->
+        children.forEach { component ->
             with(component.requireLoopHandler()) { draw() }
         }
     }
 
     override fun performUpdate(deltaTime: Float) {
-        components.forEach { component ->
+        children.forEach { component ->
             with(component.requireLoopHandler()) { update(deltaTime) }
         }
     }
 
     override fun dispose() {
-        components.forEach {
+        children.forEach {
             it.dispose()
         }
     }
