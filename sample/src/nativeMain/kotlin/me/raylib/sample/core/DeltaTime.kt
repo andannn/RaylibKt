@@ -4,14 +4,22 @@ import kotlinx.cinterop.copy
 import raylib.core.Colors
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2
+import raylib.core.getValue
+import raylib.core.mutableStateOf
+import raylib.core.setValue
 import raylib.interop.KeyboardKey
+
+private const val speed = 10f
+private const val circleRadius = 32f
 
 internal fun ComponentRegistry.deltaTime() {
     component("key") {
-        var deltaCircle = Vector2(y = screenHeight.div(3f))
-        var frameCircle = Vector2(y = screenHeight.div(3f).times(2f))
-        val speed = 10f
-        val circleRadius = 32f
+        var deltaCircle by remember {
+            mutableStateOf(Vector2(y = screenHeight.div(3f)))
+        }
+        var frameCircle by remember {
+            mutableStateOf(Vector2(y = screenHeight.div(3f).times(2f)))
+        }
 
         onUpdate {
             currentFps += mouseWheelMove.toInt()

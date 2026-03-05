@@ -27,7 +27,6 @@ import raylib.core.scale
 import raylib.core.screenToWorldPosition
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
-import raylib.core.setValue
 import raylib.core.subtract
 import raylib.core.worldToScreenPosition
 
@@ -42,16 +41,16 @@ private enum class CameraOption(val description: String) {
 }
 
 fun ComponentRegistry.towDCameraPlatformer() {
-    val cameraOption = remember("camera option") {
+    val cameraOption = remember {
         mutableStateOf(CameraOption.FollowPlayerCenter)
     }
-    val player by remember("player_state") {
+    val player by remember {
         nativeStateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }
     }
-    val camera by remember("camera") {
+    val camera by remember {
         nativeStateOf { alloc<Camera2D> { zoom = 1f } }
     }
-    val envItems by remember("aaa") {
+    val envItems by remember {
         nativeStateOf {
             listOf(
                 EnvItem(RectangleAlloc(0f, 0f, 1000f, 400f), false, LIGHTGRAY),

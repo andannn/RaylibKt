@@ -9,7 +9,10 @@ import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.Vector2Alloc
 import raylib.core.await
+import raylib.core.getValue
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.core.suspendingTask
 import raylib.easings.Ease
 import raylib.easings.animateTo
@@ -24,26 +27,33 @@ fun ComponentRegistry.easingsRectangles() {
     component("AA") {
         val maxRecsX = screenWidth.div(RECS_WIDTH)
         val maxRecsY = screenHeight.div(RECS_HEIGHT)
-        val recs: List<Rectangle> by nativeStateOf {
-            val list = mutableListOf<Rectangle>()
+        val recs: List<Rectangle> by remember {
+            nativeStateOf {
+                val list = mutableListOf<Rectangle>()
 
-            for (y in 0 until maxRecsY) {
-                for (x in 0 until maxRecsX) {
-                    list.add(
-                        RectangleAlloc(
-                            x = RECS_WIDTH / 2f + RECS_WIDTH * x,
-                            y = RECS_HEIGHT / 2f + RECS_HEIGHT * y,
-                            width = RECS_WIDTH.toFloat(),
-                            height = RECS_HEIGHT.toFloat()
+                for (y in 0 until maxRecsY) {
+                    for (x in 0 until maxRecsX) {
+                        list.add(
+                            RectangleAlloc(
+                                x = RECS_WIDTH / 2f + RECS_WIDTH * x,
+                                y = RECS_HEIGHT / 2f + RECS_HEIGHT * y,
+                                width = RECS_WIDTH.toFloat(),
+                                height = RECS_HEIGHT.toFloat()
+                            )
                         )
-                    )
+                    }
                 }
-            }
 
-            list
+                list
+            }
         }
-        var rotation = 0f
-        var isWaitingKey = false
+        var rotation by remember {
+            mutableStateOf( 0f)
+        }
+        var isWaitingKey by remember {
+            mutableStateOf(false)
+        }
+
         suspendingTask {
             while (true) {
                 awaitDuration(4.seconds) { fraction ->

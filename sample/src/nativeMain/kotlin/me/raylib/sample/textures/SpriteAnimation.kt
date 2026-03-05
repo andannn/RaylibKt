@@ -20,11 +20,11 @@ private const val MAX_FRAME_SPEED = 15
 private const val MIN_FRAME_SPEED = 1
 
 fun ComponentRegistry.spriteAnimationSample() {
-    val scarfy = remember("scarfy") {
+    val scarfy = remember {
         loadTexture("resources/scarfy.png")
     }
 
-    val framesSpeed = remember("framesSpeed") {
+    val framesSpeed = remember {
         mutableStateOf(8)
     }
 
@@ -39,7 +39,7 @@ fun ComponentRegistry.spriteAnimationSample() {
         }
     }
 
-    val scarfyRect  by remember("scarfyRect") {
+    val scarfyRect  by remember {
         val (scarfyWidth, scarfyHeight) = scarfy.useContents { width.toFloat().div(6f) to height.toFloat() }
         nativeStateOf { RectangleAlloc(350.0f, 280.0f, scarfyWidth, scarfyHeight) }
     }

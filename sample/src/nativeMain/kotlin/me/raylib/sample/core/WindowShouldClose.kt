@@ -4,6 +4,9 @@ import raylib.core.Colors.BLACK
 import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
+import raylib.core.getValue
+import raylib.core.mutableStateOf
+import raylib.core.setValue
 import raylib.interop.WindowShouldClose
 
 fun ComponentRegistry.windowShouldClose(
@@ -11,7 +14,9 @@ fun ComponentRegistry.windowShouldClose(
 ) = component("key") {
     setExitKey(exitKey)
     interceptExitKey(true)
-    var exitWindowRequested = false
+    var exitWindowRequested by remember {
+        mutableStateOf(false)
+    }
     onUpdate {
         if (WindowShouldClose() || exitKey.isPressed()) exitWindowRequested = true
         if (exitWindowRequested) {

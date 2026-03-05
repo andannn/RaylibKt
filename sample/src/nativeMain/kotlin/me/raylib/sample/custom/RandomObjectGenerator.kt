@@ -10,7 +10,7 @@ import raylib.core.mutableStateListOf
 import raylib.core.nativeStateOf
 
 fun ComponentRegistry.randomObjectGenerator() {
-    val stateList = remember("component container") {
+    val stateList = remember {
         mutableStateListOf<Int>()
     }
     component("random object generator") {

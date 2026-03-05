@@ -6,6 +6,9 @@ import raylib.core.Colors.RED
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.await
+import raylib.core.getValue
+import raylib.core.mutableStateOf
+import raylib.core.setValue
 import raylib.core.suspendingTask
 import raylib.easings.Ease
 import raylib.easings.awaitEasingAnimation
@@ -14,11 +17,19 @@ import kotlin.time.Duration.Companion.seconds
 
 fun ComponentRegistry.easingBall() {
     component("A") {
-        var ballPositionX = -100
-        var ballRadius = 20
-        var ballAlpha = 0.0f
+        var ballPositionX by remember {
+            mutableStateOf(-100)
+        }
+        var ballRadius by remember {
+            mutableStateOf(20)
+        }
+        var ballAlpha by remember {
+            mutableStateOf(0.0f)
+        }
 
-        var state = 0
+        var state by remember {
+            mutableStateOf(0)
+        }
 
         suspendingTask {
             while (true) {

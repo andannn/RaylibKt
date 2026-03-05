@@ -10,26 +10,47 @@ import raylib.core.Colors.DARKGREEN
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2Alloc
+import raylib.core.getValue
 import raylib.core.isCollisionWith
+import raylib.core.mutableStateOf
 import raylib.core.set
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 
 fun ComponentRegistry.followingEyes() {
     component("A") {
-        val scleraLeftPosition by nativeStateOf {
-            Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
+        val scleraLeftPosition by remember {
+            nativeStateOf {
+                Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
+            }
         }
-        val scleraRightPosition by nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+        val scleraRightPosition by remember {
+            nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+        }
         val scleraRadius = 80f
-        val irisLeftPosition by nativeStateOf { Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f) }
-        val irisRightPosition by nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+        val irisLeftPosition by remember {
+            nativeStateOf { Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f) }
+        }
+        val irisRightPosition by remember {
+            nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+        }
         val irisRadius = 24f
 
-        var angle = 0.0f
-        var dx = 0.0f
-        var dy = 0.0f
-        var dxx = 0.0f
-        var dyy = 0.0f
+        var angle by remember {
+            mutableStateOf(0.0f)
+        }
+        var dx by remember {
+            mutableStateOf(0.0f)
+        }
+        var dy by remember {
+            mutableStateOf(0.0f)
+        }
+        var dxx by remember {
+            mutableStateOf(0.0f)
+        }
+        var dyy by remember {
+            mutableStateOf(0.0f)
+        }
 
         onUpdate {
             irisLeftPosition.set(mousePosition)
@@ -81,7 +102,6 @@ fun ComponentRegistry.followingEyes() {
             drawCircle(irisRightPosition.readValue(), 10f, BLACK);
 
             drawFPS(10, 10);
-
         }
     }
 }

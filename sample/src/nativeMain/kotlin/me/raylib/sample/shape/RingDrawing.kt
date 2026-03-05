@@ -11,20 +11,35 @@ import raylib.core.Colors.MAROON
 import raylib.core.ComponentRegistry
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.nativeStateOf
 import raylib.gui.onDrawGui
 import raylib.interop.Fade
 
 fun ComponentRegistry.ringDrawing() {
     component("A") {
-        val startAngle by nativeStateOf { alloc<FloatVar>() }
-        val endAngle by nativeStateOf { alloc<FloatVar>() }
-        val drawRing by nativeStateOf { alloc<BooleanVar>() }
-        val drawRingLines by nativeStateOf { alloc<BooleanVar>() }
-        val drawCircleLines by nativeStateOf { alloc<BooleanVar>() }
-        val innerRadius by nativeStateOf { alloc<FloatVar> { value = 80f } }
-        val outerRadius by nativeStateOf { alloc<FloatVar> { value = 190f } }
-        val segments by nativeStateOf { alloc<FloatVar> {} }
+        val startAngle by remember {
+            nativeStateOf { alloc<FloatVar>() }
+        }
+        val endAngle by remember {
+            nativeStateOf { alloc<FloatVar>() }
+        }
+        val drawRing by remember {
+            nativeStateOf { alloc<BooleanVar>() }
+        }
+        val drawRingLines by remember {
+            nativeStateOf { alloc<BooleanVar>() }
+        }
+        val drawCircleLines by remember {
+            nativeStateOf { alloc<BooleanVar>() }
+        }
+        val innerRadius by remember {
+            nativeStateOf { alloc<FloatVar> { value = 80f } }
+        }
+        val outerRadius by remember {
+            nativeStateOf { alloc<FloatVar> { value = 190f } }
+        }
+        val segments by remember { nativeStateOf { alloc<FloatVar> {} } }
         val center = Vector2((screenWidth - 300) / 2.0f, screenHeight / 2.0f)
 
         onDrawGui {

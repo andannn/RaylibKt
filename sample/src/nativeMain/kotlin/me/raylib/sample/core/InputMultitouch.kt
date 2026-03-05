@@ -9,7 +9,9 @@ import raylib.core.Vector2
 
 fun ComponentRegistry.inputMultitouch() {
     component("key") {
-        var pointers = emptyList<CValue<Vector2>>()
+        var pointers = remember {
+            emptyList<CValue<Vector2>>()
+        }
         onUpdate {
             pointers = touchPositions().toList()
         }

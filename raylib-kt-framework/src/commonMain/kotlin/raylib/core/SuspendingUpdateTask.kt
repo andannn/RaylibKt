@@ -23,7 +23,7 @@ import kotlin.coroutines.resume
 fun ComponentScope.suspendingTask(startImmediately: Boolean = true, block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
     return SuspendingUpdateTask(get<GameContext>(), block).also { handler ->
         onUpdate {
-            handler.update(it)
+            handler.performUpdate(it)
         }
     }.also {
         if (startImmediately) it.start()
@@ -115,7 +115,7 @@ internal class SuspendingUpdateTask(
         isInDispatch = false
     }
 
-    override fun update(deltaTime: Float) {
+    override fun performUpdate(deltaTime: Float) {
         dispatchUpdateEvent(deltaTime)
     }
 

@@ -15,10 +15,15 @@ import raylib.core.Colors.VIOLET
 import raylib.core.Colors.YELLOW
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2
+import raylib.core.getValue
+import raylib.core.mutableStateOf
+import raylib.core.setValue
 
 fun ComponentRegistry.basicShapes() {
     component("key") {
-        var rotation = 0.0f
+        var rotation by remember {
+            mutableStateOf(0.0f)
+        }
 
         onUpdate {
             rotation += 0.2f;

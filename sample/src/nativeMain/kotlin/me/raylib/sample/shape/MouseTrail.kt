@@ -13,7 +13,9 @@ import raylib.interop.Fade
 const val MAX_TRAIL_LENGTH = 30
 
 fun ComponentRegistry.mouseTrail() {
-    val trailPositions = List<CValue<Vector2>>(MAX_TRAIL_LENGTH) { zeroValue() }.toMutableList()
+    val trailPositions = remember {
+        List<CValue<Vector2>>(MAX_TRAIL_LENGTH) { zeroValue() }.toMutableList()
+    }
 
     component("AA") {
         onUpdate {

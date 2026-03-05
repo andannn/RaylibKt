@@ -16,15 +16,16 @@ inline fun DrawContext.textureDrawScope(
     return texture
 }
 
+interface DrawContext : Context, BasicShapeDrawFunction, TextDrawFunction, TextureDrawFunction, WindowFunction
+
 internal fun DrawContext(
     windowScope: WindowFunction,
     basicShapeDrawFunction: BasicShapeDrawFunction = BasicShapeDrawFunction(),
     textDrawFunction: TextDrawFunction = TextDrawFunction(),
-    textureDrawFunction: TextureDrawFunction = TextureDrawFunction()
+    textureDrawFunction: TextureDrawFunction = TextureDrawFunction(),
 ): DrawContext = object : DrawContext,
     BasicShapeDrawFunction by basicShapeDrawFunction,
     TextDrawFunction by textDrawFunction,
     TextureDrawFunction by textureDrawFunction,
     WindowFunction by windowScope {}
 
-interface DrawContext : Context, BasicShapeDrawFunction, TextDrawFunction, TextureDrawFunction, WindowFunction
