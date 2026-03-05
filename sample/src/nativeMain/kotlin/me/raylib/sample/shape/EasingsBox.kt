@@ -9,7 +9,10 @@ import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.TaskController
 import raylib.core.Vector2Alloc
+import raylib.core.getValue
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.core.suspendingTask
 import raylib.easings.Ease
 import raylib.easings.animateTo
@@ -20,9 +23,15 @@ import kotlin.time.Duration.Companion.seconds
 
 fun ComponentRegistry.easingBox() {
     component("A") {
-        val rec by nativeStateOf { RectangleAlloc(screenWidth / 2.0f, -100f, 100f, 100f) }
-        var rotation = 0.0f
-        var alpha = 1.0f
+        val rec by remember {
+            nativeStateOf { RectangleAlloc(screenWidth / 2.0f, -100f, 100f, 100f) }
+        }
+        var rotation by remember {
+            mutableStateOf(0.0f)
+        }
+        var alpha by remember {
+            mutableStateOf(1.0f)
+        }
         var animationTaskController: TaskController? = null
         onUpdate {
             if (KeyboardKey.KEY_SPACE.isPressed()) {

@@ -12,10 +12,10 @@ import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
 
 fun ComponentRegistry.spriteExplosion() {
-    val explosion = remember("explosion") {
+    val explosion = remember {
         loadTexture("resources/explosion.png")
     }
-    val explosionContainer = remember("explosionContainer") {
+    val explosionContainer = remember {
         mutableStateListOf<ExplosionState>()
     }
 

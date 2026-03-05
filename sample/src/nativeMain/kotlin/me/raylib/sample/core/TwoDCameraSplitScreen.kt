@@ -16,6 +16,7 @@ import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.RenderTexture
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.loadRenderTexture
 import raylib.core.mode2d
 import raylib.core.setOffset
@@ -28,41 +29,53 @@ private const val PLAYER_SIZE = 40
 
 fun ComponentRegistry.twoDCameraSplitScreen() {
     component("components") {
-        val player1 by nativeStateOf {
-            alloc<Rectangle> {
-                width = PLAYER_SIZE.toFloat()
-                height = PLAYER_SIZE.toFloat()
-                x = 200.0f
-                y = 200.0f
+        val player1 by remember {
+            nativeStateOf {
+                alloc<Rectangle> {
+                    width = PLAYER_SIZE.toFloat()
+                    height = PLAYER_SIZE.toFloat()
+                    x = 200.0f
+                    y = 200.0f
+                }
             }
         }
-        val player2 by nativeStateOf {
-            alloc<Rectangle> {
-                width = PLAYER_SIZE.toFloat()
-                height = PLAYER_SIZE.toFloat()
-                x = 200.0f
-                y = 200.0f
+        val player2 by remember {
+            nativeStateOf {
+                alloc<Rectangle> {
+                    width = PLAYER_SIZE.toFloat()
+                    height = PLAYER_SIZE.toFloat()
+                    x = 200.0f
+                    y = 200.0f
+                }
             }
         }
-        val camera1 by nativeStateOf {
-            alloc<Camera2D> {
-                setTarget(player1.x, player1.y)
-                setOffset(200.0f, 200.0f)
-                rotation = 0.0f
-                zoom = 1.0f
+        val camera1 by remember {
+            nativeStateOf {
+                alloc<Camera2D> {
+                    setTarget(player1.x, player1.y)
+                    setOffset(200.0f, 200.0f)
+                    rotation = 0.0f
+                    zoom = 1.0f
+                }
             }
         }
-        val camera2 by nativeStateOf {
-            alloc<Camera2D> {
-                setTarget(player2.x, player2.y)
-                setOffset(200.0f, 200.0f)
-                rotation = 0.0f
-                zoom = 1.0f
+        val camera2 by remember {
+            nativeStateOf {
+                alloc<Camera2D> {
+                    setTarget(player2.x, player2.y)
+                    setOffset(200.0f, 200.0f)
+                    rotation = 0.0f
+                    zoom = 1.0f
+                }
             }
         }
 
-        val screenCamera1 = loadRenderTexture(screenWidth / 2, screenHeight)
-        val screenCamera2 = loadRenderTexture(screenWidth / 2, screenHeight)
+        val screenCamera1 = remember {
+            loadRenderTexture(screenWidth / 2, screenHeight)
+        }
+        val screenCamera2 = remember {
+            loadRenderTexture(screenWidth / 2, screenHeight)
+        }
 
         val splitScreenRect = screenCamera1.useContents {
             Rectangle(

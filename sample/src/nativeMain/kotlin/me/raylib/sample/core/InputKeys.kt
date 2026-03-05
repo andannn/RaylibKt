@@ -7,14 +7,17 @@ import raylib.core.Colors.MAROON
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.nativeStateOf
 
 internal fun ComponentRegistry.inputKeys() {
     component("key") {
-        val ballPosition by nativeStateOf {
-            alloc<Vector2> {
-                x = screenWidth.div(2f)
-                y = screenHeight.div(2f)
+        val ballPosition by remember {
+            nativeStateOf {
+                alloc<Vector2> {
+                    x = screenWidth.div(2f)
+                    y = screenHeight.div(2f)
+                }
             }
         }
 

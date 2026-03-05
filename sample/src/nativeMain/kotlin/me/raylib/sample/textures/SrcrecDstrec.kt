@@ -6,16 +6,23 @@ import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.loadTexture
+import raylib.core.mutableStateOf
+import raylib.core.setValue
 
 fun ComponentRegistry.srcrecDstrec() {
     component("srcrec_dstrec") {
-        val scarfy = loadTexture("resources/scarfy.png")
+        val scarfy = remember {
+            loadTexture("resources/scarfy.png")
+        }
         val (frameWidth, frameHeight) = scarfy.useContents { width.div(6f) to height }
         val sourceRec = Rectangle(0.0f, 0.0f, frameWidth, frameHeight.toFloat())
         val destRec = Rectangle(screenWidth / 2.0f, screenHeight / 2.0f, frameWidth * 2.0f, frameHeight * 2.0f)
         val origin = Vector2(frameWidth, frameHeight.toFloat())
-        var rotation = 0f
+        var rotation by remember {
+            mutableStateOf(0f)
+        }
 
         onUpdate { rotation++; }
 

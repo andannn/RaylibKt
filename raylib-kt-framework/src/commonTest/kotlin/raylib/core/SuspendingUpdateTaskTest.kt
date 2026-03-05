@@ -4,7 +4,6 @@ import raylib.core.internal.DummyWindowFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
-import kotlin.test.assertFalse
 
 class SuspendingUpdateTaskTest {
     private val gameContext = GameContext(DummyWindowFunction())
@@ -25,9 +24,9 @@ class SuspendingUpdateTaskTest {
         assertEquals(0, count)
         task.start()
         assertEquals(1, count)
-        task.update( 1f)
+        task.performUpdate( 1f)
         assertEquals(2, count)
-        task.update( 1f)
+        task.performUpdate( 1f)
         assertEquals(3, count)
     }
 
@@ -46,7 +45,7 @@ class SuspendingUpdateTaskTest {
         task.start()
         assertEquals(1, count)
         task.stop()
-        task.update( 1f)
+        task.performUpdate( 1f)
         assertEquals(1, count)
     }
 
@@ -68,7 +67,7 @@ class SuspendingUpdateTaskTest {
         assertEquals(0, count)
         task.start()
         assertEquals(1, count)
-        task.update( 1f)
+        task.performUpdate( 1f)
         assertEquals(4, count)
     }
 
@@ -86,7 +85,7 @@ class SuspendingUpdateTaskTest {
         task.start()
         assertEquals(1, count)
         assertFails("error") {
-            task.update( 1f)
+            task.performUpdate( 1f)
         }
     }
 }

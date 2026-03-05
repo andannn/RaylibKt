@@ -6,6 +6,8 @@ import raylib.interop.ClearBackground
 import raylib.interop.CloseWindow
 import raylib.interop.EndDrawing
 
+var isDirty = false
+
 fun window(
     title: String,
     width: Int,
@@ -29,24 +31,28 @@ fun window(
     contextRegistry.put(DrawContext(windowFunction))
     contextRegistry.initContext()
 
-    val componentManager = ComponentRegistryImpl(contextRegistry, block)
-    with(componentManager) {
+    val rootComponent = RootComponent(contextRegistry, block)
+    with(rootComponent) {
         buildComponents()
 
         try {
             windowFunction.gameLoop {
                 // update state
-                performUpdate(windowFunction.frameTimeSeconds)
+                this.performUpdate(windowFunction.frameTimeSeconds)
 
-                // rebuild components
-                buildComponents()
+                if (isDirty) {
+                    buildComponents()
+                    rootComponent.dumpDebugInfo()
+
+                    isDirty = false
+                }
 
                 // Draw
                 BeginDrawing()
                 windowFunction.backGroundColor?.let {
                     ClearBackground(it)
                 }
-                performDraw()
+                this.performDraw()
                 EndDrawing()
             }
         } finally {

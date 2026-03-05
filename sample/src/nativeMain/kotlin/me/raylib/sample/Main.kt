@@ -9,7 +9,6 @@ import me.raylib.sample.custom.*
 import me.raylib.sample.shape.*
 import me.raylib.sample.textures.*
 import raylib.core.Colors
-import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Rectangle
 import raylib.core.Vector2
@@ -58,6 +57,7 @@ enum class Example(val title: String) {
     SRCREC_DSTREC("srcrec dstrec"),
     SPRITE_ANIMATION_SAMPLE("Sprite Animation"),
     SPRITE_EXPLOSION("Sprite explosion"),
+    MATRIX_TEST("Matrix test"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -71,12 +71,12 @@ fun main() = window(
         put(GuiContext())
     }
 ) {
-    val active = remember("selected menu index") {
+    val active = remember {
         nativeStateOf { alloc<IntVar> { value = -1 } }
     }
 
-    val currentExample = remember("current example") {
-        mutableStateOf<Example?>(null)
+    val currentExample = remember {
+        mutableStateOf<Example?>(null, true)
     }
 
     component("menu_control") {
@@ -140,6 +140,7 @@ fun main() = window(
         Example.SRCREC_DSTREC -> srcrecDstrec()
         Example.SPRITE_ANIMATION_SAMPLE -> spriteAnimationSample()
         Example.SPRITE_EXPLOSION -> spriteExplosion()
+        Example.MATRIX_TEST -> matrixTest()
     }
 
     if (currentExample.value != null) {

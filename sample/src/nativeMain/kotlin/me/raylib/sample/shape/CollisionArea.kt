@@ -10,20 +10,35 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.getCollisionRec
+import raylib.core.getValue
 import raylib.core.isCollisionWith
+import raylib.core.mutableStateOf
 import raylib.core.set
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.interop.MeasureText
 
 fun ComponentRegistry.collisionArea() {
     component("K") {
-        val boxA by nativeStateOf { RectangleAlloc(10f, screenHeight / 2.0f - 50, 200f, 100f) }
-        var boxASpeedX = 4
-        val boxB by nativeStateOf { RectangleAlloc(screenWidth / 2.0f - 30, screenHeight / 2.0f - 30, 60f, 60f) }
-        val boxCollision by nativeStateOf { RectangleAlloc() }
+        val boxA by remember {
+            nativeStateOf { RectangleAlloc(10f, screenHeight / 2.0f - 50, 200f, 100f) }
+        }
+        var boxASpeedX by remember {
+            mutableStateOf(4)
+        }
+        val boxB by remember {
+            nativeStateOf { RectangleAlloc(screenWidth / 2.0f - 30, screenHeight / 2.0f - 30, 60f, 60f) }
+        }
+        val boxCollision by remember {
+            nativeStateOf { RectangleAlloc() }
+        }
         val screenUpperLimit = 40
-        var pause = false
-        var collision = false
+        var pause by remember {
+            mutableStateOf(false)
+        }
+        var collision by remember {
+            mutableStateOf(false)
+        }
 
         onUpdate {
             if (!pause) boxA.x += boxASpeedX

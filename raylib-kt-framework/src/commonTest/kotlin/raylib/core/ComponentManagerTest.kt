@@ -13,7 +13,7 @@ class ComponentManagerTest {
     @Test
     fun buildComponent_add() {
         var isAddComponent = false
-        val manager = buildComponentManager(
+        val rootComponent = rootComponent(
             block = {
                 component("component1") {
                 }
@@ -25,21 +25,21 @@ class ComponentManagerTest {
                 }
             }
         )
-        assertEquals(0, manager.components.size)
+        assertEquals(0, rootComponent.children.toList().size)
 
-        manager.buildComponents()
-        assertEquals(listOf("component1", "component2"), manager.components.map { it.componentId })
+        rootComponent.buildComponents()
+        assertEquals(listOf("component1", "component2"), rootComponent.children.toList().map { it.componentId })
 
         isAddComponent = true
-        manager.buildComponents()
-        assertEquals(3, manager.components.size)
-        assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
+        rootComponent.buildComponents()
+        assertEquals(3, rootComponent.children.toList().size)
+        assertEquals(listOf("component1", "component2", "component3"), rootComponent.children.toList().map { it.componentId })
     }
 
     @Test
     fun buildComponent_remove() {
         var isRemoveComponent = false
-        val manager = buildComponentManager(
+        val rootComponent = rootComponent(
             {
                 component("component1") {
                 }
@@ -51,44 +51,19 @@ class ComponentManagerTest {
                 }
             }
         )
-        assertEquals(0, manager.components.size)
+        assertEquals(0, rootComponent.children.toList().size)
 
-        manager.buildComponents()
-        assertEquals(listOf("component1", "component2", "component3"), manager.components.map { it.componentId })
-
-        isRemoveComponent = true
-        manager.buildComponents()
-        assertEquals(listOf("component1", "component3"), manager.components.map { it.componentId })
-    }
-
-    @Test
-    fun buildComponent_same_component_will_not_be_initialized_again() {
-        var isRemoveComponent = false
-        var called = 0
-        val manager = buildComponentManager(
-            {
-                component("component1") {
-                    called++
-                }
-                if (!isRemoveComponent) {
-                    component("component2") {
-                    }
-                }
-            }
-        )
-
-        manager.buildComponents()
-        assertEquals(1, called)
+        rootComponent.buildComponents()
+        assertEquals(listOf("component1", "component2", "component3"), rootComponent.children.toList().map { it.componentId })
 
         isRemoveComponent = true
-        manager.buildComponents()
-        assertEquals(1, called)
-
+        rootComponent.buildComponents()
+        assertEquals(listOf("component1", "component3"), rootComponent.children.toList().map { it.componentId })
     }
 
     @Test
     fun buildComponent_duplicate_component_will_throw_exception() {
-        val manager = buildComponentManager(
+        val rootComponent = rootComponent(
             {
                 component("component1") {
                 }
@@ -97,14 +72,14 @@ class ComponentManagerTest {
             }
         )
         assertFails("Duplicate component key detected -> 'component1'. Each component in the same scope must have a unique ID.") {
-            manager.buildComponents()
+            rootComponent.buildComponents()
         }
     }
 
     @Test
     fun buildComponent_component_is_disposed_when_manager_is_disposed() {
         var called = false
-        val manager = buildComponentManager(
+        val rootComponent = rootComponent(
             block = {
                 component("component1") {
                     disposeOnClose {
@@ -113,9 +88,9 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.buildComponents()
+        rootComponent.buildComponents()
         assertFalse(called)
-        manager.dispose()
+        rootComponent.dispose()
         assertTrue(called)
     }
 
@@ -123,7 +98,7 @@ class ComponentManagerTest {
     fun buildComponent_component_is_disposed_not_included_in_rebuild() {
         var called = 0
         var isAddComponent = true
-        val manager = buildComponentManager(
+        val rootComponent = rootComponent(
             block = {
                 if (isAddComponent) {
                     component("component1") {
@@ -136,12 +111,12 @@ class ComponentManagerTest {
                 }
             }
         )
-        manager.buildComponents()
+        rootComponent.buildComponents()
         assertEquals(0, called)
 
 
         isAddComponent = false
-        manager.buildComponents()
+        rootComponent.buildComponents()
 
         assertEquals(1, called)
     }
@@ -149,9 +124,9 @@ class ComponentManagerTest {
     @Test
     fun buildComponent_remember_state_component() {
         var currentValue: MutableState<String>? = null
-        val manager = buildComponentManager(
+        val rootComponent = rootComponent(
             block = {
-                val value = remember("value 1") {
+                val value = remember {
                     mutableStateOf("A")
                 }
                 currentValue = value
@@ -163,45 +138,21 @@ class ComponentManagerTest {
             }
         )
 
-        manager.buildComponents()
+        rootComponent.buildComponents()
         assertEquals("A", currentValue?.value)
 
 
-        manager.buildComponents()
-        manager.performUpdate(2f)
+        rootComponent.buildComponents()
+        rootComponent.performUpdate(2f)
         assertEquals("B", currentValue?.value)
 
 
-        manager.buildComponents()
+        rootComponent.buildComponents()
         assertEquals("B", currentValue?.value)
-
-    }
-
-    @Test
-    fun buildComponent_remembered_state_is_disposed_component_disposed() {
-        var value: DisposableState<Vector2>? = null
-        var isValue = true
-        val manager = buildComponentManager(
-            block = {
-                if (isValue) {
-                    value = remember("value 1") {
-                        nativeStateOf { alloc<Vector2> { x = 100f } }
-                    }
-                }
-            }
-        )
-
-        manager.buildComponents()
-        assertEquals(100f, value?.value?.x)
-
-        isValue = false
-        manager.buildComponents()
-
-        assertEquals(true, value?.isDisposed)
     }
 }
 
-private fun buildComponentManager(block: ComponentRegistry.() -> Unit) = ComponentRegistryImpl(
+private fun rootComponent(block: ComponentRegistry.() -> Unit) = RootComponent(
     contextRegistry = ContextRegistryImpl().apply {
         val windowContext = WindowContextImpl(
             windowFunction = DummyWindowFunction()

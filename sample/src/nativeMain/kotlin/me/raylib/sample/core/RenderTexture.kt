@@ -11,23 +11,34 @@ import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.loadRenderTexture
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.core.textureDrawScope
 
 fun ComponentRegistry.renderTexture() {
     component("ballMovement") {
         val renderTextureWidth = 300
         val renderTextureHeight = 300
-        val loadedTexture = loadRenderTexture(renderTextureWidth, renderTextureHeight)
-        val ballPosition: Vector2 by nativeStateOf {
-            alloc {
-                x = renderTextureWidth / 2.0f; y = renderTextureHeight / 2.0f
+        val loadedTexture = remember {
+            loadRenderTexture(renderTextureWidth, renderTextureHeight)
+        }
+        val ballPosition by remember {
+             nativeStateOf {
+                alloc<Vector2> {
+                    x = renderTextureWidth / 2.0f; y = renderTextureHeight / 2.0f
+                }
             }
         }
-        val ballSpeed by nativeStateOf { alloc<Vector2> { x = 5.0f; y = 4.0f } }
+        val ballSpeed by remember {
+            nativeStateOf { alloc<Vector2> { x = 5.0f; y = 4.0f } }
+        }
         val ballRadius = 20
-        var rotation = 0.0f
+        var rotation by remember {
+            mutableStateOf(0.0f)
+        }
 
         onUpdate {
             ballPosition.x += ballSpeed.x

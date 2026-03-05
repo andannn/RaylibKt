@@ -5,6 +5,12 @@ import kotlinx.cinterop.CValues
 
 import raylib.interop.*
 
+fun matrixScale(x: Float = 1f, y: Float = 1f, z: Float = 1f): CValue<Matrix> = MatrixScale(x, y, z)
+fun matrixTranslate(x: Float = 0f, y: Float = 0f, z: Float = 0f): CValue<Matrix> = MatrixTranslate(x, y, z)
+fun matrixRotateX(angle: Float): CValue<Matrix> = MatrixRotateX(angle)
+fun matrixRotateY(angle: Float): CValue<Matrix> = MatrixRotateY(angle)
+fun matrixRotateZ(angle: Float): CValue<Matrix> = MatrixRotateZ(angle)
+
 fun CValue<Matrix>.determinant(): Float = MatrixDeterminant(this)
 fun CValue<Matrix>.trace(): Float = MatrixTrace(this)
 fun CValue<Matrix>.transpose(): CValue<Matrix> = MatrixTranspose(this)
@@ -33,15 +39,19 @@ fun CValue<Vector2>.normalize(): CValue<Vector2> = Vector2Normalize(this)
 fun CValue<Vector2>.transform(mat: CValue<Matrix>): CValue<Vector2> = Vector2Transform(this, mat)
 fun CValue<Vector2>.lerp(to: CValue<Vector2>, amount: Float): CValue<Vector2> =
     Vector2Lerp(this, to, amount)
+
 fun CValue<Vector2>.reflect(normal: CValue<Vector2>): CValue<Vector2> = Vector2Reflect(this, normal)
 fun CValue<Vector2>.rotate(angle: Float): CValue<Vector2> = Vector2Rotate(this, angle)
 fun CValue<Vector2>.moveTowards(target: CValue<Vector2>, maxDistance: Float): CValue<Vector2> =
     Vector2MoveTowards(this, target, maxDistance)
+
 fun CValue<Vector2>.invert(): CValue<Vector2> = Vector2Invert(this)
 fun CValue<Vector2>.clamp(min: CValue<Vector2>, max: CValue<Vector2>): CValue<Vector2> =
     Vector2Clamp(this, min, max)
+
 fun CValue<Vector2>.clampValue(min: Float, max: Float): CValue<Vector2> =
     Vector2ClampValue(this, min, max)
+
 fun CValue<Vector2>.equalsTo(other: CValue<Vector2>): Int = Vector2Equals(this, other)
 
 
@@ -67,23 +77,30 @@ fun CValue<Vector3>.reject(target: CValue<Vector3>): CValue<Vector3> = Vector3Re
 fun CValue<Vector3>.transform(mat: CValue<Matrix>): CValue<Vector3> = Vector3Transform(this, mat)
 fun CValue<Vector3>.rotateByQuaternion(q: CValue<Quaternion>): CValue<Vector3> =
     Vector3RotateByQuaternion(this, q)
+
 fun CValue<Vector3>.rotateByAxisAngle(axis: CValue<Vector3>, angle: Float): CValue<Vector3> =
     Vector3RotateByAxisAngle(this, axis, angle)
+
 fun CValue<Vector3>.lerp(to: CValue<Vector3>, amount: Float): CValue<Vector3> =
     Vector3Lerp(this, to, amount)
+
 fun CValue<Vector3>.reflect(normal: CValue<Vector3>): CValue<Vector3> = Vector3Reflect(this, normal)
 fun CValue<Vector3>.min(other: CValue<Vector3>): CValue<Vector3> = Vector3Min(this, other)
 fun CValue<Vector3>.max(other: CValue<Vector3>): CValue<Vector3> = Vector3Max(this, other)
 fun CValue<Vector3>.barycenter(a: CValue<Vector3>, b: CValue<Vector3>, c: CValue<Vector3>): CValue<Vector3> =
     Vector3Barycenter(this, a, b, c)
+
 fun CValue<Vector3>.unproject(projection: CValue<Matrix>, view: CValue<Matrix>): CValue<Vector3> =
     Vector3Unproject(this, projection, view)
+
 fun CValue<Vector3>.toFloatV(): CValue<Float3> = Vector3ToFloatV(this)
 fun CValue<Vector3>.invert(): CValue<Vector3> = Vector3Invert(this)
 fun CValue<Vector3>.clamp(min: CValue<Vector3>, max: CValue<Vector3>): CValue<Vector3> =
     Vector3Clamp(this, min, max)
+
 fun CValue<Vector3>.clampValue(min: Float, max: Float): CValue<Vector3> =
     Vector3ClampValue(this, min, max)
+
 fun CValue<Vector3>.equalsTo(other: CValue<Vector3>): Int = Vector3Equals(this, other)
 fun CValue<Vector3>.refract(n: CValue<Vector3>, r: Float): CValue<Vector3> =
     Vector3Refract(this, n, r)

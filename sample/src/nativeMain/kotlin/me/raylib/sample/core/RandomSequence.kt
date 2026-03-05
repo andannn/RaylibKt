@@ -13,16 +13,25 @@ import raylib.core.ComponentScope
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.getValue
+import raylib.core.mutableStateOf
 import raylib.core.randomColor
+import raylib.core.setValue
 import raylib.interop.LoadRandomSequence
 import raylib.interop.Remap
 import raylib.interop.UnloadRandomSequence
 
 fun ComponentRegistry.randomSequence() {
     component("key") {
-        var rectCount = 20
-        var rectSize = screenWidth.toFloat() / rectCount
-        var rects = generateRandomColorRectSequence(rectCount, rectSize)
+        var rectCount by remember {
+            mutableStateOf(20)
+        }
+        var rectSize by remember {
+            mutableStateOf(screenWidth.toFloat() / rectCount)
+        }
+        var rects by remember {
+            mutableStateOf(generateRandomColorRectSequence(rectCount, rectSize))
+        }
         onUpdate {
             if (KeyboardKey.KEY_SPACE.isPressed()) {
                 rects = rects.shuffled()
