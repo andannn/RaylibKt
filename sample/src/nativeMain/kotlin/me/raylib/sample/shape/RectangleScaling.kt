@@ -9,20 +9,32 @@ import raylib.core.ComponentRegistry
 import raylib.core.MouseButton
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.isCollisionWith
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.interop.Fade
 
 private const val MOUSE_SCALE_MARK_SIZE = 12
 
 fun ComponentRegistry.rectangleScaling() {
     component("key") {
-        val rec by nativeStateOf { alloc<Rectangle> { x = 100f; y = 100f; width = 200f; height = 80f } }
+        val rec by remember {
+            val nativeStateOf = nativeStateOf { alloc<Rectangle> { x = 100f; y = 100f; width = 200f; height = 80f } }
+            nativeStateOf
+        }
 
-        val mousePosition by nativeStateOf { alloc<Vector2>() }
+        val mousePosition by remember {
+            nativeStateOf { alloc<Vector2>() }
+        }
 
-        var mouseScaleReady = false
-        var mouseScaleMode = false
+        var mouseScaleReady by remember {
+            mutableStateOf(false)
+        }
+        var mouseScaleMode by remember {
+            mutableStateOf(false)
+        }
 
         onUpdate {
             mousePosition.x = mouseX.toFloat()

@@ -14,13 +14,16 @@ import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
 import raylib.core.add
+import raylib.core.getValue
 import raylib.core.mode2d
+import raylib.core.mutableStateOf
 import raylib.core.rlMatrix
 import raylib.core.scale
 import raylib.core.screenToWorldPosition
 import raylib.core.setOffset
 import raylib.core.setTarget
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.interop.Clamp
 import raylib.interop.DrawGrid
 import raylib.interop.rlRotatef
@@ -28,12 +31,19 @@ import raylib.interop.rlTranslatef
 
 fun ComponentRegistry.twoDCameraMouseZoom() {
     component("key") {
-        val camera: Camera2D by nativeStateOf { alloc<Camera2D>() }
-        camera.zoom = 1.0f
+        val camera: Camera2D by remember {
+            nativeStateOf { alloc<Camera2D> { zoom = 1f } }
+        }
         // 0-Mouse Wheel, 1-Mouse Move
-        var zoomMode = 0
-        var mouseXPos = 0
-        var mouseYPos = 0
+        var zoomMode by remember {
+            mutableStateOf(0)
+        }
+        var mouseXPos by remember {
+            mutableStateOf(0)
+        }
+        var mouseYPos by remember {
+            mutableStateOf(0)
+        }
         onUpdate {
             mouseXPos = mouseX
             mouseYPos = mouseY

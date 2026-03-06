@@ -16,41 +16,52 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.RectangleAlloc
+import raylib.core.getValue
 import raylib.core.mode2d
+import raylib.core.mutableStateOf
 import raylib.core.randomValue
 import raylib.core.setOffset
 import raylib.core.setTarget
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.interop.DrawLine
 import raylib.interop.Fade
 
 private const val MAX_BUILDINGS = 100
 fun ComponentRegistry.twoDCamera() {
     component("key") {
-        val player by nativeStateOf { RectangleAlloc(400f, 280f, 40f, 40f) }
-        var spacex = 0f
-        val buildings = List(MAX_BUILDINGS) { index ->
-            val width = randomValue(50, 200).toFloat()
-            val height = randomValue(100, 800).toFloat()
-            (Rectangle(
-                width = width,
-                height = height,
-                y = screenHeight - 130.0f - height,
-                x = -6000.0f + spacex
-            ) to Color(
-                randomValue(200, 240),
-                randomValue(200, 240),
-                randomValue(200, 250),
-            ))
-                .also {
-                    spacex += width
-                }
+        val player by remember {
+            nativeStateOf { RectangleAlloc(400f, 280f, 40f, 40f) }
         }
-        val camera by nativeStateOf {
-            alloc<Camera2D>().apply {
-                setTarget(player.x + 20.0f, player.y + 20.0f)
-                setOffset(screenWidth / 2.0f, screenHeight / 2.0f)
-                zoom = 1.0f
+        var spacex by remember {
+            mutableStateOf(0f)
+        }
+        val buildings = remember {
+            List(MAX_BUILDINGS) { index ->
+                val width = randomValue(50, 200).toFloat()
+                val height = randomValue(100, 800).toFloat()
+                (Rectangle(
+                    width = width,
+                    height = height,
+                    y = screenHeight - 130.0f - height,
+                    x = -6000.0f + spacex
+                ) to Color(
+                    randomValue(200, 240),
+                    randomValue(200, 240),
+                    randomValue(200, 250),
+                ))
+                    .also {
+                        spacex += width
+                    }
+            }
+        }
+        val camera by remember {
+            nativeStateOf {
+                alloc<Camera2D>().apply {
+                    setTarget(player.x + 20.0f, player.y + 20.0f)
+                    setOffset(screenWidth / 2.0f, screenHeight / 2.0f)
+                    zoom = 1.0f
+                }
             }
         }
 

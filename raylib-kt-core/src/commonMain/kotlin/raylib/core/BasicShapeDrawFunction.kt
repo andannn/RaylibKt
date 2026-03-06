@@ -107,6 +107,8 @@ interface BasicShapeDrawFunction {
         segments: Int,
         color: CValue<Color>
     )
+
+    fun drawGrid(slices: Int, spacing: Float)
 }
 
 fun BasicShapeDrawFunction(): BasicShapeDrawFunction {
@@ -267,6 +269,10 @@ private class DefaultBasicShapeDrawFunction() : BasicShapeDrawFunction {
         color: CValue<Color>
     ) {
         raylib.interop.DrawCircleSectorLines(center, radius, startAngle, endAngle, segments, color)
+    }
+
+    override fun drawGrid(slices: Int, spacing: Float) {
+        raylib.interop.DrawGrid(slices, spacing)
     }
 
     override fun drawRectangleLines(x: Int, y: Int, width: Int, height: Int, color: CValue<Color>) {

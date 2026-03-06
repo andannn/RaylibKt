@@ -6,12 +6,21 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
+import raylib.core.getValue
+import raylib.core.mutableStateOf
+import raylib.core.setValue
 
 fun ComponentRegistry.inputMouse() {
     component("key") {
-        var ballPosition: CValue<Vector2> = Vector2()
-        var ballColor = Colors.DARKBLUE
-        var cursorHidden = false
+        var ballPosition: CValue<Vector2> by remember {
+            mutableStateOf(Vector2())
+        }
+        var ballColor by remember {
+            mutableStateOf(Colors.DARKBLUE)
+        }
+        var cursorHidden by remember {
+            mutableStateOf(false)
+        }
 
         onUpdate {
             cursorHidden = isCursorHidden

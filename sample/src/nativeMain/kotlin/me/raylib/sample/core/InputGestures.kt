@@ -9,17 +9,30 @@ import raylib.core.ComponentRegistry
 import raylib.core.Gesture
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.isCollisionWith
+import raylib.core.mutableStateOf
+import raylib.core.setValue
 import raylib.interop.Fade
 
 private const val MAX_GESTURE_STRINGS = 20
 fun ComponentRegistry.inputGestures() {
     component("key") {
-        var touchPosition = Vector2()
-        val touchArea = Rectangle(220f, 10f, screenWidth - 230.0f, screenHeight - 20.0f)
-        var currentGesture = Gesture.GESTURE_NONE
-        var lastGesture = Gesture.GESTURE_NONE
-        val gestureStrings = mutableListOf<String>()
+        val touchArea = remember {
+            Rectangle(220f, 10f, screenWidth - 230.0f, screenHeight - 20.0f)
+        }
+        var touchPosition by remember {
+            mutableStateOf(Vector2())
+        }
+        var currentGesture by remember {
+            mutableStateOf(Gesture.GESTURE_NONE)
+        }
+        var lastGesture by remember {
+            mutableStateOf(Gesture.GESTURE_NONE)
+        }
+        val gestureStrings = remember {
+            mutableListOf<String>()
+        }
         onUpdate {
             lastGesture = currentGesture
             currentGesture = gestureDetected

@@ -8,13 +8,20 @@ import raylib.core.Colors.LIGHTGRAY
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
+import raylib.core.getValue
+import raylib.core.mutableStateOf
 import raylib.core.scissorMode
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 
 fun ComponentRegistry.scissorTest() {
     component("key") {
-        val scissorArea by nativeStateOf { alloc<Rectangle> { x = 0f; y = 0f; width = 300f; height = 300f } }
-        var scissorMode = true
+        val scissorArea by remember {
+            nativeStateOf { alloc<Rectangle> { x = 0f; y = 0f; width = 300f; height = 300f } }
+        }
+        var scissorMode by remember {
+            mutableStateOf(true)
+        }
 
         onUpdate {
             if (KeyboardKey.KEY_S.isPressed()) scissorMode = !scissorMode;

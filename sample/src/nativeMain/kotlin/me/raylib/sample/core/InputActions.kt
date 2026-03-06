@@ -10,7 +10,10 @@ import raylib.core.ComponentRegistry
 import raylib.core.GameContext
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
+import raylib.core.getValue
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.setValue
 import raylib.interop.GamepadButton
 
 private enum class ActionType {
@@ -57,10 +60,18 @@ private fun GameContext.isReleased(type: ActionType) =
 
 fun ComponentRegistry.inputActions() {
     component("key") {
-        val position: Vector2 by nativeStateOf { alloc { x = 400.0f; y = 200.0f } }
-        val size: Vector2 by nativeStateOf { alloc { x = 40.0f; y = 40.0f } }
-        var actionSet = false
-        var releaseAction = false
+        val position by remember {
+            nativeStateOf { alloc<Vector2> { x = 400.0f; y = 200.0f } }
+        }
+        val size: Vector2 by remember {
+            nativeStateOf { alloc<Vector2> { x = 40.0f; y = 40.0f } }
+        }
+        var actionSet by remember {
+            mutableStateOf(false)
+        }
+        var releaseAction by remember {
+            mutableStateOf(false)
+        }
         onUpdate {
             if (isDown(ActionType.ACTION_UP)) position.y -= 2f
             if (isDown(ActionType.ACTION_DOWN)) position.y += 2f

@@ -16,8 +16,8 @@ import raylib.core.mutableStateOf
 import raylib.core.setValue
 
 fun ComponentRegistry.basicScreenManager() {
-    var currentScreen by remember("currentScreen") {
-        mutableStateOf(GameScreen.LOGO)
+    var currentScreen by remember {
+        mutableStateOf(GameScreen.LOGO, true)
     }
 
     component("updater") {

@@ -5,21 +5,14 @@ import kotlinx.cinterop.alloc
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import me.raylib.sample.core.*
-import me.raylib.sample.custom.randomObjectGenerator
-import me.raylib.sample.shape.basicShapes
-import me.raylib.sample.shape.bouncingBall
-import me.raylib.sample.shape.collisionArea
-import me.raylib.sample.shape.easingBall
-import me.raylib.sample.shape.easingBox
-import me.raylib.sample.shape.easingsRectangles
-import me.raylib.sample.shape.followingEyes
-import me.raylib.sample.shape.linesBezier
-import me.raylib.sample.shape.mouseTrail
-import me.raylib.sample.shape.rectangleScaling
-import me.raylib.sample.shape.ringDrawing
+import me.raylib.sample.custom.*
+import me.raylib.sample.shape.*
+import me.raylib.sample.textures.*
 import raylib.core.Colors
-import raylib.core.KeyboardKey
+import raylib.core.MouseButton
 import raylib.core.Rectangle
+import raylib.core.Vector2
+import raylib.core.isCollisionWith
 import raylib.core.mutableStateOf
 import raylib.core.put
 import raylib.core.nativeStateOf
@@ -60,6 +53,11 @@ enum class Example(val title: String) {
     MOUSE_TRAIL("Mouse trail"),
     RING_DRAWING("Ring drawing"),
     INPUT_ACTIONS("Input actions"),
+    LOGO_RAYLIB("Logo Raylib"),
+    SRCREC_DSTREC("srcrec dstrec"),
+    SPRITE_ANIMATION_SAMPLE("Sprite Animation"),
+    SPRITE_EXPLOSION("Sprite explosion"),
+    MATRIX_TEST("Matrix test"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -73,21 +71,15 @@ fun main() = window(
         put(GuiContext())
     }
 ) {
-    val active = remember("selected menu index") {
+    val active = remember {
         nativeStateOf { alloc<IntVar> { value = -1 } }
     }
 
-    val currentExample = remember("current example") {
-        mutableStateOf<Example?>(null)
+    val currentExample = remember {
+        mutableStateOf<Example?>(null, true)
     }
 
     component("menu_control") {
-        onUpdate {
-            if (KeyboardKey.KEY_B.isPressed()) {
-                currentExample.value = null
-                active.value.value = -1
-            }
-        }
         onUpdate {
             if (active.value.value != -1) {
                 currentExample.value = Example.entries[active.value.value]
@@ -144,5 +136,26 @@ fun main() = window(
         Example.MOUSE_TRAIL -> mouseTrail()
         Example.RING_DRAWING -> ringDrawing()
         Example.INPUT_ACTIONS -> inputActions()
+        Example.LOGO_RAYLIB -> logoRaylib()
+        Example.SRCREC_DSTREC -> srcrecDstrec()
+        Example.SPRITE_ANIMATION_SAMPLE -> spriteAnimationSample()
+        Example.SPRITE_EXPLOSION -> spriteExplosion()
+        Example.MATRIX_TEST -> matrixTest()
+    }
+
+    if (currentExample.value != null) {
+        component("back") {
+            val center = Vector2(screenWidth - 20f, 20f)
+            val radius = 15f
+            onUpdate {
+                if (MouseButton.MOUSE_BUTTON_LEFT.isPressed() && mousePosition.isCollisionWith(center, radius)) {
+                    currentExample.value = null
+                    active.value.value = -1
+                }
+            }
+            onDraw {
+                drawCircle(center, radius, Colors.RED)
+            }
+        }
     }
 }
