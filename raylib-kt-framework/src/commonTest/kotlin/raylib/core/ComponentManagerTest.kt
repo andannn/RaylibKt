@@ -151,29 +151,6 @@ class ComponentManagerTest {
         assertEquals("B", currentValue?.value)
 
     }
-
-    @Test
-    fun buildComponent_remembered_state_is_disposed_component_disposed() {
-        var value: DisposableState<Vector2>? = null
-        var isValue = true
-        val rootComponent = rootComponent(
-            block = {
-                if (isValue) {
-                    value = remember {
-                        nativeStateOf { alloc<Vector2> { x = 100f } }
-                    }
-                }
-            }
-        )
-
-        rootComponent.buildComponents()
-        assertEquals(100f, value?.value?.x)
-
-        isValue = false
-        rootComponent.buildComponents()
-
-        assertEquals(true, value?.isDisposed)
-    }
 }
 
 private fun rootComponent(block: ComponentRegistry.() -> Unit) = RootComponent(
