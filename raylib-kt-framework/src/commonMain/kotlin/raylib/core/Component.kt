@@ -12,6 +12,8 @@ interface ComponentScope : RememberScope, ComponentRegistry, ContextProvider {
     fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit)
 
     fun onDraw(block: DrawContext.() -> Unit)
+
+    fun setDrawInterceptor(interceptor: DrawInterceptor)
 }
 
 interface RememberScope : DisposableRegistry, WindowFunction
@@ -26,8 +28,35 @@ internal fun interface UpdateHandler {
     fun performUpdate(deltaTime: Float)
 }
 
-internal fun interface DrawHandler {
+fun interface DrawHandler {
     fun performDraw()
+}
+
+interface DrawInterceptor {
+    fun interceptDraw(handler: DrawHandler)
+}
+
+infix fun DrawInterceptor.then(next: DrawInterceptor): DrawInterceptor {
+    if (this === NoOpDrawInterceptor) return next
+    if (next === NoOpDrawInterceptor) return this
+    return CompositeInterceptor(this, next)
+}
+
+internal object NoOpDrawInterceptor : DrawInterceptor {
+    override fun interceptDraw(handler: DrawHandler) {
+        return handler.performDraw()
+    }
+}
+
+internal class CompositeInterceptor(
+    private val outer: DrawInterceptor,
+    private val inner: DrawInterceptor
+) : DrawInterceptor {
+    override fun interceptDraw(handler: DrawHandler) {
+        outer.interceptDraw {
+            inner.interceptDraw(handler)
+        }
+    }
 }
 
 internal interface LoopHandler : UpdateHandler, DrawHandler
@@ -75,6 +104,17 @@ internal abstract class Component(
         println("Runtime Monitor: Component [$it] has been Garbage Collected.")
     }
 
+    private var _drawInterceptor: DrawInterceptor = NoOpDrawInterceptor
+
+    private var isInterceptorLocked = false
+
+    override fun setDrawInterceptor(interceptor: DrawInterceptor) {
+        if (!isInterceptorLocked) {
+            _drawInterceptor = interceptor
+            isInterceptorLocked = true
+        }
+    }
+
     override fun performUpdate(deltaTime: Float) {
         requireLoopHandler().performUpdate(deltaTime)
 
@@ -83,12 +123,16 @@ internal abstract class Component(
         }
     }
 
-    override fun performDraw() {
+    private val drawThis = DrawHandler {
         requireLoopHandler().performDraw()
 
         children.forEach {
             it.performDraw()
         }
+    }
+
+    override fun performDraw() {
+        _drawInterceptor.interceptDraw(drawThis)
     }
 
     override fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit) {
