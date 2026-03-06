@@ -1,31 +1,24 @@
 package me.raylib.sample.core
 
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import kotlinx.cinterop.useContents
 import raylib.core.Camera2D
 import raylib.core.Colors.BLUE
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.Colors.RAYWHITE
 import raylib.core.Colors.RED
-import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
-import raylib.core.DrawContext
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
-import raylib.core.RenderTexture
-import raylib.core.Vector2
+import raylib.core.RectangleAlloc
+import raylib.core.components.fixSizedTextureComponent
 import raylib.core.getValue
-import raylib.core.loadRenderTexture
 import raylib.core.mode2d
+import raylib.core.nativeStateOf
 import raylib.core.setOffset
 import raylib.core.setTarget
-import raylib.core.nativeStateOf
-import raylib.core.textureDrawScope
 
 private const val PLAYER_SIZE = 40
-
 
 fun ComponentRegistry.twoDCameraSplitScreen() {
     component("components") {
@@ -70,20 +63,12 @@ fun ComponentRegistry.twoDCameraSplitScreen() {
             }
         }
 
-        val screenCamera1 = remember {
-            loadRenderTexture(screenWidth / 2, screenHeight)
-        }
-        val screenCamera2 = remember {
-            loadRenderTexture(screenWidth / 2, screenHeight)
+        val rect1 by remember {
+            nativeStateOf { RectangleAlloc(0f, 0f, screenWidth / 2f, screenHeight.toFloat()) }
         }
 
-        val splitScreenRect = screenCamera1.useContents {
-            Rectangle(
-                0.0f,
-                0.0f,
-                texture.width.toFloat(),
-                -texture.height.toFloat()
-            )
+        val rect2 by remember {
+            nativeStateOf { RectangleAlloc(screenWidth / 2f, 0f, screenWidth / 2f, screenHeight.toFloat()) }
         }
 
         onUpdate {
@@ -101,49 +86,63 @@ fun ComponentRegistry.twoDCameraSplitScreen() {
             camera2.setTarget(player2.x, player2.y)
         }
 
-        onDraw {
-            fun DrawContext.fillTexture(
-                texture: CValue<RenderTexture>,
-                camera: Camera2D
-            ) = textureDrawScope(texture, RAYWHITE) {
-                mode2d(camera) {
-                    val horizontalCount = screenWidth.div(PLAYER_SIZE) + 1
-                    repeat(horizontalCount) { i ->
-                        drawLine(PLAYER_SIZE * i, 0, PLAYER_SIZE * i, screenHeight, LIGHTGRAY)
-                    }
-                    val verticalCount = screenHeight.div(PLAYER_SIZE) + 1
-                    repeat(verticalCount) { i ->
-                        drawLine(0, PLAYER_SIZE * i, screenWidth, PLAYER_SIZE * i, LIGHTGRAY)
-                    }
+        fixSizedTextureComponent(
+            tag = "player1",
+            width = screenWidth / 2,
+            height = screenHeight,
+            dstRectangle = rect1,
+            backgroundColor = RAYWHITE
+        ) {
+            playerAndWorldComponent(camera1, player1, player2)
+        }
 
-                    for (i in 0..<screenWidth / PLAYER_SIZE) {
-                        for (j in 0..<screenHeight / PLAYER_SIZE) {
-                            drawText(
-                                "[$i, $j]",
-                                10 + PLAYER_SIZE * i,
-                                15 + PLAYER_SIZE * j,
-                                10,
-                                LIGHTGRAY
-                            )
-                        }
-                    }
-                    drawRectangle(player1.readValue(), RED)
-                    drawRectangle(player2.readValue(), BLUE)
+        fixSizedTextureComponent(
+            tag = "player2",
+            width = screenWidth / 2,
+            height = screenHeight,
+            dstRectangle = rect2,
+            backgroundColor = RAYWHITE
+        ) {
+            playerAndWorldComponent(camera2, player1, player2)
+        }
+
+        component("frame") {
+            onDraw {
+                drawRectangle(screenWidth / 2 - 2, 0, 4, screenHeight, RED)
+            }
+        }
+    }
+}
+
+private fun ComponentRegistry.playerAndWorldComponent(
+    camera2D: Camera2D,
+    player1: Rectangle,
+    player2: Rectangle,
+) = component("player") {
+    onDraw {
+        mode2d(camera2D) {
+            val horizontalCount = screenWidth.div(PLAYER_SIZE) + 1
+            repeat(horizontalCount) { i ->
+                drawLine(PLAYER_SIZE * i, 0, PLAYER_SIZE * i, screenHeight, LIGHTGRAY)
+            }
+            val verticalCount = screenHeight.div(PLAYER_SIZE) + 1
+            repeat(verticalCount) { i ->
+                drawLine(0, PLAYER_SIZE * i, screenWidth, PLAYER_SIZE * i, LIGHTGRAY)
+            }
+
+            for (i in 0..<screenWidth / PLAYER_SIZE) {
+                for (j in 0..<screenHeight / PLAYER_SIZE) {
+                    drawText(
+                        "[$i, $j]",
+                        10 + PLAYER_SIZE * i,
+                        15 + PLAYER_SIZE * j,
+                        10,
+                        LIGHTGRAY
+                    )
                 }
             }
-            drawTexture(
-                fillTexture(screenCamera1, camera1).useContents { texture.readValue() },
-                splitScreenRect,
-                Vector2(0.0f, 0.0f),
-                WHITE,
-            )
-            drawTexture(
-                fillTexture(screenCamera2, camera2).useContents { texture.readValue() },
-                splitScreenRect,
-                Vector2(screenWidth.div(2f), 0.0f),
-                WHITE,
-            )
-            drawRectangle(screenWidth / 2 - 2, 0, 4, screenHeight, RED)
+            drawRectangle(player1.readValue(), RED)
+            drawRectangle(player2.readValue(), BLUE)
         }
     }
 }

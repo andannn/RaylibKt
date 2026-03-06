@@ -42,7 +42,7 @@ private enum class CameraOption(val description: String) {
 
 fun ComponentRegistry.towDCameraPlatformer() {
     val cameraOption = remember {
-        mutableStateOf(CameraOption.FollowPlayerCenter)
+        mutableStateOf(CameraOption.FollowPlayerCenter, true)
     }
     val player by remember {
         nativeStateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }

@@ -141,15 +141,12 @@ class ComponentManagerTest {
         rootComponent.buildComponents()
         assertEquals("A", currentValue?.value)
 
-
         rootComponent.buildComponents()
         rootComponent.performUpdate(2f)
         assertEquals("B", currentValue?.value)
 
-
         rootComponent.buildComponents()
         assertEquals("B", currentValue?.value)
-
     }
 }
 
