@@ -1,6 +1,5 @@
 package raylib.core
 
-import kotlinx.cinterop.alloc
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -8,7 +7,7 @@ import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ComponentManagerTest {
+class ComponentTest {
 
     @Test
     fun buildComponent_add() {
@@ -33,7 +32,9 @@ class ComponentManagerTest {
         isAddComponent = true
         rootComponent.buildComponents()
         assertEquals(3, rootComponent.children.toList().size)
-        assertEquals(listOf("component1", "component2", "component3"), rootComponent.children.toList().map { it.componentId })
+        assertEquals(
+            listOf("component1", "component2", "component3"),
+            rootComponent.children.toList().map { it.componentId })
     }
 
     @Test
@@ -54,7 +55,9 @@ class ComponentManagerTest {
         assertEquals(0, rootComponent.children.toList().size)
 
         rootComponent.buildComponents()
-        assertEquals(listOf("component1", "component2", "component3"), rootComponent.children.toList().map { it.componentId })
+        assertEquals(
+            listOf("component1", "component2", "component3"),
+            rootComponent.children.toList().map { it.componentId })
 
         isRemoveComponent = true
         rootComponent.buildComponents()
@@ -147,6 +150,55 @@ class ComponentManagerTest {
 
         rootComponent.buildComponents()
         assertEquals("B", currentValue?.value)
+    }
+
+    @Test
+    fun buildComponent_child_component_disposed_with_parent() {
+        var disposed = false
+        var show = true
+        val rootComponent = rootComponent(
+            block = {
+                if (show) {
+                    component("parent") {
+                        component("child") {
+                            disposeOnClose {
+                                disposed = true
+                            }
+                        }
+                    }
+                }
+            }
+        )
+        rootComponent.buildComponents()
+        assertFalse(disposed)
+        show = false
+        rootComponent.buildComponents()
+        assertTrue(disposed)
+    }
+
+    @Test
+    fun buildComponent_intercept_draw_test() {
+        var i = 0
+        val rootComponent = rootComponent(
+            block = {
+                component("parent") {
+                    setDrawInterceptor {
+                        assertEquals(0, i++)
+                        it.performDraw()
+                        assertEquals(3, i++)
+                    }
+
+                    component("child") {
+                        onDraw { assertEquals(1, i++) }
+                    }
+                    component("child2") {
+                        onDraw { assertEquals(2, i++) }
+                    }
+                }
+            }
+        )
+        rootComponent.buildComponents()
+        rootComponent.performDraw()
     }
 }
 

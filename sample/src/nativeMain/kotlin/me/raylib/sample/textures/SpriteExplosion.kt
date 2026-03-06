@@ -23,14 +23,14 @@ fun ComponentRegistry.spriteExplosion() {
         var id = 0L
         onUpdate {
             if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
-                explosionContainer.addState(
+                explosionContainer.addState {
                     nativeStateOf {
                         ExplosionState(
                             id = id++,
                             RectangleAlloc(mouseX.toFloat(), mouseY.toFloat(), 100f, 100f)
                         )
                     }
-                )
+                }
             }
         }
     }

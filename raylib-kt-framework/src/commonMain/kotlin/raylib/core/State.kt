@@ -41,32 +41,34 @@ internal abstract class MutableStateBox<T>(
         }
 }
 
-fun <T> mutableStateListOf(vararg items: DisposableState<T>) =
-    ManagedStateList<T>()
-        .apply {
-            items.forEach { addState(it) }
-        }
+fun <T> RememberScope.mutableStateListOf() = ManagedStateList<T>(this)
 
-fun <T> DisposableRegistry.nativeStateOf(initialValue: NativePlacement.() -> T): DisposableState<T> =
-    DisposableState(initialValue).also {
+fun <T> RememberScope.nativeStateOf(initialValue: NativePlacement.() -> T): NativeState<T> =
+    NativeState(initialValue).also {
         disposeOnClose(it)
     }
 
 class ManagedStateList<T>(
-    private val innerList: MutableList<DisposableState<T>> = mutableListOf()
-) : List<DisposableState<T>> by innerList {
+    private val scope: RememberScope,
+    private val innerList: MutableList<NativeState<T>> = mutableListOf()
+) : List<NativeState<T>> by innerList {
 
-    fun addState(state: DisposableState<T>): Disposable = innerList.add(state).let {
+    fun addState(init: RememberScope.() -> NativeState<T>): Disposable {
+        val state = scope.init()
+
+        innerList.add(state)
+
         isDirty = true
         state.onDispose = {
             isDirty = true
             innerList.remove(state)
         }
-        state
+
+        return state
     }
 }
 
-class DisposableState<T>(
+class NativeState<T>(
     initialValue: NativePlacement.() -> T,
 ) : State<T>, Disposable {
     private val arena: Arena = Arena()

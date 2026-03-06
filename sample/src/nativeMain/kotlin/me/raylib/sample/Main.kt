@@ -12,6 +12,7 @@ import raylib.core.Colors
 import raylib.core.MouseButton
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.isCollisionWith
 import raylib.core.mutableStateOf
 import raylib.core.put
@@ -92,8 +93,12 @@ fun main() = window(
     when (currentExample.value) {
         null -> {
             component("menu") {
-                val bounds = Rectangle(0f, 0f, 400f, screenHeight.toFloat())
-                val scrollIndex by nativeStateOf { alloc<IntVar> {} }
+                val bounds = remember {
+                    Rectangle(0f, 0f, 400f, screenHeight.toFloat())
+                }
+                val scrollIndex by remember {
+                    nativeStateOf { alloc<IntVar> {} }
+                }
                 onDrawGui {
                     guiListView(
                         bounds = bounds,
@@ -145,7 +150,7 @@ fun main() = window(
 
     if (currentExample.value != null) {
         component("back") {
-            val center = Vector2(screenWidth - 20f, 20f)
+            val center = remember { Vector2(screenWidth - 20f, 20f) }
             val radius = 15f
             onUpdate {
                 if (MouseButton.MOUSE_BUTTON_LEFT.isPressed() && mousePosition.isCollisionWith(center, radius)) {

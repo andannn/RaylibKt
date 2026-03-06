@@ -12,7 +12,9 @@ import raylib.core.ComponentRegistry
 import raylib.core.ComponentScope
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
+import raylib.core.RememberScope
 import raylib.core.Vector2
+import raylib.core.WindowFunction
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.randomColor
@@ -102,7 +104,7 @@ class ColorRect(
     val rectangleSize: CValue<Vector2>
 )
 
-private fun ComponentScope.generateRandomColorRectSequence(
+private fun WindowFunction.generateRandomColorRectSequence(
     rectCount: Int,
     rectWidth: Float
 ): List<ColorRectWithPositon> {

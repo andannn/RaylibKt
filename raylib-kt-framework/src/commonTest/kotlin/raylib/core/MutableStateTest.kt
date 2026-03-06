@@ -1,6 +1,7 @@
 package raylib.core
 
 import kotlinx.cinterop.alloc
+import raylib.core.internal.DummyWindowFunction
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -8,43 +9,49 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class MutableStateTest {
-    private lateinit var disposableRegistry: DisposableRegistryImpl
+    private lateinit var rememberScope: RememberScope
 
     @BeforeTest
     fun setUp() {
-        disposableRegistry = DisposableRegistryImpl()
+        val disposableRegistry = DisposableRegistryImpl()
+        rememberScope = object : RememberScope,
+            Disposable by disposableRegistry,
+            DisposableRegistry by disposableRegistry,
+            WindowFunction by WindowContextImpl(DummyWindowFunction()) {}
     }
 
     @Test
-    fun managedStateListTest_build() = with(disposableRegistry) {
-        val list = mutableStateListOf(
-            nativeStateOf { "1" }
-        )
+    fun managedStateListTest_build() = with(rememberScope) {
+        val list = mutableStateListOf<String>()
+        list.addState { nativeStateOf { "1" } }
         assertEquals(1, list.size)
     }
 
     @Test
-    fun managedStateListTest_add(): Unit = with(disposableRegistry) {
-        val list = mutableStateListOf(
+    fun managedStateListTest_add(): Unit = with(rememberScope) {
+        val list = mutableStateListOf<Vector2>()
+        list.addState {
             nativeStateOf { alloc<Vector2> { x = 1f } }
-        )
+        }
         assertEquals(1, list.size)
 
-        list.addState(nativeStateOf { alloc<Vector2> { x = 2f } })
+        list.addState { nativeStateOf { alloc<Vector2> { x = 2f } } }
         assertEquals(2, list.size)
     }
 
     @Test
-    fun managedStateListTest_remove(): Unit = with(disposableRegistry) {
+    fun managedStateListTest_remove(): Unit = with(rememberScope) {
         val state1 = nativeStateOf {
             alloc<Vector2>().apply { x = 1f }
         }
-        val list = mutableStateListOf(
-            state1,
+        val list = mutableStateListOf<Vector2>()
+        list.addState { state1 }
+
+        list.addState {
             nativeStateOf {
                 alloc<Vector2>()
             }
-        )
+        }
         assertEquals(2, list.size)
         state1.dispose()
 
@@ -57,7 +64,7 @@ class MutableStateTest {
     }
 
     @Test
-    fun disposableStateTest_dispose(): Unit = with(disposableRegistry) {
+    fun disposableStateTest_dispose(): Unit = with(rememberScope) {
         val state = nativeStateOf {
             alloc<Vector2> { x = 100f }
         }
@@ -69,11 +76,11 @@ class MutableStateTest {
     }
 
     @Test
-    fun disposableStateTest_disposed_when_container_dispose() = with(disposableRegistry) {
+    fun disposableStateTest_disposed_when_container_dispose() = with(rememberScope) {
         val state = nativeStateOf { alloc<Vector2> { x = 100f } }
         assertEquals(100f, state.value.x)
 
-        this.dispose()
+        (this as Disposable).dispose()
 
         assertTrue(state.isDisposed)
         assertTrue(state.isFreed)

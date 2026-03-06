@@ -10,6 +10,7 @@ import raylib.core.RectangleAlloc
 import raylib.core.State
 import raylib.core.Texture2D
 import raylib.core.Vector2
+import raylib.core.getValue
 import raylib.core.nativeStateOf
 import raylib.core.suspendingTask
 import raylib.easings.awaitDuration
@@ -43,8 +44,10 @@ fun ComponentRegistry.spriteAnimationComponent(
         val frameHeight = textureHeight.toFloat() / numLine
         val frameCount = numFramePerLine * numLine
 
-        val frameRec by nativeStateOf {
-            RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
+        val frameRec by remember {
+            nativeStateOf {
+                RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
+            }
         }
         var currentFrame = 0
 

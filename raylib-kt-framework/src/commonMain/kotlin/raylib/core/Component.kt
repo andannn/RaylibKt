@@ -8,7 +8,7 @@ interface ComponentRegistry {
     fun component(id: Any, block: ComponentScope.() -> Unit)
 }
 
-interface ComponentScope : RememberScope, ComponentRegistry, ContextProvider {
+interface ComponentScope : WindowFunction, DisposableRegistry, ComponentRegistry, ContextProvider {
     fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit)
 
     fun onDraw(block: DrawContext.() -> Unit)
@@ -32,7 +32,7 @@ fun interface DrawHandler {
     fun performDraw()
 }
 
-interface DrawInterceptor {
+fun interface DrawInterceptor {
     fun interceptDraw(handler: DrawHandler)
 }
 
@@ -178,11 +178,7 @@ private class LoopHandlerBuilder(contextRegistry: ContextRegistry) {
     private val drawContext = contextRegistry.get<DrawContext>()
 
     fun registerUpdateCallBack(block: GameContext.(deltaTime: Float) -> Unit) {
-        updateActions.add(
-            UpdateHandler { deltaTime ->
-                block.invoke(gameContext, deltaTime)
-            }
-        )
+        updateActions.add(UpdateHandler { deltaTime -> block.invoke(gameContext, deltaTime) })
     }
 
     fun registerDrawCallBack(block: DrawContext.() -> Unit) {
