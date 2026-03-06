@@ -2,16 +2,16 @@ package raylib.core
 
 import kotlinx.cinterop.CValue
 
-inline fun DrawContext.textureDrawScope(
+inline fun textureDrawScope(
     texture: CValue<RenderTexture>,
     backGroundColor: CValue<Color>? = null,
-    crossinline block: DrawContext.() -> Unit
+    crossinline block: () -> Unit
 ): CValue<RenderTexture> {
     raylib.interop.BeginTextureMode(texture)
     if (backGroundColor != null) {
         raylib.interop.ClearBackground(backGroundColor)
     }
-    block(this)
+    block()
     raylib.interop.EndTextureMode()
     return texture
 }

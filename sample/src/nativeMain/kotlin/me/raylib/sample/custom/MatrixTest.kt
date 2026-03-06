@@ -1,35 +1,59 @@
 package me.raylib.sample.custom
 
 import raylib.core.Colors.RED
+import raylib.core.Colors.SKYBLUE
 import raylib.core.ComponentRegistry
+import raylib.core.KeyboardKey
 import raylib.core.Rectangle
+import raylib.core.Vector2Alloc
+import raylib.core.components.Transform
+import raylib.core.components.transform2DComponent
 import raylib.core.getValue
-import raylib.core.matrixTranslate
-import raylib.core.mutableStateOf
-import raylib.core.rlMatrix
-import raylib.core.setValue
+import raylib.core.nativeStateOf
 
 fun ComponentRegistry.matrixTest() {
     component("matrixTest") {
-        var angle by remember {
-            mutableStateOf(0f)
+        val offset by remember {
+            nativeStateOf { Vector2Alloc(-25f, -25f) }
         }
-        onUpdate { deltaTime ->
-            angle += 1f
+        transform2DComponent(
+            tag = "test",
+            offset = offset
+        ) { transformBox ->
+            someItemGroup(transformBox)
         }
-        onDraw {
-            rlMatrix {
-                translate(0f, 25 * 50f, 0f)
-                rotate(90f, 1f)
-                drawGrid(100, 50f)
-            }
-            rlMatrix {
-                multMatrix(matrixTranslate(25f, 25f))
-//                multMatrix(matrixScale(2f, 2f))
-//                multMatrix(matrixRotateZ(angle))
-//                rotate(angle, z = 1f)
-                drawRectangle(Rectangle(-25f, -25f, 50f, 50f), color = RED)
-            }
+    }
+}
+
+const val speed = 100f
+
+private fun ComponentRegistry.someItemGroup(transform: Transform) = component("content") {
+    onUpdate { dt ->
+        if (KeyboardKey.KEY_RIGHT.isDown()) {
+            transform.position.x += speed * dt
         }
+        if (KeyboardKey.KEY_LEFT.isDown()) {
+            transform.position.x -= speed * dt
+        }
+        if (KeyboardKey.KEY_UP.isDown()) {
+            transform.position.y -= speed * dt
+        }
+        if (KeyboardKey.KEY_DOWN.isDown()) {
+            transform.position.y += speed * dt
+        }
+        if (KeyboardKey.KEY_SPACE.isDown()) {
+            transform.angle.value += 1f
+        }
+    }
+    onDraw {
+        drawRectangle(Rectangle(0f, 0f, 50f, 50f), color = RED)
+    }
+
+    someItemFollowParent()
+}
+
+private fun ComponentRegistry.someItemFollowParent() = component("follow parent") {
+    onDraw {
+        drawCircle(100, 100, 50f, SKYBLUE)
     }
 }

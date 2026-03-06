@@ -108,6 +108,14 @@ internal abstract class Component(
 
     private var isInterceptorLocked = false
 
+    private val drawThis = DrawHandler {
+        requireLoopHandler().performDraw()
+
+        children.forEach {
+            it.performDraw()
+        }
+    }
+
     override fun setDrawInterceptor(interceptor: DrawInterceptor) {
         if (!isInterceptorLocked) {
             _drawInterceptor = interceptor
@@ -120,14 +128,6 @@ internal abstract class Component(
 
         children.forEach {
             it.performUpdate(deltaTime)
-        }
-    }
-
-    private val drawThis = DrawHandler {
-        requireLoopHandler().performDraw()
-
-        children.forEach {
-            it.performDraw()
         }
     }
 
