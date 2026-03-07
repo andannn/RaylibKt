@@ -24,12 +24,11 @@ inline operator fun <T> MutableState<T>.setValue(
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T = value
 
-fun <T> mutableStateOf(initialValue: T, triggerRebuild: Boolean = false): MutableState<T> =
-    object : MutableStateBox<T>(initialValue, triggerRebuild) {}
+fun <T> mutableStateOf(initialValue: T): MutableState<T> =
+    object : MutableStateBox<T>(initialValue) {}
 
 internal abstract class MutableStateBox<T>(
     initialValue: T,
-    private val triggerRebuild: Boolean,
 ) : MutableState<T> {
     private var _field = initialValue
     override var value: T
@@ -37,7 +36,6 @@ internal abstract class MutableStateBox<T>(
         set(value) {
             if (_field == value) return
             _field = value
-            if (triggerRebuild) isDirty = true
         }
 }
 
@@ -58,9 +56,7 @@ class ManagedStateList<T>(
 
         innerList.add(state)
 
-        isDirty = true
         state.onDispose = {
-            isDirty = true
             innerList.remove(state)
         }
 

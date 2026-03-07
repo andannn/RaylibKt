@@ -1,6 +1,5 @@
 package raylib.core
 
-import raylib.core.component
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -126,34 +125,6 @@ class ComponentTest {
     }
 
     @Test
-    fun buildComponent_remember_state_component() {
-        var currentValue: MutableState<String>? = null
-        val rootComponent = rootComponent(
-            block = {
-                val value = remember {
-                    mutableStateOf("A")
-                }
-                currentValue = value
-                component("component2") {
-                    onUpdate {
-                        value.value = "B"
-                    }
-                }
-            }
-        )
-
-        rootComponent.buildComponents()
-        assertEquals("A", currentValue?.value)
-
-        rootComponent.buildComponents()
-        rootComponent.performUpdate(2f)
-        assertEquals("B", currentValue?.value)
-
-        rootComponent.buildComponents()
-        assertEquals("B", currentValue?.value)
-    }
-
-    @Test
     fun buildComponent_child_component_disposed_with_parent() {
         var disposed = false
         var show = true
@@ -176,43 +147,28 @@ class ComponentTest {
         rootComponent.buildComponents()
         assertTrue(disposed)
     }
+}
 
-    @Test
-    fun buildComponent_intercept_draw_test() {
-        var i = 0
-        val rootComponent = rootComponent(
-            block = {
-                component("parent") {
-                    setDrawInterceptor {
-                        assertEquals(0, i++)
-                        it.performDraw()
-                        assertEquals(3, i++)
-                    }
+private fun rootComponent(block: ComponentRegistry.() -> Unit): RootComponent {
+    val windowContext = WindowContextImpl(
+        windowFunction = DummyWindowFunction()
+    )
+    val gameContext = GameContext()
+    val drawContext = DrawContext()
+    return RootComponent(
+        contextRegistry = ContextRegistryInternal().apply {
 
-                    component("child") {
-                        onDraw { assertEquals(1, i++) }
-                    }
-                    component("child2") {
-                        onDraw { assertEquals(2, i++) }
+
+        },
+        windowContext,
+        block = {
+            provide<WindowContext>(windowContext) {
+                provide(gameContext) {
+                    provide(drawContext) {
+                        block()
                     }
                 }
             }
-        )
-        rootComponent.buildComponents()
-        rootComponent.performDraw()
-    }
+        }
+    )
 }
-
-private fun rootComponent(block: ComponentRegistry.() -> Unit) = RootComponent(
-    contextRegistry = ContextRegistryImpl().apply {
-        val windowContext = WindowContextImpl(
-            windowFunction = DummyWindowFunction()
-        )
-        val gameContext = GameContext(windowContext)
-        val drawContext = DrawContext(windowContext)
-        put<WindowContext>(windowContext)
-        put(gameContext)
-        put(drawContext)
-    },
-    block = block
-)

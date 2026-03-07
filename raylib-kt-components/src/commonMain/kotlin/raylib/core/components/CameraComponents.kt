@@ -10,6 +10,7 @@ import raylib.core.Vector2
 import raylib.core.add
 import raylib.core.component
 import raylib.core.length
+import raylib.core.onUpdate
 import raylib.core.scale
 import raylib.core.subtract
 import raylib.core.worldToScreenPosition

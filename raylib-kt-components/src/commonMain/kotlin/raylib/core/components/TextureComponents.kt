@@ -7,17 +7,17 @@ import raylib.core.Color
 import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.DrawContext
-import raylib.core.DrawHandler
-import raylib.core.DrawInterceptor
 import raylib.core.Rectangle
+import raylib.core.RenderPhase
 import raylib.core.RenderTexture
 import raylib.core.RenderTexture2D
 import raylib.core.State
 import raylib.core.Texture
 import raylib.core.TextureDrawFunction
 import raylib.core.Vector2
+import raylib.core.WindowContext
 import raylib.core.component
-import raylib.core.get
+import raylib.core.find
 import raylib.core.loadRenderTexture
 import raylib.core.mutableStateOf
 import raylib.core.remember
@@ -49,53 +49,56 @@ inline fun ComponentRegistry.fixSizedTextureComponent(
     val loadedTexture = remember {
         loadRenderTexture(width, height)
     }
-
+    val sourceRect = remember {
+        loadedTexture.useContents {
+            Rectangle(0f, 0f, texture.width.toFloat(), -texture.height.toFloat())
+        }
+    }
     val texture = loadedTexture.useContents {
         texture.readValue()
     }
-    children(texture)
-
-    setDrawInterceptor(
-        TextureDrawInterceptor(
-            get<DrawContext>(),
+    if (find<WindowContext>().renderPhase == RenderPhase.DRAW) {
+        textureDrawInterceptor(
+            find<DrawContext>(),
             loadedTexture,
+            sourceRect,
             dstRectangle,
             origin,
             rotation,
             tint,
             backgroundColor
-        )
-    )
+        ) {
+            children(texture)
+        }
+    } else {
+        children(texture)
+    }
 }
 
-class TextureDrawInterceptor(
-    val textureDrawFunction: TextureDrawFunction,
-    val loadedTexture: CValue<RenderTexture>,
-    val dstRectangle: Rectangle,
-    val origin: CValue<Vector2>,
-    val rotation: State<Float>,
-    val tint: CValue<Color>,
-    val backgroundColor: CValue<Color>,
-) : DrawInterceptor {
-    override fun interceptDraw(handler: DrawHandler) {
-        val sourceRect = loadedTexture.useContents {
-            Rectangle(0f, 0f, texture.width.toFloat(), -texture.height.toFloat())
-        }
-
-        val filledTexture = textureDrawScope(
-            loadedTexture,
-            backgroundColor
-        ) {
-            handler.performDraw()
-        }
-
-        textureDrawFunction.drawTexture(
-            filledTexture.useContents { texture.readValue() },
-            sourceRect,
-            dstRectangle.readValue(),
-            origin,
-            tint,
-            rotation.value
-        )
+inline fun textureDrawInterceptor(
+    textureDrawFunction: TextureDrawFunction,
+    loadedTexture: CValue<RenderTexture>,
+    sourceRect: CValue<Rectangle>,
+    dstRectangle: Rectangle,
+    origin: CValue<Vector2>,
+    rotation: State<Float>,
+    tint: CValue<Color>,
+    backgroundColor: CValue<Color>,
+    crossinline block: () -> Unit
+) {
+    val filledTexture = textureDrawScope(
+        loadedTexture,
+        backgroundColor
+    ) {
+        block()
     }
+
+    textureDrawFunction.drawTexture(
+        filledTexture.useContents { texture.readValue() },
+        sourceRect,
+        dstRectangle.readValue(),
+        origin,
+        tint,
+        rotation.value
+    )
 }

@@ -9,16 +9,24 @@ import raylib.core.getValue
 import raylib.core.randomColor
 import raylib.core.randomValue
 import raylib.core.mutableStateListOf
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
 import raylib.core.remember
+import raylib.core.setValue
 
 fun ComponentRegistry.randomObjectGenerator() {
     val stateList = remember {
         mutableStateListOf<Int>()
     }
     component("random object generator") {
-        var frameCount = 0
-        var newId = 0
+        var frameCount by remember {
+            mutableStateOf(0)
+        }
+        var newId by remember {
+            mutableStateOf(0)
+        }
         onUpdate {
             frameCount++
             if (frameCount % 5 == 0) {
@@ -36,9 +44,11 @@ fun ComponentRegistry.randomObjectGenerator() {
 
 private fun ComponentRegistry.generatedObject(state: NativeState<Int>) {
     component(state.value) {
-        var frameCount = 0f
-        val color = randomColor()
-        val radius = randomValue(1, 10)
+        var frameCount by remember {
+            mutableStateOf(0f)
+        }
+        val color = remember { randomColor() }
+        val radius = remember { randomValue(1, 10) }
         val position by remember {
             nativeStateOf {
                 Vector2Alloc(

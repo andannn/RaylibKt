@@ -9,9 +9,10 @@ import raylib.core.await
 import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.onDraw
 import raylib.core.remember
+import raylib.core.rememberSuspendingTask
 import raylib.core.setValue
-import raylib.core.suspendingTask
 import raylib.easings.Ease
 import raylib.easings.awaitEasingAnimation
 import raylib.interop.Fade
@@ -33,7 +34,7 @@ fun ComponentRegistry.easingBall() {
             mutableStateOf(0)
         }
 
-        suspendingTask {
+        rememberSuspendingTask {
             while (true) {
                 awaitEasingAnimation(
                     start = ballPositionX.toFloat(),

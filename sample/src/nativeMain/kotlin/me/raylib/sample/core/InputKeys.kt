@@ -10,6 +10,8 @@ import raylib.core.Vector2
 import raylib.core.component
 import raylib.core.getValue
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
 import raylib.core.remember
 
 internal fun ComponentRegistry.inputKeys() {

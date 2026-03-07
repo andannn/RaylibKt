@@ -10,6 +10,7 @@ fun matrixTranslate(x: Float = 0f, y: Float = 0f, z: Float = 0f): CValue<Matrix>
 fun matrixRotateX(angle: Float): CValue<Matrix> = MatrixRotateX(angle)
 fun matrixRotateY(angle: Float): CValue<Matrix> = MatrixRotateY(angle)
 fun matrixRotateZ(angle: Float): CValue<Matrix> = MatrixRotateZ(angle)
+fun matrixIdentity(): CValue<Matrix> = MatrixIdentity()
 
 fun CValue<Matrix>.determinant(): Float = MatrixDeterminant(this)
 fun CValue<Matrix>.trace(): Float = MatrixTrace(this)

@@ -3,10 +3,7 @@ package raylib.core.internal
 import kotlinx.cinterop.CValue
 import raylib.core.Color
 import raylib.core.ConfigFlags
-import raylib.core.ContextRegistryImpl
 import raylib.core.KeyboardKey
-import raylib.core.WindowContext
-import raylib.core.WindowContextImpl
 import raylib.core.WindowFunction
 
 class DummyWindowFunction: WindowFunction {
@@ -23,7 +20,7 @@ class DummyWindowFunction: WindowFunction {
         get() = TODO("Not yet implemented")
         set(value) {}
     override val frameTimeSeconds: Float
-        get() = TODO("Not yet implemented")
+        get() = 1f
 
     override fun ConfigFlags.isEnabled(): Boolean {
         TODO("Not yet implemented")

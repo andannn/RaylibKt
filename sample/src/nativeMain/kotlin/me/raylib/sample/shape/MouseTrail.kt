@@ -9,6 +9,8 @@ import raylib.core.ComponentRegistry
 import raylib.core.Vector2
 import raylib.core.component
 import raylib.core.forEachContentsIndexed
+import raylib.core.onDraw
+import raylib.core.onUpdate
 import raylib.core.remember
 import raylib.interop.Fade
 

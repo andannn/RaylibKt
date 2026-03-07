@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
 class SuspendingUpdateTaskTest {
-    private val gameContext = GameContext(DummyWindowFunction())
+    private val gameContext = GameContext()
 
     @Test
     fun suspendingTask_resume_on_update() {

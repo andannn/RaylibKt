@@ -7,6 +7,8 @@ import raylib.core.Colors.ORANGE
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2
 import raylib.core.component
+import raylib.core.onDraw
+import raylib.core.onUpdate
 import raylib.core.remember
 
 fun ComponentRegistry.inputMultitouch() {

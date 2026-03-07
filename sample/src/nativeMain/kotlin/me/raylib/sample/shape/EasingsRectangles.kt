@@ -13,9 +13,10 @@ import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
 import raylib.core.remember
+import raylib.core.rememberSuspendingTask
 import raylib.core.setValue
-import raylib.core.suspendingTask
 import raylib.easings.Ease
 import raylib.easings.animateTo
 import raylib.easings.awaitDuration
@@ -56,7 +57,7 @@ fun ComponentRegistry.easingsRectangles() {
             mutableStateOf(false)
         }
 
-        suspendingTask {
+        rememberSuspendingTask {
             while (true) {
                 awaitDuration(4.seconds) { fraction ->
                     recs.forEach { rec ->

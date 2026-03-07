@@ -14,16 +14,20 @@ import raylib.core.KeyboardKey
 import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
 import raylib.core.remember
 import raylib.core.setValue
 
 fun ComponentRegistry.basicScreenManager() {
     var currentScreen by remember {
-        mutableStateOf(GameScreen.LOGO, true)
+        mutableStateOf(GameScreen.LOGO)
     }
 
     component("updater") {
-        var framesCounter = 0
+        var framesCounter by remember {
+            mutableStateOf(0)
+        }
 
         onUpdate {
             when (currentScreen) {

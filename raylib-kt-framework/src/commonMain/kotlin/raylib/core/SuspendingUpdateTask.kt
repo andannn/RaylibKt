@@ -20,13 +20,19 @@ import kotlin.coroutines.resume
  *
  * @return A [TaskController] to manually start or stop the task.
  */
-fun ComponentScope.suspendingTask(startImmediately: Boolean = true, block: suspend SuspendingUpdateEventScope.() -> Unit): TaskController {
-    return SuspendingUpdateTask(get<GameContext>(), block).also { handler ->
+inline fun ComponentScope.rememberSuspendingTask(
+    startImmediately: Boolean = true,
+    noinline block: suspend SuspendingUpdateEventScope.() -> Unit
+): TaskController {
+    return remember {
+        SuspendingUpdateTask(find<GameContext>(), block)
+            .also {
+                if (startImmediately) it.start()
+            }
+    }.also { task ->
         onUpdate {
-            handler.performUpdate(it)
+            task.performUpdate(find<WindowContext>().frameTimeSeconds)
         }
-    }.also {
-        if (startImmediately) it.start()
     }
 }
 
@@ -80,6 +86,7 @@ interface AwaitUpdateEventScope : GameContext {
 
 internal class FinishHandleInputException : CancellationException(message = "task is cancelled by user")
 
+@PublishedApi
 internal class SuspendingUpdateTask(
     private val gameContext: GameContext,
     private val block: suspend SuspendingUpdateEventScope.() -> Unit,

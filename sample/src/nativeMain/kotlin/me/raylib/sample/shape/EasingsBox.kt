@@ -13,9 +13,11 @@ import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
 import raylib.core.remember
+import raylib.core.rememberSuspendingTask
 import raylib.core.setValue
-import raylib.core.suspendingTask
 import raylib.easings.Ease
 import raylib.easings.animateTo
 import raylib.easings.awaitDuration
@@ -34,14 +36,8 @@ fun ComponentRegistry.easingBox() {
         var alpha by remember {
             mutableStateOf(1.0f)
         }
-        var animationTaskController: TaskController? = null
-        onUpdate {
-            if (KeyboardKey.KEY_SPACE.isPressed()) {
-                animationTaskController?.start()
-            }
-        }
 
-        animationTaskController = suspendingTask {
+        val animationTaskController = rememberSuspendingTask {
             rec.x = screenWidth / 2.0f
             rec.y = -100f
             rec.width = 100f
@@ -71,6 +67,12 @@ fun ComponentRegistry.easingBox() {
 
             awaitDuration(2.8.seconds) { fraction ->
                 alpha = 1f.animateTo(0f, fraction, Ease.SineOut)
+            }
+        }
+
+        onUpdate {
+            if (KeyboardKey.KEY_SPACE.isPressed()) {
+                animationTaskController.start()
             }
         }
 

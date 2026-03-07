@@ -6,6 +6,7 @@ import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.component
 import raylib.core.loadTexture
+import raylib.core.onDraw
 import raylib.core.remember
 
 fun ComponentRegistry.logoRaylib() {

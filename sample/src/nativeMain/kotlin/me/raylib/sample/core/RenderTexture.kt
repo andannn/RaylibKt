@@ -15,6 +15,8 @@ import raylib.core.components.fixSizedTextureComponent
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
 import raylib.core.remember
 
 private const val renderTextureWidth = 300
