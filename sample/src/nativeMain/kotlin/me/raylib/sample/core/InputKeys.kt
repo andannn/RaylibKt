@@ -7,6 +7,7 @@ import raylib.core.Colors.MAROON
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.nativeStateOf
 import raylib.core.remember

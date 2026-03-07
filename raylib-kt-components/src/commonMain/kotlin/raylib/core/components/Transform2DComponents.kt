@@ -10,6 +10,7 @@ import raylib.core.MutableState
 import raylib.core.State
 import raylib.core.Vector2
 import raylib.core.Vector2Alloc
+import raylib.core.component
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
 import raylib.core.remember

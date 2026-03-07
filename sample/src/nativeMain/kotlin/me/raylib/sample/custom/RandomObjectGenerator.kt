@@ -4,6 +4,7 @@ import kotlinx.cinterop.readValue
 import raylib.core.ComponentRegistry
 import raylib.core.NativeState
 import raylib.core.Vector2Alloc
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.randomColor
 import raylib.core.randomValue

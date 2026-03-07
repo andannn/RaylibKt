@@ -10,6 +10,7 @@ import raylib.core.Colors.SKYBLUE
 import raylib.core.ComponentRegistry
 import raylib.core.RectangleAlloc
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.components.fixSizedTextureComponent
 import raylib.core.getValue
 import raylib.core.mutableStateOf

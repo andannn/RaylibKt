@@ -9,6 +9,7 @@ import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
 import raylib.core.TaskController
 import raylib.core.Vector2Alloc
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf

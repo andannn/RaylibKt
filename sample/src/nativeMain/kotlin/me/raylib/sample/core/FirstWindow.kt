@@ -5,6 +5,7 @@ import raylib.core.Color
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.ComponentRegistry
+import raylib.core.component
 import raylib.core.remember
 
 internal fun ComponentRegistry.firstWindow(

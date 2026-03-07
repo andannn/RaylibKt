@@ -20,6 +20,7 @@ import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.add
 import raylib.core.RectangleAlloc
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.length
 import raylib.core.mode2d

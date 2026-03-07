@@ -11,6 +11,7 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.RectangleAlloc
+import raylib.core.component
 import raylib.core.components.fixSizedTextureComponent
 import raylib.core.getValue
 import raylib.core.mode2d

@@ -16,6 +16,7 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.RectangleAlloc
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mode2d
 import raylib.core.mutableStateOf

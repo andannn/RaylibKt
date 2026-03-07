@@ -10,6 +10,7 @@ import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
+import raylib.core.component
 import raylib.core.components.spriteAnimationComponent
 import raylib.core.getValue
 import raylib.core.loadTexture

@@ -6,6 +6,7 @@ import raylib.core.Colors.RED
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.await
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.remember

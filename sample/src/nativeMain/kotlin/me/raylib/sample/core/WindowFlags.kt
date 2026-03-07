@@ -11,6 +11,7 @@ import raylib.core.ConfigFlags
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf

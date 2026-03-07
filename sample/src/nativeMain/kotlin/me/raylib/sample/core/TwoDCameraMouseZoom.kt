@@ -14,6 +14,7 @@ import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Vector2
 import raylib.core.add
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mode2d
 import raylib.core.mutableStateOf

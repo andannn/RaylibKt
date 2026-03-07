@@ -3,13 +3,24 @@ package raylib.core
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-interface ComponentRegistry {
-    fun component(id: Any, block: ComponentScope.() -> Unit)
+interface ComponentRegistry
+
+inline fun ComponentRegistry.component(id: Any, block: ComponentScope.() -> Unit) {
+    (this as ComponentStore)
+
+    val component = getCachedOrCreateComponent(id)
+
+    // apply block to build children components.
+    block(component)
+    component.onEndBuildComponents()
+
+    finishComponent(id, component)
 }
 
 inline fun <reified R> ComponentRegistry.remember(block: RememberScope.() -> R): R {
-    val builder = (this as StateStore)
-    return builder.rememberedValue().let {
+    (this as ComponentStore)
+
+    return rememberedValue().let {
         if (it == null) {
             val value = block(rememberScope)
             updateRememberedValue(value)
@@ -106,7 +117,7 @@ internal abstract class Component(
     private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry, disposableRegistry)
 ) : ComponentScope,
     ComponentFactory by componentsBuilder,
-    StateStore by componentsBuilder,
+    ComponentStore by componentsBuilder,
     ContextRegistry by contextRegistry,
     DisposableRegistry by disposableRegistry,
     WindowFunction by contextRegistry.get<WindowContext>(),
@@ -227,23 +238,29 @@ private class LoopHandlerBuilder(contextRegistry: ContextRegistry) {
     }
 }
 
-
+@PublishedApi
 internal interface ComponentFactory : ComponentRegistry {
     fun buildComponents(block: ComponentRegistry.() -> Unit)
 }
 
 @PublishedApi
-internal interface StateStore {
+internal interface ComponentStore {
     fun rememberedValue(): Any?
     fun updateRememberedValue(value: Any?)
     val rememberScope: RememberScope
+
+    fun getCachedOrCreateComponent(id: Any): Component
+
+    fun finishComponent(id: Any, component: Component)
+
+    fun onEndBuildComponents()
 }
 
 internal class ComponentsBuilder(
     private val contextRegistry: ContextRegistry,
     disposableRegistry: DisposableRegistry,
     override val rememberScope: RememberScope = RememberScope(disposableRegistry, contextRegistry)
-) : ComponentFactory, StateStore {
+) : ComponentFactory, ComponentStore {
     var activeStates = HashMap<Any, Component>()
     private var pendingStates = HashMap<Any, Component>()
     private val componentKeys = mutableSetOf<Any>()
@@ -264,13 +281,12 @@ internal class ComponentsBuilder(
         readIndex++
     }
 
-    override fun component(id: Any, block: ComponentScope.() -> Unit) {
+    override fun getCachedOrCreateComponent(id: Any): Component {
         checkUniqueKey(id)
+        return activeStates.remove(id) ?: Component(id, contextRegistry)
+    }
 
-        val component = activeStates.remove(id) ?: Component(id, contextRegistry)
-        component.buildComponents {
-            component.block()
-        }
+    override fun finishComponent(id: Any, component: Component) {
         pendingStates[id] = component
     }
 
@@ -279,7 +295,7 @@ internal class ComponentsBuilder(
         onEndBuildComponents()
     }
 
-    private fun onEndBuildComponents() {
+    override fun onEndBuildComponents() {
         componentKeys.clear()
         readIndex = 0
 

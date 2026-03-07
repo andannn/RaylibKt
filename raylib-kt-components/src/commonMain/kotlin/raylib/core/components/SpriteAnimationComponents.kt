@@ -10,6 +10,7 @@ import raylib.core.RectangleAlloc
 import raylib.core.State
 import raylib.core.Texture2D
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.nativeStateOf
 import raylib.core.remember

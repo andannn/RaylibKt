@@ -8,6 +8,7 @@ import raylib.core.Colors.LIGHTGRAY
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.scissorMode

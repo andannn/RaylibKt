@@ -1,5 +1,6 @@
 package raylib.core
 
+import raylib.core.component
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -12,6 +12,7 @@ import raylib.core.Colors
 import raylib.core.MouseButton
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.isCollisionWith
 import raylib.core.mutableStateOf

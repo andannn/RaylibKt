@@ -16,6 +16,7 @@ import raylib.core.State
 import raylib.core.Texture
 import raylib.core.TextureDrawFunction
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.get
 import raylib.core.loadRenderTexture
 import raylib.core.mutableStateOf

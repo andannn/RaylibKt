@@ -7,6 +7,7 @@ import raylib.core.Colors.SKYBLUE
 import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.forEachContentsIndexed
 import raylib.core.remember
 import raylib.interop.Fade

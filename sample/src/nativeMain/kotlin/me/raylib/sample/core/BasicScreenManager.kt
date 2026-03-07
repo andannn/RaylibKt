@@ -11,6 +11,7 @@ import raylib.core.Colors.PURPLE
 import raylib.core.ComponentRegistry
 import raylib.core.Gesture
 import raylib.core.KeyboardKey
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.remember

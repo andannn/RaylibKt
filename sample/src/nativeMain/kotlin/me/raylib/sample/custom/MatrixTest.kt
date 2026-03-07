@@ -6,6 +6,7 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2Alloc
+import raylib.core.component
 import raylib.core.components.Transform
 import raylib.core.components.transform2DComponent
 import raylib.core.getValue
