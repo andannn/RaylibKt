@@ -12,14 +12,13 @@ fun matrixRotateY(angle: Float): CValue<Matrix> = MatrixRotateY(angle)
 fun matrixRotateZ(angle: Float): CValue<Matrix> = MatrixRotateZ(angle)
 fun matrixIdentity(): CValue<Matrix> = MatrixIdentity()
 
+fun CValue<Matrix>.add(other: CValue<Matrix>): CValue<Matrix> = MatrixAdd(this, other)
+fun CValue<Matrix>.subtract(other: CValue<Matrix>): CValue<Matrix> = MatrixSubtract(this, other)
+fun CValue<Matrix>.multiply(other: CValue<Matrix>): CValue<Matrix> = MatrixMultiply(this, other)
 fun CValue<Matrix>.determinant(): Float = MatrixDeterminant(this)
 fun CValue<Matrix>.trace(): Float = MatrixTrace(this)
 fun CValue<Matrix>.transpose(): CValue<Matrix> = MatrixTranspose(this)
 fun CValue<Matrix>.invert(): CValue<Matrix> = MatrixInvert(this)
-fun CValue<Matrix>.add(other: CValue<Matrix>): CValue<Matrix> = MatrixAdd(this, other)
-fun CValue<Matrix>.subtract(other: CValue<Matrix>): CValue<Matrix> = MatrixSubtract(this, other)
-fun CValue<Matrix>.multiply(other: CValue<Matrix>): CValue<Matrix> = MatrixMultiply(this, other)
-
 
 fun CValue<Vector2>.add(other: CValue<Vector2>): CValue<Vector2> = Vector2Add(this, other)
 fun CValue<Vector2>.addValue(value: Float): CValue<Vector2> = Vector2AddValue(this, value)
@@ -28,6 +27,7 @@ fun CValue<Vector2>.subtractValue(value: Float): CValue<Vector2> = Vector2Subtra
 fun CValue<Vector2>.length(): Float = Vector2Length(this)
 fun CValue<Vector2>.lengthSqr(): Float = Vector2LengthSqr(this)
 fun CValue<Vector2>.dot(other: CValue<Vector2>): Float = Vector2DotProduct(this, other)
+fun CValue<Vector2>.cross(other: CValue<Vector2>): Float = Vector2CrossProduct(this, other)
 fun CValue<Vector2>.distance(other: CValue<Vector2>): Float = Vector2Distance(this, other)
 fun CValue<Vector2>.distanceSqr(other: CValue<Vector2>): Float = Vector2DistanceSqr(this, other)
 fun CValue<Vector2>.angle(other: CValue<Vector2>): Float = Vector2Angle(this, other)
@@ -38,23 +38,16 @@ fun CValue<Vector2>.divide(other: CValue<Vector2>): CValue<Vector2> = Vector2Div
 fun CValue<Vector2>.negate(): CValue<Vector2> = Vector2Negate(this)
 fun CValue<Vector2>.normalize(): CValue<Vector2> = Vector2Normalize(this)
 fun CValue<Vector2>.transform(mat: CValue<Matrix>): CValue<Vector2> = Vector2Transform(this, mat)
-fun CValue<Vector2>.lerp(to: CValue<Vector2>, amount: Float): CValue<Vector2> =
-    Vector2Lerp(this, to, amount)
-
+fun CValue<Vector2>.lerp(to: CValue<Vector2>, amount: Float): CValue<Vector2> = Vector2Lerp(this, to, amount)
 fun CValue<Vector2>.reflect(normal: CValue<Vector2>): CValue<Vector2> = Vector2Reflect(this, normal)
 fun CValue<Vector2>.rotate(angle: Float): CValue<Vector2> = Vector2Rotate(this, angle)
 fun CValue<Vector2>.moveTowards(target: CValue<Vector2>, maxDistance: Float): CValue<Vector2> =
     Vector2MoveTowards(this, target, maxDistance)
 
 fun CValue<Vector2>.invert(): CValue<Vector2> = Vector2Invert(this)
-fun CValue<Vector2>.clamp(min: CValue<Vector2>, max: CValue<Vector2>): CValue<Vector2> =
-    Vector2Clamp(this, min, max)
-
-fun CValue<Vector2>.clampValue(min: Float, max: Float): CValue<Vector2> =
-    Vector2ClampValue(this, min, max)
-
+fun CValue<Vector2>.clamp(min: CValue<Vector2>, max: CValue<Vector2>): CValue<Vector2> = Vector2Clamp(this, min, max)
+fun CValue<Vector2>.clampValue(min: Float, max: Float): CValue<Vector2> = Vector2ClampValue(this, min, max)
 fun CValue<Vector2>.equalsTo(other: CValue<Vector2>): Int = Vector2Equals(this, other)
-
 
 fun CValue<Vector3>.add(other: CValue<Vector3>): CValue<Vector3> = Vector3Add(this, other)
 fun CValue<Vector3>.addValue(value: Float): CValue<Vector3> = Vector3AddValue(this, value)
@@ -66,7 +59,7 @@ fun CValue<Vector3>.cross(other: CValue<Vector3>): CValue<Vector3> = Vector3Cros
 fun CValue<Vector3>.perpendicular(): CValue<Vector3> = Vector3Perpendicular(this)
 fun CValue<Vector3>.length(): Float = Vector3Length(this)
 fun CValue<Vector3>.lengthSqr(): Float = Vector3LengthSqr(this)
-fun CValue<Vector3>.dotProduct(target: CValue<Vector3>): Float = Vector3DotProduct(this, target)
+fun CValue<Vector3>.dot(target: CValue<Vector3>): Float = Vector3DotProduct(this, target)
 fun CValue<Vector3>.distance(target: CValue<Vector3>): Float = Vector3Distance(this, target)
 fun CValue<Vector3>.distanceSqr(target: CValue<Vector3>): Float = Vector3DistanceSqr(this, target)
 fun CValue<Vector3>.angle(target: CValue<Vector3>): Float = Vector3Angle(this, target)

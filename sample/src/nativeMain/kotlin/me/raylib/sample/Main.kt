@@ -63,6 +63,7 @@ enum class Example(val title: String) {
     SPRITE_ANIMATION_SAMPLE("Sprite Animation"),
     SPRITE_EXPLOSION("Sprite explosion"),
     MATRIX_TEST("Matrix test"),
+    IMAGE_DRAWING("Image drawing"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -79,7 +80,7 @@ fun main() = window(
         }
 
         val currentExample = remember {
-            mutableStateOf<Example?>(null)
+            mutableStateOf<Example?>(Example.entries.last())
         }
 
         component("menu_control") {
@@ -148,6 +149,7 @@ fun main() = window(
             Example.SPRITE_ANIMATION_SAMPLE -> spriteAnimationSample()
             Example.SPRITE_EXPLOSION -> spriteExplosion()
             Example.MATRIX_TEST -> matrixTest()
+            Example.IMAGE_DRAWING -> imageDrawing()
         }
 
         if (currentExample.value != null) {

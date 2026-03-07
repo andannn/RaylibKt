@@ -18,7 +18,6 @@ import raylib.core.WindowContext
 import raylib.core.component
 import raylib.core.find
 import raylib.core.findOrNull
-import raylib.core.format
 import raylib.core.invert
 import raylib.core.isCollisionWith
 import raylib.core.matrixIdentity
@@ -30,20 +29,45 @@ import raylib.core.remember
 import raylib.core.rlMatrix
 import raylib.core.transform
 
-class Transform2DContext(
-    val matrix: CValue<Matrix>
-) : Context
 
+/**
+ * Retrieves the current global transformation matrix for the calling component.
+ *
+ * If the component is nested within multiple [transform2DComponent] calls, this
+ * method returns the cumulative result of all ancestor transformations
+ * (calculated via matrix multiplication).
+ *
+ * @return The [CValue<Matrix>] representing the world-space transform.
+ * - In a transformation flow: Returns the accumulated world matrix.
+ * - At the root level: Returns the Identity Matrix [matrixIdentity], representing the origin.
+ */
 fun ContextProvider.worldMatrix(): CValue<Matrix> {
     return findOrNull<Transform2DContext>()?.matrix ?: matrixIdentity()
 }
 
-fun ContextProvider.isScreenPointInLocalRect(screenPoint: CValue<Vector2>, localRect: CValue<Rectangle>): Boolean {
-    val world = worldMatrix()
+/**
+ * Performs a hit test to determine if this screen-space point intersects a
+ * rectangle defined in the component's local coordinate system.
+ *
+ * This method leverages the [ContextProvider] to retrieve the current world
+ * transformation. It then projects the point from screen space into local space
+ * using matrix inversion, making it capable of handling complex nested
+ * translations, rotations, and scales.
+ *
+ * @param localRect The axis-aligned rectangle defined in local coordinates.
+ * @return True if the point lies within the rectangle after local-space projection.
+ */
+context(contextProvider: ContextProvider)
+fun CValue<Vector2>.hitTest(localRect: CValue<Rectangle>): Boolean {
+    val world = contextProvider.worldMatrix()
     val invWorld = world.invert()
-    val localPoint = screenPoint.transform(invWorld)
+    val localPoint = this.transform(invWorld)
     return localPoint.isCollisionWith(localRect)
 }
+
+class Transform2DContext(
+    val matrix: CValue<Matrix>
+) : Context
 
 class Transform2D(
     val position: Vector2,
@@ -82,7 +106,12 @@ inline fun ComponentRegistry.transform2DComponent(
     }
 
     when (find<WindowContext>().renderPhase) {
-        RenderPhase.UPDATE -> provide<Transform2DContext>(Transform2DContext(worldMatrix().multiply(transform2DState.toMatrix()))) {
+        RenderPhase.UPDATE -> provide<Transform2DContext>(
+            Transform2DContext(
+                worldMatrix()
+                    .multiply(transform2DState.toMatrix())
+            )
+        ) {
             children(transform2DState)
         }
 
@@ -131,5 +160,4 @@ fun Transform2D.toMatrix(): CValue<Matrix> {
         m.readValue()
     }
     return transform
-
 }

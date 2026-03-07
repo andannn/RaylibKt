@@ -22,3 +22,13 @@ fun DisposableRegistry.loadTexture(
     }
     return texture
 }
+
+fun DisposableRegistry.loadTextureFromImage(
+    image: CValue<Image>
+): CValue<Texture2D> {
+    val texture = raylib.interop.LoadTextureFromImage(image)
+    disposeOnClose {
+        raylib.interop.UnloadTexture(texture)
+    }
+    return texture
+}

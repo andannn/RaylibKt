@@ -20,6 +20,7 @@ import kotlin.coroutines.resume
  *
  * @return A [TaskController] to manually start or stop the task.
  */
+@Suppress("NOTHING_TO_INLINE")
 inline fun ComponentScope.rememberSuspendingTask(
     startImmediately: Boolean = true,
     noinline block: suspend SuspendingUpdateEventScope.() -> Unit
