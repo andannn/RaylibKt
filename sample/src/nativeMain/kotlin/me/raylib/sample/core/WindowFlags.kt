@@ -11,16 +11,24 @@ import raylib.core.ConfigFlags
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
 import raylib.core.setValue
 import raylib.interop.DrawText
 
 fun ComponentRegistry.windowFlags() {
     component("key") {
-        val ballPosition by nativeStateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) } }
-        val ballSpeed by nativeStateOf { alloc<Vector2> { x = 5f; y = 4f } }
+        val ballPosition by remember {
+            nativeStateOf { alloc<Vector2> { x = screenWidth.div(2f); y = screenHeight.div(2f) } }
+        }
+        val ballSpeed by remember {
+            nativeStateOf { alloc<Vector2> { x = 5f; y = 4f } }
+        }
         val ballRadius by remember {
             mutableStateOf(20)
         }

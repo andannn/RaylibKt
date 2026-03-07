@@ -6,15 +6,12 @@ import raylib.interop.ClearBackground
 import raylib.interop.CloseWindow
 import raylib.interop.EndDrawing
 
-var isDirty = false
-
 fun window(
     title: String,
     width: Int,
     height: Int,
     initialFps: Int = 60,
     initialBackGroundColor: CValue<Color>? = null,
-    initContext: ContextRegistry.() -> Unit = {},
     block: ComponentRegistry.() -> Unit
 ) {
     val windowFunction = WindowFunction(
@@ -25,40 +22,41 @@ fun window(
         backGroundColor = initialBackGroundColor
     )
 
-    val contextRegistry = ContextRegistryImpl()
-    contextRegistry.put<WindowContext>(WindowContext(windowFunction))
-    contextRegistry.put(GameContext(windowFunction))
-    contextRegistry.put(DrawContext(windowFunction))
-    contextRegistry.initContext()
-
-    val rootComponent = RootComponent(contextRegistry, block)
-    with(rootComponent) {
-        buildComponents()
-
+    val windowContext = WindowContext(windowFunction)
+    val gameContext = GameContext()
+    val drawContext = DrawContext()
+    val contextRegistry = ContextRegistryInternal()
+    with(RootComponent(contextRegistry, windowContext, block)) {
         try {
             windowFunction.gameLoop {
-                // update state
-                this.performUpdate(windowFunction.frameTimeSeconds)
+                contextRegistry.provide<WindowContext>(windowContext) {
+                    contextRegistry.provide(gameContext) {
+                        contextRegistry.provide(drawContext) {
+                            // update state
+                            windowContext.renderPhase = RenderPhase.UPDATE
+                            buildComponents()
 
-                if (isDirty) {
-                    buildComponents()
-                    rootComponent.dumpDebugInfo()
-
-                    isDirty = false
+                            // Draw
+                            windowContext.renderPhase = RenderPhase.DRAW
+                            BeginDrawing()
+                            windowFunction.backGroundColor?.let {
+                                ClearBackground(it)
+                            }
+                            buildComponents()
+                            EndDrawing()
+                        }
+                    }
                 }
-
-                // Draw
-                BeginDrawing()
-                windowFunction.backGroundColor?.let {
-                    ClearBackground(it)
-                }
-                this.performDraw()
-                EndDrawing()
             }
         } finally {
             dispose()
         }
     }
+}
+
+enum class RenderPhase {
+    UPDATE,
+    DRAW
 }
 
 private fun WindowFunction.gameLoop(

@@ -2,25 +2,36 @@ package me.raylib.sample.custom
 
 import kotlinx.cinterop.readValue
 import raylib.core.ComponentRegistry
-import raylib.core.DisposableState
+import raylib.core.NativeState
 import raylib.core.Vector2Alloc
+import raylib.core.component
+import raylib.core.getValue
 import raylib.core.randomColor
 import raylib.core.randomValue
 import raylib.core.mutableStateListOf
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
+import raylib.core.setValue
 
 fun ComponentRegistry.randomObjectGenerator() {
     val stateList = remember {
         mutableStateListOf<Int>()
     }
     component("random object generator") {
-        var frameCount = 0
-        var newId = 0
+        var frameCount by remember {
+            mutableStateOf(0)
+        }
+        var newId by remember {
+            mutableStateOf(0)
+        }
         onUpdate {
             frameCount++
             if (frameCount % 5 == 0) {
                 if (stateList.size <= 10000) {
-                    stateList.addState(nativeStateOf { newId++ })
+                    stateList.addState { nativeStateOf { newId++ } }
                 }
             }
         }
@@ -31,16 +42,20 @@ fun ComponentRegistry.randomObjectGenerator() {
     }
 }
 
-private fun ComponentRegistry.generatedObject(state: DisposableState<Int>) {
+private fun ComponentRegistry.generatedObject(state: NativeState<Int>) {
     component(state.value) {
-        var frameCount = 0f
-        val color = randomColor()
-        val radius = randomValue(1, 10)
-        val position by nativeStateOf {
-            Vector2Alloc(
-                randomValue(0, screenWidth).toFloat(),
-                randomValue(0, screenHeight).toFloat()
-            )
+        var frameCount by remember {
+            mutableStateOf(0f)
+        }
+        val color = remember { randomColor() }
+        val radius = remember { randomValue(1, 10) }
+        val position by remember {
+            nativeStateOf {
+                Vector2Alloc(
+                    randomValue(0, screenWidth).toFloat(),
+                    randomValue(0, screenHeight).toFloat()
+                )
+            }
         }
         onUpdate {
             frameCount++

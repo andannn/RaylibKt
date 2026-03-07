@@ -8,10 +8,14 @@ import raylib.core.Colors.LIGHTGRAY
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Rectangle
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.scissorMode
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
 import raylib.core.setValue
 
 fun ComponentRegistry.scissorTest() {

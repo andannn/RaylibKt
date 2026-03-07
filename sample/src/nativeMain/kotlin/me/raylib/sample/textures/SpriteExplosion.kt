@@ -5,11 +5,14 @@ import raylib.core.MouseButton
 import raylib.core.Rectangle
 import raylib.core.RectangleAlloc
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.components.spriteAnimationComponent
 import raylib.core.loadTexture
 import raylib.core.mutableStateListOf
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onUpdate
+import raylib.core.remember
 
 fun ComponentRegistry.spriteExplosion() {
     val explosion = remember {
@@ -23,14 +26,14 @@ fun ComponentRegistry.spriteExplosion() {
         var id = 0L
         onUpdate {
             if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
-                explosionContainer.addState(
+                explosionContainer.addState {
                     nativeStateOf {
                         ExplosionState(
                             id = id++,
                             RectangleAlloc(mouseX.toFloat(), mouseY.toFloat(), 100f, 100f)
                         )
                     }
-                )
+                }
             }
         }
     }

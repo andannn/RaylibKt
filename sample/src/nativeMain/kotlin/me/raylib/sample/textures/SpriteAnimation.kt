@@ -10,11 +10,15 @@ import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.RectangleAlloc
+import raylib.core.component
 import raylib.core.components.spriteAnimationComponent
 import raylib.core.getValue
 import raylib.core.loadTexture
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
 
 private const val MAX_FRAME_SPEED = 15
 private const val MIN_FRAME_SPEED = 1

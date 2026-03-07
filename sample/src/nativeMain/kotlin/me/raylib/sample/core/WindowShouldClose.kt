@@ -4,8 +4,12 @@ import raylib.core.Colors.BLACK
 import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
 import raylib.core.setValue
 import raylib.interop.WindowShouldClose
 

@@ -10,8 +10,14 @@ import raylib.core.RectangleAlloc
 import raylib.core.State
 import raylib.core.Texture2D
 import raylib.core.Vector2
+import raylib.core.component
+import raylib.core.getValue
+import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
-import raylib.core.suspendingTask
+import raylib.core.onDraw
+import raylib.core.remember
+import raylib.core.rememberSuspendingTask
+import raylib.core.setValue
 import raylib.easings.awaitDuration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -43,12 +49,16 @@ fun ComponentRegistry.spriteAnimationComponent(
         val frameHeight = textureHeight.toFloat() / numLine
         val frameCount = numFramePerLine * numLine
 
-        val frameRec by nativeStateOf {
-            RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
+        val frameRec by remember {
+            nativeStateOf {
+                RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
+            }
         }
-        var currentFrame = 0
+        var currentFrame by remember {
+            mutableStateOf(0)
+        }
 
-        suspendingTask {
+        rememberSuspendingTask {
             while (true) {
                 val speed = framesSpeed.value.coerceAtLeast(1)
                 val frameDurationMs = (1000 / speed).toLong()

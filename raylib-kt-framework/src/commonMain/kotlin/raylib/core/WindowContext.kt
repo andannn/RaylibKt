@@ -1,6 +1,8 @@
 package raylib.core
 
-interface WindowContext : Context, WindowFunction
+interface WindowContext : Context, WindowFunction {
+    var renderPhase: RenderPhase
+}
 
 fun WindowContext(
     windowFunction: WindowFunction,
@@ -11,4 +13,6 @@ fun WindowContext(
 internal class WindowContextImpl(
     windowFunction: WindowFunction,
 ) : WindowContext,
-    WindowFunction by windowFunction
+    WindowFunction by windowFunction {
+    override var renderPhase = RenderPhase.UPDATE
+}

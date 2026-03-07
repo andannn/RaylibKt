@@ -3,17 +3,50 @@ package raylib.core
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-interface ComponentRegistry {
-    fun <R> remember(block: RememberScope.() -> R): R
-    fun component(id: Any, block: ComponentScope.() -> Unit)
+interface ComponentRegistry: ContextRegistry
+
+inline fun ComponentRegistry.component(id: Any, crossinline block: ComponentScope.() -> Unit) {
+    (this as ComponentStore)
+
+    val component = getCachedOrCreateComponent(id)
+
+    // apply block to build children components.
+    component.block()
+    component.onEndBuildComponents()
+
+    finishComponent(id, component)
 }
 
-interface ComponentScope : RememberScope, ComponentRegistry, ContextProvider {
-    fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit)
+inline fun ComponentRegistry.doOnce(crossinline block: RememberScope.() -> Unit) {
+    remember {
+        block()
+    }
+}
 
-    fun onDraw(block: DrawContext.() -> Unit)
+inline fun <reified R> ComponentRegistry.remember(block: RememberScope.() -> R): R {
+    (this as ComponentStore)
 
-    fun setDrawInterceptor(interceptor: DrawInterceptor)
+    return rememberedValue().let {
+        if (it == null) {
+            val value = block(rememberScope)
+            updateRememberedValue(value)
+            value
+        } else it
+    } as R
+}
+
+interface ComponentScope : WindowFunction, DisposableRegistry, ComponentRegistry, ContextProvider
+
+inline fun ComponentScope.onDraw(crossinline block: DrawContext.() -> Unit) {
+    if (find<WindowContext>().renderPhase == RenderPhase.DRAW) {
+        block(find<DrawContext>())
+    }
+}
+
+inline fun ComponentScope.onUpdate(crossinline block: GameContext.(Float) -> Unit) {
+    if (find<WindowContext>().renderPhase == RenderPhase.UPDATE) {
+        block(find<GameContext>(), find<WindowContext>().frameTimeSeconds)
+    }
 }
 
 interface RememberScope : DisposableRegistry, WindowFunction
@@ -21,50 +54,19 @@ interface RememberScope : DisposableRegistry, WindowFunction
 internal fun RememberScope(
     disposableRegistry: DisposableRegistry,
     contextRegistry: ContextRegistry,
+    windowFunction: WindowFunction = contextRegistry.find<WindowContext>(),
 ): RememberScope = object : RememberScope, DisposableRegistry by disposableRegistry,
-    WindowFunction by contextRegistry.get<WindowContext>() {}
+    WindowFunction by windowFunction {}
 
 internal fun interface UpdateHandler {
     fun performUpdate(deltaTime: Float)
 }
 
-fun interface DrawHandler {
-    fun performDraw()
-}
-
-interface DrawInterceptor {
-    fun interceptDraw(handler: DrawHandler)
-}
-
-infix fun DrawInterceptor.then(next: DrawInterceptor): DrawInterceptor {
-    if (this === NoOpDrawInterceptor) return next
-    if (next === NoOpDrawInterceptor) return this
-    return CompositeInterceptor(this, next)
-}
-
-internal object NoOpDrawInterceptor : DrawInterceptor {
-    override fun interceptDraw(handler: DrawHandler) {
-        return handler.performDraw()
-    }
-}
-
-internal class CompositeInterceptor(
-    private val outer: DrawInterceptor,
-    private val inner: DrawInterceptor
-) : DrawInterceptor {
-    override fun interceptDraw(handler: DrawHandler) {
-        outer.interceptDraw {
-            inner.interceptDraw(handler)
-        }
-    }
-}
-
-internal interface LoopHandler : UpdateHandler, DrawHandler
-
 internal class RootComponent(
-    contextRegistry: ContextRegistry,
+    contextRegistry: ContextRegistryInternal,
+    windowFunction: WindowFunction,
     private val block: ComponentRegistry.() -> Unit,
-) : Component("root", contextRegistry), Disposable {
+    ) : Component("root", contextRegistry, windowFunction), Disposable {
     fun buildComponents() {
         buildComponents(block)
     }
@@ -78,77 +80,28 @@ internal class RootComponent(
 
 internal fun Component(
     id: Any,
-    contextRegistry: ContextRegistry,
+    contextRegistry: ContextRegistryInternal,
 ): Component = object : Component(id, contextRegistry) {}
 
 internal abstract class Component(
     val componentId: Any,
-    private val contextRegistry: ContextRegistry,
+    private val contextRegistry: ContextRegistryInternal,
+    private val windowFunction: WindowFunction = contextRegistry.find<WindowContext>(),
     private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl(),
-    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry, disposableRegistry)
+    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry, disposableRegistry, windowFunction)
 ) : ComponentScope,
     ComponentFactory by componentsBuilder,
-    ContextRegistry by contextRegistry,
+    ComponentStore by componentsBuilder,
+    ContextRegistryInternal by contextRegistry,
     DisposableRegistry by disposableRegistry,
-    WindowFunction by contextRegistry.get<WindowContext>(),
-    LoopHandler,
+    WindowFunction by windowFunction,
     Disposable {
     internal val children: Iterable<Component>
         get() = componentsBuilder.activeStates.values
 
-    private var _loopHandler: LoopHandler? = null
-    private val loopHandlerBuilder = LoopHandlerBuilder(contextRegistry)
-
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(componentId) {
         println("Runtime Monitor: Component [$it] has been Garbage Collected.")
-    }
-
-    private var _drawInterceptor: DrawInterceptor = NoOpDrawInterceptor
-
-    private var isInterceptorLocked = false
-
-    private val drawThis = DrawHandler {
-        requireLoopHandler().performDraw()
-
-        children.forEach {
-            it.performDraw()
-        }
-    }
-
-    override fun setDrawInterceptor(interceptor: DrawInterceptor) {
-        if (!isInterceptorLocked) {
-            _drawInterceptor = interceptor
-            isInterceptorLocked = true
-        }
-    }
-
-    override fun performUpdate(deltaTime: Float) {
-        requireLoopHandler().performUpdate(deltaTime)
-
-        children.forEach {
-            it.performUpdate(deltaTime)
-        }
-    }
-
-    override fun performDraw() {
-        _drawInterceptor.interceptDraw(drawThis)
-    }
-
-    override fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit) {
-// TODO: rebuild _loopHandler
-        if (_loopHandler != null) return
-        loopHandlerBuilder.registerUpdateCallBack(block)
-    }
-
-    override fun onDraw(block: DrawContext.() -> Unit) {
-// TODO: rebuild _loopHandler
-        if (_loopHandler != null) return
-        loopHandlerBuilder.registerDrawCallBack(block)
-    }
-
-    private fun requireLoopHandler() = _loopHandler ?: loopHandlerBuilder.build().also {
-        _loopHandler = it
     }
 
     override fun dispose() {
@@ -169,80 +122,71 @@ internal abstract class Component(
             }
         }
     }
-}
 
-private class LoopHandlerBuilder(contextRegistry: ContextRegistry) {
-    private var updateActions = mutableListOf<UpdateHandler>()
-    private var drawActions = mutableListOf<DrawHandler>()
-    private val gameContext = contextRegistry.get<GameContext>()
-    private val drawContext = contextRegistry.get<DrawContext>()
-
-    fun registerUpdateCallBack(block: GameContext.(deltaTime: Float) -> Unit) {
-        updateActions.add(
-            UpdateHandler { deltaTime ->
-                block.invoke(gameContext, deltaTime)
-            }
-        )
-    }
-
-    fun registerDrawCallBack(block: DrawContext.() -> Unit) {
-        drawActions.add(DrawHandler { block.invoke(drawContext) })
-    }
-
-    fun build(): LoopHandler = object : LoopHandler {
-        override fun performUpdate(deltaTime: Float) {
-            updateActions.forEach { it.performUpdate(deltaTime) }
-        }
-
-        override fun performDraw() {
-            drawActions.forEach { it.performDraw() }
-        }
+    override fun toString(): String {
+        return "Component(componentId=$componentId)"
     }
 }
 
-
+@PublishedApi
 internal interface ComponentFactory : ComponentRegistry {
     fun buildComponents(block: ComponentRegistry.() -> Unit)
 }
 
+@PublishedApi
+internal interface ComponentStore {
+    fun rememberedValue(): Any?
+    fun updateRememberedValue(value: Any?)
+    val rememberScope: RememberScope
+
+    fun getCachedOrCreateComponent(id: Any): Component
+
+    fun finishComponent(id: Any, component: Component)
+
+    fun onEndBuildComponents()
+}
+
 internal class ComponentsBuilder(
-    private val contextRegistry: ContextRegistry,
+    private val contextRegistry: ContextRegistryInternal,
     disposableRegistry: DisposableRegistry,
-) : ComponentFactory {
+    windowFunction: WindowFunction = contextRegistry.find<WindowContext>(),
+    override val rememberScope: RememberScope = RememberScope(disposableRegistry, contextRegistry, windowFunction)
+) : ComponentFactory, ComponentStore, ContextRegistryInternal by contextRegistry {
     var activeStates = HashMap<Any, Component>()
     private var pendingStates = HashMap<Any, Component>()
     private val componentKeys = mutableSetOf<Any>()
 
-    private val rememberScope = RememberScope(disposableRegistry, contextRegistry)
     private val rememberedStates = mutableListOf<Any?>()
     private var readIndex = 0
 
-    override fun <R> remember(block: RememberScope.() -> R): R {
-        if (readIndex < rememberedStates.size) {
-            return rememberedStates[readIndex++] as R
+    override fun rememberedValue(): Any? {
+        return if (readIndex < rememberedStates.size) {
+            rememberedStates[readIndex++]
+        } else {
+            null
         }
-        val value = block(rememberScope)
-        rememberedStates.add(value)
-        readIndex++
-        return value
     }
 
-    override fun component(id: Any, block: ComponentScope.() -> Unit) {
-        checkUniqueKey(id)
+    override fun updateRememberedValue(value: Any?) {
+        rememberedStates.add(value)
+        readIndex++
+    }
 
-        val component = activeStates.remove(id) ?: Component(id, contextRegistry)
-        component.buildComponents {
-            component.block()
-        }
+    override fun getCachedOrCreateComponent(id: Any): Component {
+        checkUniqueKey(id)
+        return activeStates.remove(id) ?: Component(id, contextRegistry)
+    }
+
+    override fun finishComponent(id: Any, component: Component) {
         pendingStates[id] = component
     }
 
     override fun buildComponents(block: ComponentRegistry.() -> Unit) {
-        this.apply(block)
+        block.invoke(this)
         onEndBuildComponents()
     }
 
-    private fun onEndBuildComponents() {
+    override fun onEndBuildComponents() {
         componentKeys.clear()
         readIndex = 0
 

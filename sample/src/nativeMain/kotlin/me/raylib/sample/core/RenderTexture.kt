@@ -9,13 +9,15 @@ import raylib.core.Colors.RED
 import raylib.core.Colors.SKYBLUE
 import raylib.core.ComponentRegistry
 import raylib.core.RectangleAlloc
-import raylib.core.RenderTexture2D
 import raylib.core.Vector2
-import raylib.core.Vector2Alloc
+import raylib.core.component
 import raylib.core.components.fixSizedTextureComponent
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
 
 private const val renderTextureWidth = 300
 private const val renderTextureHeight = 300

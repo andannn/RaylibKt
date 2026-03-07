@@ -15,8 +15,12 @@ import raylib.core.Colors.VIOLET
 import raylib.core.Colors.YELLOW
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
 import raylib.core.setValue
 
 fun ComponentRegistry.basicShapes() {

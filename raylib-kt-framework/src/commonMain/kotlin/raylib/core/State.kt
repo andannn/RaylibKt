@@ -24,12 +24,11 @@ inline operator fun <T> MutableState<T>.setValue(
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T = value
 
-fun <T> mutableStateOf(initialValue: T, triggerRebuild: Boolean = false): MutableState<T> =
-    object : MutableStateBox<T>(initialValue, triggerRebuild) {}
+fun <T> mutableStateOf(initialValue: T): MutableState<T> =
+    object : MutableStateBox<T>(initialValue) {}
 
 internal abstract class MutableStateBox<T>(
     initialValue: T,
-    private val triggerRebuild: Boolean,
 ) : MutableState<T> {
     private var _field = initialValue
     override var value: T
@@ -37,36 +36,35 @@ internal abstract class MutableStateBox<T>(
         set(value) {
             if (_field == value) return
             _field = value
-            if (triggerRebuild) isDirty = true
         }
 }
 
-fun <T> mutableStateListOf(vararg items: DisposableState<T>) =
-    ManagedStateList<T>()
-        .apply {
-            items.forEach { addState(it) }
-        }
+fun <T> RememberScope.mutableStateListOf() = ManagedStateList<T>(this)
 
-fun <T> DisposableRegistry.nativeStateOf(initialValue: NativePlacement.() -> T): DisposableState<T> =
-    DisposableState(initialValue).also {
+fun <T> RememberScope.nativeStateOf(initialValue: NativePlacement.() -> T): NativeState<T> =
+    NativeState(initialValue).also {
         disposeOnClose(it)
     }
 
 class ManagedStateList<T>(
-    private val innerList: MutableList<DisposableState<T>> = mutableListOf()
-) : List<DisposableState<T>> by innerList {
+    private val scope: RememberScope,
+    private val innerList: MutableList<NativeState<T>> = mutableListOf()
+) : List<NativeState<T>> by innerList {
 
-    fun addState(state: DisposableState<T>): Disposable = innerList.add(state).let {
-        isDirty = true
+    fun addState(init: RememberScope.() -> NativeState<T>): Disposable {
+        val state = scope.init()
+
+        innerList.add(state)
+
         state.onDispose = {
-            isDirty = true
             innerList.remove(state)
         }
-        state
+
+        return state
     }
 }
 
-class DisposableState<T>(
+class NativeState<T>(
     initialValue: NativePlacement.() -> T,
 ) : State<T>, Disposable {
     private val arena: Arena = Arena()

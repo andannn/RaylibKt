@@ -5,12 +5,17 @@ import raylib.core.Color
 import raylib.core.Colors
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.ComponentRegistry
+import raylib.core.component
+import raylib.core.onDraw
+import raylib.core.remember
 
 internal fun ComponentRegistry.firstWindow(
     initialBackGroundColor: CValue<Color> = Colors.RAYWHITE,
 ) {
     component("key") {
-        backGroundColor = initialBackGroundColor
+        remember {
+            backGroundColor = initialBackGroundColor
+        }
         onDraw {
             drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         }

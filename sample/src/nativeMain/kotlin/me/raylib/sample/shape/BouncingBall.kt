@@ -10,17 +10,21 @@ import raylib.core.Colors.RED
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.Vector2
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
+import raylib.core.rememberSuspendingTask
 import raylib.core.setValue
-import raylib.core.suspendingTask
 import raylib.easings.awaitDuration
 import kotlin.time.Duration.Companion.seconds
 
 fun ComponentRegistry.bouncingBall() {
     var pause by remember {
-        mutableStateOf(initialValue = false, triggerRebuild = true)
+        mutableStateOf(initialValue = false)
     }
 
     component("key") {
@@ -68,7 +72,7 @@ fun ComponentRegistry.bouncingBall() {
             var showPaused by remember {
                 mutableStateOf(true)
             }
-            suspendingTask {
+            rememberSuspendingTask {
                 while (true) {
                     awaitDuration(0.5.seconds)
                     showPaused = false

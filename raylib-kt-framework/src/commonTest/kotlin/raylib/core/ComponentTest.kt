@@ -1,6 +1,5 @@
 package raylib.core
 
-import kotlinx.cinterop.alloc
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -8,7 +7,7 @@ import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ComponentManagerTest {
+class ComponentTest {
 
     @Test
     fun buildComponent_add() {
@@ -33,7 +32,9 @@ class ComponentManagerTest {
         isAddComponent = true
         rootComponent.buildComponents()
         assertEquals(3, rootComponent.children.toList().size)
-        assertEquals(listOf("component1", "component2", "component3"), rootComponent.children.toList().map { it.componentId })
+        assertEquals(
+            listOf("component1", "component2", "component3"),
+            rootComponent.children.toList().map { it.componentId })
     }
 
     @Test
@@ -54,7 +55,9 @@ class ComponentManagerTest {
         assertEquals(0, rootComponent.children.toList().size)
 
         rootComponent.buildComponents()
-        assertEquals(listOf("component1", "component2", "component3"), rootComponent.children.toList().map { it.componentId })
+        assertEquals(
+            listOf("component1", "component2", "component3"),
+            rootComponent.children.toList().map { it.componentId })
 
         isRemoveComponent = true
         rootComponent.buildComponents()
@@ -122,44 +125,50 @@ class ComponentManagerTest {
     }
 
     @Test
-    fun buildComponent_remember_state_component() {
-        var currentValue: MutableState<String>? = null
+    fun buildComponent_child_component_disposed_with_parent() {
+        var disposed = false
+        var show = true
         val rootComponent = rootComponent(
             block = {
-                val value = remember {
-                    mutableStateOf("A")
-                }
-                currentValue = value
-                component("component2") {
-                    onUpdate {
-                        value.value = "B"
+                if (show) {
+                    component("parent") {
+                        component("child") {
+                            disposeOnClose {
+                                disposed = true
+                            }
+                        }
                     }
                 }
             }
         )
-
         rootComponent.buildComponents()
-        assertEquals("A", currentValue?.value)
-
+        assertFalse(disposed)
+        show = false
         rootComponent.buildComponents()
-        rootComponent.performUpdate(2f)
-        assertEquals("B", currentValue?.value)
-
-        rootComponent.buildComponents()
-        assertEquals("B", currentValue?.value)
+        assertTrue(disposed)
     }
 }
 
-private fun rootComponent(block: ComponentRegistry.() -> Unit) = RootComponent(
-    contextRegistry = ContextRegistryImpl().apply {
-        val windowContext = WindowContextImpl(
-            windowFunction = DummyWindowFunction()
-        )
-        val gameContext = GameContext(windowContext)
-        val drawContext = DrawContext(windowContext)
-        put<WindowContext>(windowContext)
-        put(gameContext)
-        put(drawContext)
-    },
-    block = block
-)
+private fun rootComponent(block: ComponentRegistry.() -> Unit): RootComponent {
+    val windowContext = WindowContextImpl(
+        windowFunction = DummyWindowFunction()
+    )
+    val gameContext = GameContext()
+    val drawContext = DrawContext()
+    return RootComponent(
+        contextRegistry = ContextRegistryInternal().apply {
+
+
+        },
+        windowContext,
+        block = {
+            provide<WindowContext>(windowContext) {
+                provide(gameContext) {
+                    provide(drawContext) {
+                        block()
+                    }
+                }
+            }
+        }
+    )
+}

@@ -10,11 +10,15 @@ import raylib.core.Colors.DARKGREEN
 import raylib.core.Colors.LIGHTGRAY
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2Alloc
+import raylib.core.component
 import raylib.core.getValue
 import raylib.core.isCollisionWith
 import raylib.core.mutableStateOf
 import raylib.core.set
 import raylib.core.nativeStateOf
+import raylib.core.onDraw
+import raylib.core.onUpdate
+import raylib.core.remember
 import raylib.core.setValue
 
 fun ComponentRegistry.followingEyes() {

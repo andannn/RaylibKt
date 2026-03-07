@@ -5,7 +5,9 @@ import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.toKString
 import kotlinx.cinterop.useContents
+import raylib.interop.TextFormat
 import raylib.interop.Vector3One
 import raylib.interop.Vector3Zero
 import raylib.interop.float16
@@ -45,6 +47,16 @@ fun Vector2.set(vec: CValue<Vector2>) {
 typealias Float3 = float3
 typealias Float16 = float16
 typealias Matrix = raylib.interop.Matrix
+fun CValue<Matrix>.format(): String {
+    return useContents {
+        val row1 = TextFormat("| %7.2f %7.2f %7.2f %7.2f |", m0, m4, m8, m12)?.toKString() ?: ""
+        val row2 = TextFormat("| %7.2f %7.2f %7.2f %7.2f |", m1, m5, m9, m13)?.toKString() ?: ""
+        val row3 = TextFormat("| %7.2f %7.2f %7.2f %7.2f |", m2, m6, m10, m14)?.toKString() ?: ""
+        val row4 = TextFormat("| %7.2f %7.2f %7.2f %7.2f |", m3, m7, m11, m15)?.toKString() ?: ""
+
+        "\n$row1\n$row2\n$row3\n$row4"
+    }
+}
 typealias Color = raylib.interop.Color
 
 fun Color(r: Int, g: Int, b: Int, a: Int = 255): CValue<Color> {
