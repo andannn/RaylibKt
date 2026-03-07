@@ -10,6 +10,7 @@ import raylib.core.components.Transform
 import raylib.core.components.transform2DComponent
 import raylib.core.getValue
 import raylib.core.nativeStateOf
+import raylib.core.remember
 
 fun ComponentRegistry.matrixTest() {
     component("matrixTest") {

@@ -9,6 +9,7 @@ import raylib.core.KeyboardKey
 import raylib.core.Vector2
 import raylib.core.getValue
 import raylib.core.nativeStateOf
+import raylib.core.remember
 
 internal fun ComponentRegistry.inputKeys() {
     component("key") {

@@ -9,6 +9,7 @@ import raylib.core.Vector2
 import raylib.core.getValue
 import raylib.core.loadTexture
 import raylib.core.mutableStateOf
+import raylib.core.remember
 import raylib.core.setValue
 
 fun ComponentRegistry.srcrecDstrec() {

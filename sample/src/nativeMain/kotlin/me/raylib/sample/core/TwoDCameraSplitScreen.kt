@@ -15,6 +15,7 @@ import raylib.core.components.fixSizedTextureComponent
 import raylib.core.getValue
 import raylib.core.mode2d
 import raylib.core.nativeStateOf
+import raylib.core.remember
 import raylib.core.setOffset
 import raylib.core.setTarget
 

@@ -23,6 +23,7 @@ import raylib.core.screenToWorldPosition
 import raylib.core.setOffset
 import raylib.core.setTarget
 import raylib.core.nativeStateOf
+import raylib.core.remember
 import raylib.core.setValue
 import raylib.interop.Clamp
 import raylib.interop.DrawGrid

@@ -4,28 +4,34 @@ import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
 interface ComponentRegistry {
-    fun <R> remember(block: RememberScope.() -> R): R
     fun component(id: Any, block: ComponentScope.() -> Unit)
 }
 
-interface ComponentScope : WindowFunction, DisposableRegistry, ComponentRegistry, ContextProvider {
-    fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit)
+inline fun <reified R> ComponentRegistry.remember(block: RememberScope.() -> R): R {
+    val builder = (this as StateStore)
+    return builder.rememberedValue().let {
+        if (it == null) {
+            val value = block(rememberScope)
+            updateRememberedValue(value)
+            value
+        } else it
+    } as R
+}
 
-    fun onDraw(block: DrawContext.() -> Unit)
+interface ComponentScope : WindowFunction, DisposableRegistry, ComponentRegistry, ContextProvider {
+    fun onUpdate(block: OnUpdateListener)
+
+    fun onDraw(block: OnDrawListener)
 
     fun setDrawInterceptor(interceptor: DrawInterceptor)
 }
 
-interface RememberScope : DisposableRegistry, WindowFunction
+fun interface OnUpdateListener {
+    fun GameContext.onUpdate(deltaTime: Float)
+}
 
-internal fun RememberScope(
-    disposableRegistry: DisposableRegistry,
-    contextRegistry: ContextRegistry,
-): RememberScope = object : RememberScope, DisposableRegistry by disposableRegistry,
-    WindowFunction by contextRegistry.get<WindowContext>() {}
-
-internal fun interface UpdateHandler {
-    fun performUpdate(deltaTime: Float)
+fun interface OnDrawListener {
+    fun DrawContext.onDraw()
 }
 
 fun interface DrawHandler {
@@ -40,6 +46,18 @@ infix fun DrawInterceptor.then(next: DrawInterceptor): DrawInterceptor {
     if (this === NoOpDrawInterceptor) return next
     if (next === NoOpDrawInterceptor) return this
     return CompositeInterceptor(this, next)
+}
+
+interface RememberScope : DisposableRegistry, WindowFunction
+
+internal fun RememberScope(
+    disposableRegistry: DisposableRegistry,
+    contextRegistry: ContextRegistry,
+): RememberScope = object : RememberScope, DisposableRegistry by disposableRegistry,
+    WindowFunction by contextRegistry.get<WindowContext>() {}
+
+internal fun interface UpdateHandler {
+    fun performUpdate(deltaTime: Float)
 }
 
 internal object NoOpDrawInterceptor : DrawInterceptor {
@@ -88,6 +106,7 @@ internal abstract class Component(
     private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry, disposableRegistry)
 ) : ComponentScope,
     ComponentFactory by componentsBuilder,
+    StateStore by componentsBuilder,
     ContextRegistry by contextRegistry,
     DisposableRegistry by disposableRegistry,
     WindowFunction by contextRegistry.get<WindowContext>(),
@@ -135,13 +154,13 @@ internal abstract class Component(
         _drawInterceptor.interceptDraw(drawThis)
     }
 
-    override fun onUpdate(block: GameContext.(deltaTime: Float) -> Unit) {
+    override fun onUpdate(block: OnUpdateListener) {
 // TODO: rebuild _loopHandler
         if (_loopHandler != null) return
         loopHandlerBuilder.registerUpdateCallBack(block)
     }
 
-    override fun onDraw(block: DrawContext.() -> Unit) {
+    override fun onDraw(block: OnDrawListener) {
 // TODO: rebuild _loopHandler
         if (_loopHandler != null) return
         loopHandlerBuilder.registerDrawCallBack(block)
@@ -177,12 +196,24 @@ private class LoopHandlerBuilder(contextRegistry: ContextRegistry) {
     private val gameContext = contextRegistry.get<GameContext>()
     private val drawContext = contextRegistry.get<DrawContext>()
 
-    fun registerUpdateCallBack(block: GameContext.(deltaTime: Float) -> Unit) {
-        updateActions.add(UpdateHandler { deltaTime -> block.invoke(gameContext, deltaTime) })
+    fun registerUpdateCallBack(block: OnUpdateListener) {
+        updateActions.add(
+            UpdateHandler { deltaTime ->
+                with(block) {
+                    gameContext.onUpdate(deltaTime = deltaTime)
+                }
+            }
+        )
     }
 
-    fun registerDrawCallBack(block: DrawContext.() -> Unit) {
-        drawActions.add(DrawHandler { block.invoke(drawContext) })
+    fun registerDrawCallBack(block: OnDrawListener) {
+        drawActions.add(
+            DrawHandler {
+                with(block) {
+                    drawContext.onDraw()
+                }
+            }
+        )
     }
 
     fun build(): LoopHandler = object : LoopHandler {
@@ -201,26 +232,36 @@ internal interface ComponentFactory : ComponentRegistry {
     fun buildComponents(block: ComponentRegistry.() -> Unit)
 }
 
+@PublishedApi
+internal interface StateStore {
+    fun rememberedValue(): Any?
+    fun updateRememberedValue(value: Any?)
+    val rememberScope: RememberScope
+}
+
 internal class ComponentsBuilder(
     private val contextRegistry: ContextRegistry,
     disposableRegistry: DisposableRegistry,
-) : ComponentFactory {
+    override val rememberScope: RememberScope = RememberScope(disposableRegistry, contextRegistry)
+) : ComponentFactory, StateStore {
     var activeStates = HashMap<Any, Component>()
     private var pendingStates = HashMap<Any, Component>()
     private val componentKeys = mutableSetOf<Any>()
 
-    private val rememberScope = RememberScope(disposableRegistry, contextRegistry)
     private val rememberedStates = mutableListOf<Any?>()
     private var readIndex = 0
 
-    override fun <R> remember(block: RememberScope.() -> R): R {
-        if (readIndex < rememberedStates.size) {
-            return rememberedStates[readIndex++] as R
+    override fun rememberedValue(): Any? {
+        return if (readIndex < rememberedStates.size) {
+            rememberedStates[readIndex++]
+        } else {
+            null
         }
-        val value = block(rememberScope)
+    }
+
+    override fun updateRememberedValue(value: Any?) {
         rememberedStates.add(value)
         readIndex++
-        return value
     }
 
     override fun component(id: Any, block: ComponentScope.() -> Unit) {

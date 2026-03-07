@@ -17,6 +17,7 @@ import raylib.core.isCollisionWith
 import raylib.core.mutableStateOf
 import raylib.core.put
 import raylib.core.nativeStateOf
+import raylib.core.remember
 import raylib.core.window
 import raylib.gui.GuiContext
 import raylib.gui.onDrawGui

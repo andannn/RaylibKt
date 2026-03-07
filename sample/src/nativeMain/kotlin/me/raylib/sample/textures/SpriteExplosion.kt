@@ -10,6 +10,7 @@ import raylib.core.loadTexture
 import raylib.core.mutableStateListOf
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.remember
 
 fun ComponentRegistry.spriteExplosion() {
     val explosion = remember {

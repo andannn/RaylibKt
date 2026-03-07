@@ -8,6 +8,7 @@ import raylib.core.KeyboardKey
 import raylib.core.await
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.remember
 import raylib.core.setValue
 import raylib.core.suspendingTask
 import raylib.easings.Ease

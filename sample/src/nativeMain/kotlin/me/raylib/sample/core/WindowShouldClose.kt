@@ -6,6 +6,7 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.remember
 import raylib.core.setValue
 import raylib.interop.WindowShouldClose
 

@@ -6,6 +6,7 @@ import raylib.core.Colors.MAROON
 import raylib.core.ComponentRegistry
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.remember
 import raylib.core.setValue
 
 fun ComponentRegistry.inputMouseWheel() {

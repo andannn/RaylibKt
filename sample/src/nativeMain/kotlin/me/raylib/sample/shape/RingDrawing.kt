@@ -13,6 +13,7 @@ import raylib.core.Rectangle
 import raylib.core.Vector2
 import raylib.core.getValue
 import raylib.core.nativeStateOf
+import raylib.core.remember
 import raylib.gui.onDrawGui
 import raylib.interop.Fade
 

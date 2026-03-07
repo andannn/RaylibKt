@@ -12,6 +12,7 @@ import raylib.core.Texture2D
 import raylib.core.Vector2
 import raylib.core.getValue
 import raylib.core.nativeStateOf
+import raylib.core.remember
 import raylib.core.suspendingTask
 import raylib.easings.awaitDuration
 import kotlin.time.Duration.Companion.milliseconds

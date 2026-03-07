@@ -14,6 +14,7 @@ import raylib.core.Vector2
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
+import raylib.core.remember
 import raylib.core.setValue
 import raylib.interop.DrawText
 

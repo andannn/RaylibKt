@@ -15,8 +15,11 @@ import raylib.core.isCollisionWith
 import raylib.core.mutableStateOf
 import raylib.core.set
 import raylib.core.nativeStateOf
+import raylib.core.remember
 import raylib.core.setValue
 import raylib.interop.MeasureText
+
+private const val screenUpperLimit = 40
 
 fun ComponentRegistry.collisionArea() {
     component("K") {
@@ -32,7 +35,6 @@ fun ComponentRegistry.collisionArea() {
         val boxCollision by remember {
             nativeStateOf { RectangleAlloc() }
         }
-        val screenUpperLimit = 40
         var pause by remember {
             mutableStateOf(false)
         }

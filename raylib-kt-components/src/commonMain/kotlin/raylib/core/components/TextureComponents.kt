@@ -19,6 +19,7 @@ import raylib.core.Vector2
 import raylib.core.get
 import raylib.core.loadRenderTexture
 import raylib.core.mutableStateOf
+import raylib.core.remember
 import raylib.core.textureDrawScope
 
 /**

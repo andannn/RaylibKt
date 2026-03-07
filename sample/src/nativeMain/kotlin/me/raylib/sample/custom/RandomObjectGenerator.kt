@@ -9,6 +9,7 @@ import raylib.core.randomColor
 import raylib.core.randomValue
 import raylib.core.mutableStateListOf
 import raylib.core.nativeStateOf
+import raylib.core.remember
 
 fun ComponentRegistry.randomObjectGenerator() {
     val stateList = remember {

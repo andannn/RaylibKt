@@ -13,6 +13,7 @@ import raylib.core.Gesture
 import raylib.core.KeyboardKey
 import raylib.core.getValue
 import raylib.core.mutableStateOf
+import raylib.core.remember
 import raylib.core.setValue
 
 fun ComponentRegistry.basicScreenManager() {

@@ -8,6 +8,7 @@ import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.Vector2
 import raylib.core.forEachContentsIndexed
+import raylib.core.remember
 import raylib.interop.Fade
 
 const val MAX_TRAIL_LENGTH = 30
