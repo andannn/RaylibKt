@@ -6,6 +6,7 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import me.raylib.sample.core.*
 import me.raylib.sample.custom.*
+import me.raylib.sample.custom.game.twoDGameSample
 import me.raylib.sample.shape.*
 import me.raylib.sample.textures.*
 import raylib.core.Colors
@@ -64,6 +65,7 @@ enum class Example(val title: String) {
     SPRITE_EXPLOSION("Sprite explosion"),
     MATRIX_TEST("Matrix test"),
     IMAGE_DRAWING("Image drawing"),
+    TWO_D_GAME_SAMPLE("2D game sample"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -80,16 +82,16 @@ fun main() = window(
         }
 
         val currentExample = remember {
-            mutableStateOf<Example?>(Example.entries.last())
+            mutableStateOf<Example?>(Example.TWO_D_GAME_SAMPLE)
         }
 
         component("menu_control") {
             onUpdate {
-                if (active.value.value != -1) {
-                    currentExample.value = Example.entries[active.value.value]
-                } else {
-                    currentExample.value = null
-                }
+//                if (active.value.value != -1) {
+//                    currentExample.value = Example.entries[active.value.value]
+//                } else {
+//                    currentExample.value = null
+//                }
             }
         }
 
@@ -150,6 +152,7 @@ fun main() = window(
             Example.SPRITE_EXPLOSION -> spriteExplosion()
             Example.MATRIX_TEST -> matrixTest()
             Example.IMAGE_DRAWING -> imageDrawing()
+            Example.TWO_D_GAME_SAMPLE -> twoDGameSample()
         }
 
         if (currentExample.value != null) {
