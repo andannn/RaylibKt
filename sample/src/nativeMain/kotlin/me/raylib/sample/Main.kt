@@ -25,6 +25,7 @@ import raylib.core.remember
 import raylib.core.window
 import raylib.gui.GuiContext
 import raylib.gui.onDrawGui
+import raylib.interop.rlDisableBackfaceCulling
 import kotlin.experimental.ExperimentalNativeApi
 
 enum class Example(val title: String) {
@@ -74,6 +75,7 @@ fun main() = window(
     title = "raylib [core] example - input gestures",
     width = 800,
     height = 450,
+    disableBackfaceCulling = true,
     initialBackGroundColor = Colors.RAYWHITE,
 ) {
     provide(GuiContext()) {

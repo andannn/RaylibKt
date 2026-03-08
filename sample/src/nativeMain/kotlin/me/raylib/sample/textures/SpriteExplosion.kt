@@ -1,5 +1,6 @@
 package me.raylib.sample.textures
 
+import kotlinx.cinterop.CValue
 import raylib.core.ComponentRegistry
 import raylib.core.MouseButton
 import raylib.core.Rectangle
@@ -30,7 +31,7 @@ fun ComponentRegistry.spriteExplosion() {
                     nativeStateOf {
                         ExplosionState(
                             id = id++,
-                            RectangleAlloc(mouseX.toFloat(), mouseY.toFloat(), 100f, 100f)
+                            Rectangle(mouseX.toFloat(), mouseY.toFloat(), 100f, 100f)
                         )
                     }
                 }
@@ -53,5 +54,5 @@ fun ComponentRegistry.spriteExplosion() {
 
 class ExplosionState(
     val id: Long,
-    val rect: Rectangle
+    val rect: CValue<Rectangle>
 )

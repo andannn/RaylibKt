@@ -6,9 +6,11 @@ import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
 import raylib.core.MouseButton
 import raylib.core.Rectangle
+import raylib.core.Vector2
 import raylib.core.Vector2Alloc
 import raylib.core.component
 import raylib.core.components.Transform2D
+import raylib.core.components.Transform2DAlloc
 import raylib.core.components.hitTest
 import raylib.core.components.transform2DComponent
 import raylib.core.getValue
@@ -18,17 +20,28 @@ import raylib.core.onDraw
 import raylib.core.onUpdate
 import raylib.core.randomColor
 import raylib.core.remember
+import raylib.core.rlMatrix
 import raylib.core.setValue
 
 fun ComponentRegistry.matrixTest() {
     component("matrixTest") {
-        val offset by remember {
-            nativeStateOf { Vector2Alloc(-25f, -25f) }
+        val transform = remember {
+            Transform2DAlloc(position = Vector2(-25f, -25f))
+        }
+        onDraw {
+            rlMatrix {
+                translate(0f, 25 * 50f, 0f)
+                rotate(90f, 1f, 0f, 0f)
+                drawGrid(100, 50f)
+            }
         }
         transform2DComponent(
             tag = "test",
-            offset = offset
+            transform2D = transform
         ) { transformBox ->
+            onUpdate {
+                transformBox.scale.x -= 0.01f
+            }
             someItemGroup(transformBox)
         }
     }

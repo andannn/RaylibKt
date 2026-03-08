@@ -103,9 +103,9 @@ private fun ComponentRegistry.envItemsComponent(camera: Camera2D, item: EnvItem)
     }
 }
 
-const val PLAYER_HOR_SPD = 200.0f
-const val PLAYER_JUMP_SPD = 350.0f
-const val G = 400
+private const val PLAYER_HOR_SPD = 200.0f
+private const val PLAYER_JUMP_SPD = 350.0f
+private const val G = 400
 
 private fun ComponentRegistry.followTargetCenterClampedCamera(
     camera: Camera2D,

@@ -90,9 +90,9 @@ fun ComponentRegistry.twoDCameraMouseZoom() {
         onDraw {
             mode2d(camera) {
                 rlMatrix {
-                    rlTranslatef(0f, 25 * 50f, 0f)
-                    rlRotatef(90f, 1f, 0f, 0f)
-                    DrawGrid(100, 50f)
+                    translate(0f, 25 * 50f, 0f)
+                    rotate(90f, 1f, 0f, 0f)
+                    drawGrid(100, 50f)
                 }
                 drawCircle(screenWidth / 2, screenHeight / 2, 50f, MAROON)
             }

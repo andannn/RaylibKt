@@ -1,6 +1,7 @@
 package raylib.core
 
 import kotlinx.cinterop.CValue
+import raylib.core.Colors.WHITE
 
 
 interface TextureDrawFunction {
@@ -15,8 +16,8 @@ interface TextureDrawFunction {
         texture: CValue<Texture2D>,
         source: CValue<Rectangle>,
         dest: CValue<Rectangle>,
-        origin: CValue<Vector2>,
-        tint: CValue<Color>,
+        origin: CValue<Vector2> = Vector2(),
+        tint: CValue<Color> = WHITE,
         rotation: Float = 0f,
     )
 

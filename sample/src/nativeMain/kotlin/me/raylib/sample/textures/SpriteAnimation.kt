@@ -9,6 +9,7 @@ import raylib.core.Colors.RED
 import raylib.core.Colors.WHITE
 import raylib.core.ComponentRegistry
 import raylib.core.KeyboardKey
+import raylib.core.Rectangle
 import raylib.core.RectangleAlloc
 import raylib.core.component
 import raylib.core.components.spriteAnimationComponent
@@ -43,9 +44,9 @@ fun ComponentRegistry.spriteAnimationSample() {
         }
     }
 
-    val scarfyRect  by remember {
+    val scarfyRect = remember {
         val (scarfyWidth, scarfyHeight) = scarfy.useContents { width.toFloat().div(6f) to height.toFloat() }
-        nativeStateOf { RectangleAlloc(350.0f, 280.0f, scarfyWidth, scarfyHeight) }
+        Rectangle(350.0f, 280.0f, scarfyWidth, scarfyHeight)
     }
 
     spriteAnimationComponent(

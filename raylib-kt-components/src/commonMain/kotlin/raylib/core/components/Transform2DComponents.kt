@@ -10,6 +10,7 @@ import raylib.core.ContextProvider
 import raylib.core.Matrix
 import raylib.core.MutableState
 import raylib.core.Rectangle
+import raylib.core.RememberScope
 import raylib.core.RenderPhase
 import raylib.core.State
 import raylib.core.Vector2
@@ -65,9 +66,13 @@ fun CValue<Vector2>.hitTest(localRect: CValue<Rectangle>): Boolean {
     return localPoint.isCollisionWith(localRect)
 }
 
-class Transform2DContext(
+
+class Transform2DContext() : Context {
+    @PublishedApi
+    internal var internalMatrix: CValue<Matrix>? = null
     val matrix: CValue<Matrix>
-) : Context
+        get() = internalMatrix!!
+}
 
 class Transform2D(
     val position: Vector2,
@@ -76,6 +81,29 @@ class Transform2D(
     val angle: MutableState<Float>
 )
 
+fun Transform2D.getHitbox(width: Float, height: Float): CValue<Rectangle> {
+    return Rectangle(
+        x = position.x - width / 2,
+        y = position.y - height,
+        width = width,
+        height = height,
+    )
+}
+
+fun RememberScope.Transform2DAlloc(
+    position: CValue<Vector2> = Vector2(),
+    scale: CValue<Vector2> = Vector2(1f, 1f),
+    offset: CValue<Vector2> = Vector2(),
+    angle: State<Float> = mutableStateOf(0f),
+) = nativeStateOf {
+    Transform2D(
+        position = position.useContents { Vector2Alloc(x = x, y = y) },
+        scale = scale.useContents { Vector2Alloc(x = x, y = y) },
+        offset = offset.useContents { Vector2Alloc(x = x, y = y) },
+        angle = mutableStateOf(angle.value)
+    )
+}.value
+
 /**
  * A persistent state container for 2D spatial transformations.
  *
@@ -83,40 +111,28 @@ class Transform2D(
  * to modify the parent's transformation (position, scale, rotation, offset)
  * without triggering re-allocations or losing state between frames.
  *
- * @property position The 2D translation vector in parent/world space.
- * @property scale The scaling factor (1.0 = original size).
- * @property offset The local pivot offset. Affects the center of rotation and scaling.
- * @property angle A [MutableState] holding the rotation angle in degrees.
+ * @param transform2D Persistent state holding position, scale, rotation, and pivot offset.
+ * @param tag Debugging label used to identify this node within complex transformation hierarchies.
+ * @param children Scoped closure for child components affected by this transformation.
  */
 inline fun ComponentRegistry.transform2DComponent(
-    position: Vector2? = null,
-    scale: Vector2? = null,
-    offset: Vector2? = null,
-    angle: MutableState<Float>? = null,
+    transform2D: Transform2D,
     tag: String = "",
     crossinline children: ComponentRegistry.(Transform2D) -> Unit
 ) = component("Transform2D_$tag") {
-    val positionV = position ?: remember { nativeStateOf { Vector2Alloc() } }.value
-    val scaleV = scale ?: remember { nativeStateOf { Vector2Alloc(1f, 1f) } }.value
-    val offsetV = offset ?: remember { nativeStateOf { Vector2Alloc() } }.value
-    val angle = angle ?: remember { mutableStateOf(0f) }
-
-    val transform2DState = remember {
-        Transform2D(positionV, scaleV, offsetV, angle)
+    val transform2DContext = remember {
+        Transform2DContext()
     }
-
     when (find<WindowContext>().renderPhase) {
-        RenderPhase.UPDATE -> provide<Transform2DContext>(
-            Transform2DContext(
-                worldMatrix()
-                    .multiply(transform2DState.toMatrix())
-            )
-        ) {
-            children(transform2DState)
+        RenderPhase.UPDATE -> {
+            transform2DContext.internalMatrix = worldMatrix().multiply(transform2D.toMatrix())
+            provide<Transform2DContext>(transform2DContext) {
+                children(transform2D)
+            }
         }
 
-        RenderPhase.DRAW -> transform2DDrawInterceptor(transform2DState) {
-            children(transform2DState)
+        RenderPhase.DRAW -> transform2DDrawInterceptor(transform2D) {
+            children(transform2D)
         }
     }
 }
