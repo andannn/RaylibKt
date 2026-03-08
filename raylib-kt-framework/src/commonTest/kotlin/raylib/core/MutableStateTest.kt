@@ -1,6 +1,7 @@
 package raylib.core
 
 import kotlinx.cinterop.alloc
+import raylib.core.internal.DummyWindowContextImpl
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -17,7 +18,7 @@ class MutableStateTest {
         rememberScope = object : RememberScope,
             Disposable by disposableRegistry,
             DisposableRegistry by disposableRegistry,
-            WindowFunction by WindowContextImpl(DummyWindowFunction()) {}
+            WindowContext by DummyWindowContextImpl() {}
     }
 
     @Test

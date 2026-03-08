@@ -1,7 +1,5 @@
 package me.raylib.sample.custom
 
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.cValue
 import raylib.core.Colors.RED
 import raylib.core.Colors.SKYBLUE
 import raylib.core.ComponentRegistry
@@ -11,11 +9,8 @@ import raylib.core.Rectangle
 import raylib.core.Vector2Alloc
 import raylib.core.component
 import raylib.core.components.Transform2D
-import raylib.core.components.Transform2DContext
-import raylib.core.components.isScreenPointInLocalRect
+import raylib.core.components.hitTest
 import raylib.core.components.transform2DComponent
-import raylib.core.components.worldMatrix
-import raylib.core.find
 import raylib.core.getValue
 import raylib.core.mutableStateOf
 import raylib.core.nativeStateOf
@@ -24,7 +19,6 @@ import raylib.core.onUpdate
 import raylib.core.randomColor
 import raylib.core.remember
 import raylib.core.setValue
-import raylib.interop.Color
 
 fun ComponentRegistry.matrixTest() {
     component("matrixTest") {
@@ -51,7 +45,7 @@ private fun ComponentRegistry.someItemGroup(transform2D: Transform2D) = componen
     }
     onUpdate { dt ->
         if (MouseButton.MOUSE_BUTTON_LEFT.isPressed() &&
-            isScreenPointInLocalRect(mousePosition, rect)
+            mousePosition.hitTest(rect)
         ) {
             randomColor = randomColor()
         }

@@ -1,5 +1,6 @@
 package raylib.core
 
+import raylib.core.internal.DummyWindowContextImpl
 import raylib.core.internal.DummyWindowFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -150,9 +151,7 @@ class ComponentTest {
 }
 
 private fun rootComponent(block: ComponentRegistry.() -> Unit): RootComponent {
-    val windowContext = WindowContextImpl(
-        windowFunction = DummyWindowFunction()
-    )
+    val windowContext = DummyWindowContextImpl()
     val gameContext = GameContext()
     val drawContext = DrawContext()
     return RootComponent(

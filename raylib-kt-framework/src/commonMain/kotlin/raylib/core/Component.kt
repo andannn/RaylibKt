@@ -49,14 +49,14 @@ inline fun ComponentScope.onUpdate(crossinline block: GameContext.(Float) -> Uni
     }
 }
 
-interface RememberScope : DisposableRegistry, WindowFunction
+interface RememberScope : DisposableRegistry, WindowContext
 
 internal fun RememberScope(
     disposableRegistry: DisposableRegistry,
     contextRegistry: ContextRegistry,
-    windowFunction: WindowFunction = contextRegistry.find<WindowContext>(),
+    windowContext: WindowContext = contextRegistry.find<WindowContext>(),
 ): RememberScope = object : RememberScope, DisposableRegistry by disposableRegistry,
-    WindowFunction by windowFunction {}
+    WindowContext by windowContext {}
 
 internal fun interface UpdateHandler {
     fun performUpdate(deltaTime: Float)
@@ -64,9 +64,9 @@ internal fun interface UpdateHandler {
 
 internal class RootComponent(
     contextRegistry: ContextRegistryInternal,
-    windowFunction: WindowFunction,
+    windowContext: WindowContext,
     private val block: ComponentRegistry.() -> Unit,
-    ) : Component("root", contextRegistry, windowFunction), Disposable {
+    ) : Component("root", contextRegistry, windowContext), Disposable {
     fun buildComponents() {
         buildComponents(block)
     }
@@ -86,15 +86,15 @@ internal fun Component(
 internal abstract class Component(
     val componentId: Any,
     private val contextRegistry: ContextRegistryInternal,
-    private val windowFunction: WindowFunction = contextRegistry.find<WindowContext>(),
+    private val windowContext: WindowContext = contextRegistry.find<WindowContext>(),
     private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl(),
-    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry, disposableRegistry, windowFunction)
+    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry, disposableRegistry, windowContext)
 ) : ComponentScope,
     ComponentFactory by componentsBuilder,
     ComponentStore by componentsBuilder,
     ContextRegistryInternal by contextRegistry,
     DisposableRegistry by disposableRegistry,
-    WindowFunction by windowFunction,
+    WindowFunction by windowContext,
     Disposable {
     internal val children: Iterable<Component>
         get() = componentsBuilder.activeStates.values
@@ -149,8 +149,8 @@ internal interface ComponentStore {
 internal class ComponentsBuilder(
     private val contextRegistry: ContextRegistryInternal,
     disposableRegistry: DisposableRegistry,
-    windowFunction: WindowFunction = contextRegistry.find<WindowContext>(),
-    override val rememberScope: RememberScope = RememberScope(disposableRegistry, contextRegistry, windowFunction)
+    windowContext: WindowContext = contextRegistry.find<WindowContext>(),
+    override val rememberScope: RememberScope = RememberScope(disposableRegistry, contextRegistry, windowContext)
 ) : ComponentFactory, ComponentStore, ContextRegistryInternal by contextRegistry {
     var activeStates = HashMap<Any, Component>()
     private var pendingStates = HashMap<Any, Component>()
