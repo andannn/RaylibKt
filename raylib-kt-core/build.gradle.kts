@@ -18,12 +18,7 @@ kmpExtension {
             }
         }
     }
-// no X11 dependency on macos
-//    linuxX64()
-//    linuxArm64()
-    androidNativeX64()
-    androidNativeX86()
-    androidNativeArm32()
+
     androidNativeArm64()
     withSourceSets {
         it.all {
@@ -39,4 +34,8 @@ kmpExtension {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+mavenPublishing {
+    configureMaven(project)
 }

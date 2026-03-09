@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api(project(":common"))
     compileOnly(libs.kotlin.gradle.plugin)
+    compileOnly(libs.maven.publish.gradle.plugin)
     implementation(libs.android.kmp.library.gradlePlugin)
 }
 
