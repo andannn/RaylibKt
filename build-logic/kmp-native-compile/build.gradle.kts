@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.kotlin.gradle.plugin)
     api(project(":common"))
+    compileOnly(libs.kotlin.gradle.plugin)
     implementation(libs.android.kmp.library.gradlePlugin)
 }
 
