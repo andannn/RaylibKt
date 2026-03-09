@@ -37,14 +37,14 @@ typealias SpriteGrid = Pair<Int, Int>
  * @param tag Unique ID to persist state (current frame) and prevent collisions.
  * @param origin Pivot point for rotation and scaling.
  */
-fun ComponentRegistry.spriteAnimationComponent(
+inline fun ComponentRegistry.spriteAnimationComponent(
     texture: CValue<Texture2D>,
     spriteGrid: SpriteGrid,
     framesSpeed: State<Int>,
-    dest: Rectangle,
+    dest: CValue<Rectangle>,
     origin: CValue<Vector2> = Vector2(),
     tag: String = "spriteAnimation",
-    onRestart: () -> Unit = {},
+    crossinline onRestart: () -> Unit = {},
 ) {
     component("spriteAnimation_$tag") {
         val (textureWidth, textureHeight) = texture.useContents { width to height }
@@ -80,7 +80,7 @@ fun ComponentRegistry.spriteAnimationComponent(
         }
 
         onDraw {
-            drawTexture(texture, frameRec.readValue(), dest.readValue(), origin, WHITE)
+            drawTexture(texture, frameRec.readValue(), dest, origin, WHITE)
         }
     }
 }

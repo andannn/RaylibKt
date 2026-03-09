@@ -155,6 +155,11 @@ object Colors {
 }
 
 typealias Rectangle = raylib.interop.Rectangle
+fun CValue<Rectangle>.format(): String {
+    return useContents {
+        "x: $x, y: $y, width: $width, height: $height"
+    }
+}
 
 fun NativePlacement.RectangleAlloc(
     x: Float = 0f,
