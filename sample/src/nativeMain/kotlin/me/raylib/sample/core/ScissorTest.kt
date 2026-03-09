@@ -2,21 +2,21 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import raylib.core.Colors
-import raylib.core.Colors.BLACK
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.ComponentRegistry
-import raylib.core.KeyboardKey
-import raylib.core.Rectangle
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.mutableStateOf
-import raylib.core.scissorMode
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.setValue
+import io.github.andannn.raylib.base.Colors
+import io.github.andannn.raylib.base.Colors.BLACK
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.base.scissorMode
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.scissorTest() {
     component("key") {

@@ -1,16 +1,16 @@
 package me.raylib.sample.core
 
-import raylib.core.Colors.GRAY
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.Colors.MAROON
-import raylib.core.ComponentRegistry
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.mutableStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.setValue
+import io.github.andannn.raylib.base.Colors.GRAY
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.base.Colors.MAROON
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.inputMouseWheel() {
     component("key") {

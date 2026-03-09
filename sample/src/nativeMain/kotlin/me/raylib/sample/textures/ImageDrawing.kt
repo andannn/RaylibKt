@@ -2,18 +2,18 @@ package me.raylib.sample.textures
 
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.useContents
-import raylib.core.Colors.DARKGRAY
-import raylib.core.Colors.RAYWHITE
-import raylib.core.Colors.WHITE
-import raylib.core.ComponentRegistry
-import raylib.core.Rectangle
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.loadTextureFromImage
-import raylib.core.onDraw
-import raylib.core.remember
-import raylib.core.useFont
-import raylib.core.useImage
+import io.github.andannn.raylib.base.Colors.DARKGRAY
+import io.github.andannn.raylib.base.Colors.RAYWHITE
+import io.github.andannn.raylib.base.Colors.WHITE
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.loadTextureFromImage
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.useFont
+import io.github.andannn.raylib.core.useImage
 
 fun ComponentRegistry.imageDrawing() {
     component("A") {

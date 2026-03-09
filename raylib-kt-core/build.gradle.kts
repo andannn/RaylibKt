@@ -3,7 +3,21 @@ plugins {
 }
 
 kmpExtension {
-    macosArm64()
+    macosArm64 {
+        binaries {
+            getTest("debug").apply {
+                linkerOpts(
+                    "-framework", "Foundation",
+                    "-framework", "AppKit",
+                    "-framework", "IOKit",
+                    "-framework", "CoreVideo",
+                    "-framework", "CoreGraphics",
+                    "-framework", "QuartzCore",
+                    "-framework", "OpenGL"
+                )
+            }
+        }
+    }
 // no X11 dependency on macos
 //    linuxX64()
 //    linuxArm64()
@@ -17,7 +31,12 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
-            api(project(":raylib-core"))
+            api(project(":raylib-kt-base"))
+            implementation(libs.kotlinx.coroutines.core)
+        }
+
+        it.commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }

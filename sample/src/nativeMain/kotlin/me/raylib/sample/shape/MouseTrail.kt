@@ -2,16 +2,16 @@ package me.raylib.sample.shape
 
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.zeroValue
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.Colors.SKYBLUE
-import raylib.core.Colors.WHITE
-import raylib.core.ComponentRegistry
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.forEachContentsIndexed
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.base.Colors.SKYBLUE
+import io.github.andannn.raylib.base.Colors.WHITE
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.base.forEachContentsIndexed
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
 import raylib.interop.Fade
 
 const val MAX_TRAIL_LENGTH = 30

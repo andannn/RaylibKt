@@ -18,7 +18,7 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
-            implementation(project(":raylib-kt-framework"))
+            implementation(project(":raylib-kt-core"))
             implementation(project(":raylib-kt-easings"))
         }
     }

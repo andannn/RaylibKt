@@ -2,14 +2,14 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
-import raylib.core.Colors.BLACK
-import raylib.core.Colors.ORANGE
-import raylib.core.ComponentRegistry
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
+import io.github.andannn.raylib.base.Colors.BLACK
+import io.github.andannn.raylib.base.Colors.ORANGE
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
 
 fun ComponentRegistry.inputMultitouch() {
     component("key") {

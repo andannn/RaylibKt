@@ -1,18 +1,18 @@
 package me.raylib.sample.textures
 
-import raylib.core.ComponentRegistry
-import raylib.core.MouseButton
-import raylib.core.Rectangle
-import raylib.core.RectangleAlloc
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.components.spriteAnimationComponent
-import raylib.core.loadTexture
-import raylib.core.mutableStateListOf
-import raylib.core.mutableStateOf
-import raylib.core.nativeStateOf
-import raylib.core.onUpdate
-import raylib.core.remember
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.MouseButton
+import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.RectangleAlloc
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.components.spriteAnimationComponent
+import io.github.andannn.raylib.core.loadTexture
+import io.github.andannn.raylib.core.mutableStateListOf
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
 
 fun ComponentRegistry.spriteExplosion() {
     val explosion = remember {

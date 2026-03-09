@@ -2,25 +2,25 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import raylib.core.Camera2D
-import raylib.core.Colors.BLUE
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.Colors.RAYWHITE
-import raylib.core.Colors.RED
-import raylib.core.ComponentRegistry
-import raylib.core.KeyboardKey
-import raylib.core.Rectangle
-import raylib.core.RectangleAlloc
-import raylib.core.component
-import raylib.core.components.fixSizedTextureComponent
-import raylib.core.getValue
-import raylib.core.mode2d
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.setOffset
-import raylib.core.setTarget
+import io.github.andannn.raylib.base.Camera2D
+import io.github.andannn.raylib.base.Colors.BLUE
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.base.Colors.RAYWHITE
+import io.github.andannn.raylib.base.Colors.RED
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.RectangleAlloc
+import io.github.andannn.raylib.core.component
+import io.github.andannn.components.fixSizedTextureComponent
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.base.mode2d
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.base.setOffset
+import io.github.andannn.raylib.base.setTarget
 
 private const val PLAYER_SIZE = 40
 

@@ -2,24 +2,24 @@ package me.raylib.sample.shape
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import raylib.core.Colors.DARKGREEN
-import raylib.core.Colors.GRAY
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.Colors.MAROON
-import raylib.core.Colors.RED
-import raylib.core.ComponentRegistry
-import raylib.core.KeyboardKey
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.mutableStateOf
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.rememberSuspendingTask
-import raylib.core.setValue
-import raylib.easings.awaitDuration
+import io.github.andannn.raylib.base.Colors.DARKGREEN
+import io.github.andannn.raylib.base.Colors.GRAY
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.base.Colors.MAROON
+import io.github.andannn.raylib.base.Colors.RED
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.rememberSuspendingTask
+import io.github.andannn.raylib.core.setValue
+import io.github.andannn.easings.awaitDuration
 import kotlin.time.Duration.Companion.seconds
 
 fun ComponentRegistry.bouncingBall() {

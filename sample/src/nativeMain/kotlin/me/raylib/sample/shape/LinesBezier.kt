@@ -4,21 +4,21 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
-import raylib.core.Colors.BLUE
-import raylib.core.Colors.GRAY
-import raylib.core.Colors.RED
-import raylib.core.ComponentRegistry
-import raylib.core.MouseButton
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.isCollisionWith
-import raylib.core.mutableStateOf
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.setValue
+import io.github.andannn.raylib.base.Colors.BLUE
+import io.github.andannn.raylib.base.Colors.GRAY
+import io.github.andannn.raylib.base.Colors.RED
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.MouseButton
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.base.isCollisionWith
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.linesBezier() {
     component("k") {

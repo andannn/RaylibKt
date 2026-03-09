@@ -5,17 +5,17 @@ import kotlinx.cinterop.FloatVar
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
-import raylib.core.Colors.BLACK
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.Colors.MAROON
-import raylib.core.ComponentRegistry
-import raylib.core.Rectangle
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.nativeStateOf
-import raylib.core.remember
-import raylib.gui.onDrawGui
+import io.github.andannn.raylib.base.Colors.BLACK
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.base.Colors.MAROON
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.gui.onDrawGui
 import raylib.interop.Fade
 
 fun ComponentRegistry.ringDrawing() {

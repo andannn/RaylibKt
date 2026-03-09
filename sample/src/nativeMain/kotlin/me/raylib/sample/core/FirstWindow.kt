@@ -1,13 +1,13 @@
 package me.raylib.sample.core
 
 import kotlinx.cinterop.CValue
-import raylib.core.Color
-import raylib.core.Colors
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.ComponentRegistry
-import raylib.core.component
-import raylib.core.onDraw
-import raylib.core.remember
+import io.github.andannn.raylib.base.Color
+import io.github.andannn.raylib.base.Colors
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.remember
 
 internal fun ComponentRegistry.firstWindow(
     initialBackGroundColor: CValue<Color> = Colors.RAYWHITE,

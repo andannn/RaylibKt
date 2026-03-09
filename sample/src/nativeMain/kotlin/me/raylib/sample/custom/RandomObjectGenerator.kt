@@ -1,20 +1,20 @@
 package me.raylib.sample.custom
 
 import kotlinx.cinterop.readValue
-import raylib.core.ComponentRegistry
-import raylib.core.NativeState
-import raylib.core.Vector2Alloc
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.randomColor
-import raylib.core.randomValue
-import raylib.core.mutableStateListOf
-import raylib.core.mutableStateOf
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.setValue
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.core.NativeState
+import io.github.andannn.raylib.base.Vector2Alloc
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.base.randomColor
+import io.github.andannn.raylib.base.randomValue
+import io.github.andannn.raylib.core.mutableStateListOf
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.randomObjectGenerator() {
     val stateList = remember {

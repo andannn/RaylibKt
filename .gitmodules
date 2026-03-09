@@ -1,5 +1,5 @@
-[submodule "raylib-core/external/raylib_c"]
-	path = raylib-core/external/raylib_c
+[submodule "raylib-base/external/raylib_c"]
+	path = raylib-base/external/raylib_c
 	url = https://github.com/raysan5/raylib
 [submodule "raylib-easings/external/reasings"]
 	path = raylib-easings/external/reasings

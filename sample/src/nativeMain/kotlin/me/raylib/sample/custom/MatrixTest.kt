@@ -1,24 +1,24 @@
 package me.raylib.sample.custom
 
-import raylib.core.Colors.RED
-import raylib.core.Colors.SKYBLUE
-import raylib.core.ComponentRegistry
-import raylib.core.KeyboardKey
-import raylib.core.MouseButton
-import raylib.core.Rectangle
-import raylib.core.Vector2Alloc
-import raylib.core.component
-import raylib.core.components.Transform2D
-import raylib.core.components.hitTest
-import raylib.core.components.transform2DComponent
-import raylib.core.getValue
-import raylib.core.mutableStateOf
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.randomColor
-import raylib.core.remember
-import raylib.core.setValue
+import io.github.andannn.raylib.base.Colors.RED
+import io.github.andannn.raylib.base.Colors.SKYBLUE
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.base.MouseButton
+import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.Vector2Alloc
+import io.github.andannn.raylib.core.component
+import io.github.andannn.components.Transform2D
+import io.github.andannn.components.hitTest
+import io.github.andannn.components.transform2DComponent
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.base.randomColor
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.matrixTest() {
     component("matrixTest") {

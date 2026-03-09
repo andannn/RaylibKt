@@ -1,20 +1,20 @@
 package me.raylib.sample.shape
 
-import raylib.core.Colors.BLACK
-import raylib.core.Colors.GREEN
-import raylib.core.Colors.RED
-import raylib.core.ComponentRegistry
-import raylib.core.KeyboardKey
-import raylib.core.await
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.mutableStateOf
-import raylib.core.onDraw
-import raylib.core.remember
-import raylib.core.rememberSuspendingTask
-import raylib.core.setValue
-import raylib.easings.Ease
-import raylib.easings.awaitEasingAnimation
+import io.github.andannn.raylib.base.Colors.BLACK
+import io.github.andannn.raylib.base.Colors.GREEN
+import io.github.andannn.raylib.base.Colors.RED
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.core.await
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.rememberSuspendingTask
+import io.github.andannn.raylib.core.setValue
+import io.github.andannn.easings.Ease
+import io.github.andannn.easings.awaitEasingAnimation
 import raylib.interop.Fade
 import kotlin.time.Duration.Companion.seconds
 

@@ -1,24 +1,24 @@
 package me.raylib.sample.textures
 
 import kotlinx.cinterop.useContents
-import raylib.core.Colors.DARKGRAY
-import raylib.core.Colors.GRAY
-import raylib.core.Colors.LIME
-import raylib.core.Colors.MAROON
-import raylib.core.Colors.RED
-import raylib.core.Colors.WHITE
-import raylib.core.ComponentRegistry
-import raylib.core.KeyboardKey
-import raylib.core.RectangleAlloc
-import raylib.core.component
-import raylib.core.components.spriteAnimationComponent
-import raylib.core.getValue
-import raylib.core.loadTexture
-import raylib.core.mutableStateOf
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
+import io.github.andannn.raylib.base.Colors.DARKGRAY
+import io.github.andannn.raylib.base.Colors.GRAY
+import io.github.andannn.raylib.base.Colors.LIME
+import io.github.andannn.raylib.base.Colors.MAROON
+import io.github.andannn.raylib.base.Colors.RED
+import io.github.andannn.raylib.base.Colors.WHITE
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.base.RectangleAlloc
+import io.github.andannn.raylib.core.component
+import io.github.andannn.components.spriteAnimationComponent
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.core.loadTexture
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
 
 private const val MAX_FRAME_SPEED = 15
 private const val MIN_FRAME_SPEED = 1

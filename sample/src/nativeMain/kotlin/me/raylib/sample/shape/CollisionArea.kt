@@ -1,25 +1,25 @@
 package me.raylib.sample.shape
 
 import kotlinx.cinterop.readValue
-import raylib.core.Colors.BLACK
-import raylib.core.Colors.BLUE
-import raylib.core.Colors.GOLD
-import raylib.core.Colors.LIME
-import raylib.core.Colors.RED
-import raylib.core.ComponentRegistry
-import raylib.core.KeyboardKey
-import raylib.core.RectangleAlloc
-import raylib.core.component
-import raylib.core.getCollisionRec
-import raylib.core.getValue
-import raylib.core.isCollisionWith
-import raylib.core.mutableStateOf
-import raylib.core.set
-import raylib.core.nativeStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.setValue
+import io.github.andannn.raylib.base.Colors.BLACK
+import io.github.andannn.raylib.base.Colors.BLUE
+import io.github.andannn.raylib.base.Colors.GOLD
+import io.github.andannn.raylib.base.Colors.LIME
+import io.github.andannn.raylib.base.Colors.RED
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.base.RectangleAlloc
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.base.getCollisionRec
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.base.isCollisionWith
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.base.set
+import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.setValue
 import raylib.interop.MeasureText
 
 private const val screenUpperLimit = 40

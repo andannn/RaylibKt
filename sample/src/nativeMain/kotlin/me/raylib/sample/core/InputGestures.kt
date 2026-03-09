@@ -1,22 +1,22 @@
 package me.raylib.sample.core
 
-import raylib.core.Colors.DARKGRAY
-import raylib.core.Colors.GRAY
-import raylib.core.Colors.LIGHTGRAY
-import raylib.core.Colors.MAROON
-import raylib.core.Colors.RAYWHITE
-import raylib.core.ComponentRegistry
-import raylib.core.Gesture
-import raylib.core.Rectangle
-import raylib.core.Vector2
-import raylib.core.component
-import raylib.core.getValue
-import raylib.core.isCollisionWith
-import raylib.core.mutableStateOf
-import raylib.core.onDraw
-import raylib.core.onUpdate
-import raylib.core.remember
-import raylib.core.setValue
+import io.github.andannn.raylib.base.Colors.DARKGRAY
+import io.github.andannn.raylib.base.Colors.GRAY
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.base.Colors.MAROON
+import io.github.andannn.raylib.base.Colors.RAYWHITE
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.base.Gesture
+import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.getValue
+import io.github.andannn.raylib.base.isCollisionWith
+import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.core.setValue
 import raylib.interop.Fade
 
 private const val MAX_GESTURE_STRINGS = 20
