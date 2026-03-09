@@ -12,7 +12,7 @@ import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.RectangleAlloc
 import io.github.andannn.raylib.core.component
-import io.github.andannn.components.fixSizedTextureComponent
+import io.github.andannn.raylib.components.fixSizedTextureComponent
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.mode2d
 import io.github.andannn.raylib.core.nativeStateOf

@@ -8,9 +8,9 @@ import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2Alloc
 import io.github.andannn.raylib.core.component
-import io.github.andannn.components.Transform2D
-import io.github.andannn.components.hitTest
-import io.github.andannn.components.transform2DComponent
+import io.github.andannn.raylib.components.Transform2D
+import io.github.andannn.raylib.components.hitTest
+import io.github.andannn.raylib.components.transform2DComponent
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf

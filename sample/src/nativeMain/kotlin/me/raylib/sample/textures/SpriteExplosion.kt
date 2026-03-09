@@ -6,7 +6,7 @@ import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.RectangleAlloc
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
-import io.github.andannn.components.spriteAnimationComponent
+import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.core.loadTexture
 import io.github.andannn.raylib.core.mutableStateListOf
 import io.github.andannn.raylib.core.mutableStateOf

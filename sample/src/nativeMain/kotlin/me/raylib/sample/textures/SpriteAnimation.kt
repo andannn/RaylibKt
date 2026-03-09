@@ -11,7 +11,7 @@ import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.RectangleAlloc
 import io.github.andannn.raylib.core.component
-import io.github.andannn.components.spriteAnimationComponent
+import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.loadTexture
 import io.github.andannn.raylib.core.mutableStateOf

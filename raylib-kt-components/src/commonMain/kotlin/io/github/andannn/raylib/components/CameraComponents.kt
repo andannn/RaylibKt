@@ -2,7 +2,7 @@
  * Copyright 2026, the RaylibKt project contributors
  * SPDX-License-Identifier: Zlib
  */
-package io.github.andannn.components
+package io.github.andannn.raylib.components
 
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
