@@ -9,7 +9,9 @@ import io.github.andannn.raylib.base.Colors.RED
 import io.github.andannn.raylib.base.Colors.WHITE
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
+import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.RectangleAlloc
+import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.core.getValue
@@ -43,9 +45,9 @@ fun ComponentRegistry.spriteAnimationSample() {
         }
     }
 
-    val scarfyRect  by remember {
+    val scarfyRect = remember {
         val (scarfyWidth, scarfyHeight) = scarfy.useContents { width.toFloat().div(6f) to height.toFloat() }
-        nativeStateOf { RectangleAlloc(350.0f, 280.0f, scarfyWidth, scarfyHeight) }
+        Rectangle(350.0f, 280.0f, scarfyWidth, scarfyHeight)
     }
 
     spriteAnimationComponent(

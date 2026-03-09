@@ -6,6 +6,7 @@ import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.base.Vector2Alloc
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.components.Transform2D
@@ -17,17 +18,18 @@ import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.base.randomColor
+import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.matrixTest() {
     component("matrixTest") {
-        val offset by remember {
-            nativeStateOf { Vector2Alloc(-25f, -25f) }
+        val transform = remember {
+            Transform2DAlloc(offset = Vector2(-25f, -25f))
         }
         transform2DComponent(
             tag = "test",
-            offset = offset
+            transform2D = transform
         ) { transformBox ->
             someItemGroup(transformBox)
         }

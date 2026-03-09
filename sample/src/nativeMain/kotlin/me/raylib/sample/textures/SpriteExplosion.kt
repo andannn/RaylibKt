@@ -13,6 +13,7 @@ import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.core.remember
+import kotlinx.cinterop.CValue
 
 fun ComponentRegistry.spriteExplosion() {
     val explosion = remember {
@@ -30,7 +31,7 @@ fun ComponentRegistry.spriteExplosion() {
                     nativeStateOf {
                         ExplosionState(
                             id = id++,
-                            RectangleAlloc(mouseX.toFloat(), mouseY.toFloat(), 100f, 100f)
+                            Rectangle(mouseX.toFloat(), mouseY.toFloat(), 100f, 100f)
                         )
                     }
                 }
@@ -53,5 +54,5 @@ fun ComponentRegistry.spriteExplosion() {
 
 class ExplosionState(
     val id: Long,
-    val rect: Rectangle
+    val rect: CValue<Rectangle>
 )
