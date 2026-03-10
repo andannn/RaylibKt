@@ -18,8 +18,8 @@ fun window(
     width: Int,
     height: Int,
     initialFps: Int = 60,
-    disableBackfaceCulling: Boolean = false,
     initialBackGroundColor: CValue<Color>? = null,
+    init: ContextRegistry.() -> Unit = {},
     block: ComponentRegistry.() -> Unit
 ) {
     val windowFunction = WindowFunction(
@@ -34,30 +34,27 @@ fun window(
     val gameContext = GameContext()
     val drawContext = DrawContext()
     val contextRegistry = ContextRegistryInternal()
+    contextRegistry.provideStaticDependency(windowContext)
+    contextRegistry.provideStaticDependency(gameContext)
+    contextRegistry.provideStaticDependency(drawContext)
 
-    if (disableBackfaceCulling) rlDisableBackfaceCulling()
+    init.invoke(contextRegistry)
 
     with(RootComponent(contextRegistry, windowContext, block)) {
         try {
             windowFunction.gameLoop {
-                contextRegistry.provide<WindowContext>(windowContext) {
-                    contextRegistry.provide(gameContext) {
-                        contextRegistry.provide(drawContext) {
-                            // update state
-                            windowContext.renderPhase = RenderPhase.UPDATE
-                            buildComponents()
+                // update state
+                windowContext.renderPhase = RenderPhase.UPDATE
+                buildComponents()
 
-                            // Draw
-                            windowContext.renderPhase = RenderPhase.DRAW
-                            BeginDrawing()
-                            windowFunction.backGroundColor?.let {
-                                ClearBackground(it)
-                            }
-                            buildComponents()
-                            EndDrawing()
-                        }
-                    }
+                // Draw
+                windowContext.renderPhase = RenderPhase.DRAW
+                BeginDrawing()
+                windowFunction.backGroundColor?.let {
+                    ClearBackground(it)
                 }
+                buildComponents()
+                EndDrawing()
             }
         } finally {
             dispose()

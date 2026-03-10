@@ -42,15 +42,15 @@ inline fun <reified R> ComponentRegistry.remember(block: RememberScope.() -> R):
 
 interface ComponentScope : WindowFunction, DisposableRegistry, ComponentRegistry, ContextProvider
 
-inline fun ComponentScope.onDraw(crossinline block: DrawContext.() -> Unit) {
-    if (find<WindowContext>().renderPhase == RenderPhase.DRAW) {
-        block(find<DrawContext>())
-    }
-}
-
 inline fun ComponentScope.onUpdate(crossinline block: GameContext.(Float) -> Unit) {
     if (find<WindowContext>().renderPhase == RenderPhase.UPDATE) {
         block(find<GameContext>(), find<WindowContext>().frameTimeSeconds)
+    }
+}
+
+inline fun ComponentScope.onDraw(crossinline block: DrawContext.() -> Unit) {
+    if (find<WindowContext>().renderPhase == RenderPhase.DRAW) {
+        block(find<DrawContext>())
     }
 }
 

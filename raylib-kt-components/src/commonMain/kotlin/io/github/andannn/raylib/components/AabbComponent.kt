@@ -38,7 +38,7 @@ fun ComponentRegistry.aabbComponent(
                 aabb.setFromLocalSize(size, worldMatrix)
             }
 
-            RenderPhase.DRAW -> {}
+            else -> {}
         }
     }
 }

@@ -7,29 +7,35 @@ import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.base.randomColor
-import io.github.andannn.raylib.components.Spatial2DBoxStateAlloc
-import io.github.andannn.raylib.components.box2DComponent
+import io.github.andannn.raylib.components.Positional2DIdentity
+import io.github.andannn.raylib.components.Positional2D
+import io.github.andannn.raylib.components.collision2DComponent
+import io.github.andannn.raylib.components.positional2DAlloc
+import io.github.andannn.raylib.components.positional2DComponent
 import io.github.andannn.raylib.components.hitTest
+import io.github.andannn.raylib.components.hitbox2DComponent
+import io.github.andannn.raylib.components.queryNearby
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
+import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.matrixTest() {
-    component("matrixTest") {
-        val spatialState = remember {
-            Spatial2DBoxStateAlloc(
+    collision2DComponent("matrixTest", cellSize = 50) {
+        val positional2D = remember {
+            positional2DAlloc(
                 offset = Vector2(-25f, -25f)
             )
         }
 
         component("update") {
             onUpdate { dt ->
-                val transform = spatialState.transform
+                val transform = positional2D.transform
                 if (KeyboardKey.KEY_RIGHT.isDown()) {
                     transform.position.x += speed * dt
                 }
@@ -48,32 +54,31 @@ fun ComponentRegistry.matrixTest() {
             }
         }
 
-        box2DComponent(
-            state = spatialState,
+        val someHitbox by remember {
+            nativeStateOf {
+                SomeHitbox(state = positional2DAlloc(Vector2()))
+            }
+        }
+        hitbox2DComponent(
+            someHitbox,
+            size = Vector2(30f, 30f),
+            tag = "Collision"
+        ) {
+
+        }
+
+        positional2DComponent(
+            state = positional2D,
             size = Vector2(50f, 50f)
         ) {
-            someItemGroup()
+            someItemGroup(positional2D)
         }
-//        transform2DComponent(
-//            tag = "test",
-//            transform = spatialState.transform
-//        ) {
-//            val transform2 = remember {
-//                Transform2DAlloc(position = Vector2(100f, 100f), angle = mutableStateOf(45f))
-//            }
-//            transform2DComponent(
-//                transform = transform2
-//            ) {
-//                someItemGroup()
-//                aabbComponent(aabb, Vector2(50f, 50f), tag = "rect")
-//            }
-//        }
     }
 }
 
 const val speed = 200f
 
-private fun ComponentRegistry.someItemGroup() = component("content") {
+private fun ComponentRegistry.someItemGroup(positional2D: Positional2D) = component("content") {
     var randomColor by remember {
         mutableStateOf(RED)
     }
@@ -87,7 +92,12 @@ private fun ComponentRegistry.someItemGroup() = component("content") {
             randomColor = randomColor()
         }
 
+        positional2D.queryNearby { identity ->
+            println("asdfadsf $identity")
+            randomColor = randomColor()
+        }
     }
+
     onDraw {
         drawRectangle(rect, color = randomColor)
     }
@@ -99,4 +109,8 @@ private fun ComponentRegistry.someItemFollowParent() = component("follow parent"
     onDraw {
         drawCircle(100, 100, 50f, SKYBLUE)
     }
+}
+
+class SomeHitbox(override val state: Positional2D) : Positional2DIdentity {
+
 }

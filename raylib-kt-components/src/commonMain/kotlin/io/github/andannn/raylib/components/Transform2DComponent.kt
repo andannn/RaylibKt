@@ -70,7 +70,6 @@ fun CValue<Vector2>.hitTest(localRect: CValue<Rectangle>): Boolean {
     return localPoint.isCollisionWith(localRect)
 }
 
-
 class Transform2DContext : Context {
     @PublishedApi
     internal var internalMatrix: CValue<Matrix>? = null
