@@ -71,7 +71,7 @@ fun CValue<Vector2>.hitTest(localRect: CValue<Rectangle>): Boolean {
 }
 
 
-class Transform2DContext() : Context {
+class Transform2DContext : Context {
     @PublishedApi
     internal var internalMatrix: CValue<Matrix>? = null
     val matrix: CValue<Matrix>
@@ -84,15 +84,6 @@ class Transform2D(
     val offset: Vector2,
     val angle: MutableState<Float>
 )
-
-fun Transform2D.getHitbox(width: Float, height: Float): CValue<Rectangle> {
-    return Rectangle(
-        x = position.x - width / 2,
-        y = position.y - height,
-        width = width,
-        height = height,
-    )
-}
 
 fun RememberScope.Transform2DAlloc(
     position: CValue<Vector2> = Vector2(),
@@ -115,12 +106,12 @@ fun RememberScope.Transform2DAlloc(
  * to modify the parent's transformation (position, scale, rotation, offset)
  * without triggering re-allocations or losing state between frames.
  *
- * @param transform2D Persistent state holding position, scale, rotation, and pivot offset.
+ * @param transform Persistent state holding position, scale, rotation, and pivot offset.
  * @param tag Debugging label used to identify this node within complex transformation hierarchies.
  * @param children Scoped closure for child components affected by this transformation.
  */
 inline fun ComponentRegistry.transform2DComponent(
-    transform2D: Transform2D,
+    transform: Transform2D,
     tag: String = "",
     crossinline children: ComponentRegistry.(Transform2D) -> Unit
 ) = component("Transform2D_$tag") {
@@ -129,14 +120,14 @@ inline fun ComponentRegistry.transform2DComponent(
     }
     when (find<WindowContext>().renderPhase) {
         RenderPhase.UPDATE -> {
-            transform2DContext.internalMatrix = worldMatrix().multiply(transform2D.toMatrix())
+            transform2DContext.internalMatrix = worldMatrix().multiply(transform.toMatrix())
             provide<Transform2DContext>(transform2DContext) {
-                children(transform2D)
+                children(transform)
             }
         }
 
-        RenderPhase.DRAW -> transform2DDrawInterceptor(transform2D) {
-            children(transform2D)
+        RenderPhase.DRAW -> transform2DDrawInterceptor(transform) {
+            children(transform)
         }
     }
 }

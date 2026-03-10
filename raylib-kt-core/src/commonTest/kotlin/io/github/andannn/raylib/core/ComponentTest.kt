@@ -4,7 +4,7 @@
  */
 package io.github.andannn.raylib.core
 
-import io.github.andannn.raylib.core.internal.DummyWindowContextImpl
+import io.github.andannn.raylib.core.internal.rootComponent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -151,26 +151,4 @@ class ComponentTest {
         rootComponent.buildComponents()
         assertTrue(disposed)
     }
-}
-
-private fun rootComponent(block: ComponentRegistry.() -> Unit): RootComponent {
-    val windowContext = DummyWindowContextImpl()
-    val gameContext = GameContext()
-    val drawContext = DrawContext()
-    return RootComponent(
-        contextRegistry = ContextRegistryInternal().apply {
-
-
-        },
-        windowContext,
-        block = {
-            provide<WindowContext>(windowContext) {
-                provide(gameContext) {
-                    provide(drawContext) {
-                        block()
-                    }
-                }
-            }
-        }
-    )
 }

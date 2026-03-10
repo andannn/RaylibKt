@@ -72,6 +72,7 @@ fun main() = window(
     title = "raylib [core] example - input gestures",
     width = 800,
     height = 450,
+    initialFps = 60,
     initialBackGroundColor = Colors.RAYWHITE,
 ) {
     provide(GuiContext()) {

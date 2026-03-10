@@ -7,6 +7,7 @@ package io.github.andannn.raylib.base
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import raylib.interop.MatrixToFloatV
+import raylib.interop.rlLoadIdentity
 import raylib.interop.rlMultMatrixf
 import raylib.interop.rlPopMatrix
 import raylib.interop.rlPushMatrix
@@ -17,6 +18,15 @@ import raylib.interop.rlTranslatef
 inline fun rlMatrix(block: RlMatrixFunction.() -> Unit) {
     rlPushMatrix()
     block(RlMatrix)
+    rlPopMatrix()
+}
+
+inline fun withWorldSpace(crossinline block: () -> Unit) {
+    rlPushMatrix()
+    rlLoadIdentity()
+
+    block()
+
     rlPopMatrix()
 }
 

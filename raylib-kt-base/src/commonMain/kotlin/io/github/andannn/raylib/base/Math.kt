@@ -17,7 +17,7 @@ fun matrixIdentity(): CValue<Matrix> = MatrixIdentity()
 
 fun CValue<Matrix>.add(other: CValue<Matrix>): CValue<Matrix> = MatrixAdd(this, other)
 fun CValue<Matrix>.subtract(other: CValue<Matrix>): CValue<Matrix> = MatrixSubtract(this, other)
-fun CValue<Matrix>.multiply(other: CValue<Matrix>): CValue<Matrix> = MatrixMultiply(this, other)
+fun CValue<Matrix>.multiply(other: CValue<Matrix>): CValue<Matrix> = MatrixMultiply(left = other, right = this)
 fun CValue<Matrix>.determinant(): Float = MatrixDeterminant(this)
 fun CValue<Matrix>.trace(): Float = MatrixTrace(this)
 fun CValue<Matrix>.transpose(): CValue<Matrix> = MatrixTranspose(this)
