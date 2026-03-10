@@ -33,12 +33,12 @@ fun ComponentRegistry.aabbComponent(
 ) {
     component("boundsComponent_$tag") {
         when (find<WindowContext>().renderPhase) {
-            RenderPhase.UPDATE -> {
+            RenderPhase.SYNC, RenderPhase.UPDATE -> {
                 val worldMatrix = worldMatrix()
                 aabb.setFromLocalSize(size, worldMatrix)
             }
 
-            RenderPhase.DRAW -> {}
+            else -> {}
         }
     }
 }

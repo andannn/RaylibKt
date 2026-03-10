@@ -5,6 +5,7 @@
 package io.github.andannn.raylib.core.internal
 
 import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.core.ContextRegistry
 import io.github.andannn.raylib.core.ContextRegistryInternal
 import io.github.andannn.raylib.core.DrawContext
 import io.github.andannn.raylib.core.GameContext
@@ -17,9 +18,10 @@ interface RebuildControl {
 }
 
 fun buildComponents(
+    init: ContextRegistry.() -> Unit = {},
     block: ComponentRegistry.() -> Unit
 ): RebuildControl {
-    val root = rootComponent(block)
+    val root = rootComponent(init,block)
     return object : RebuildControl {
         override fun rebuild() {
             root.buildComponents()
@@ -27,12 +29,16 @@ fun buildComponents(
     }
 }
 
-internal fun rootComponent(block: ComponentRegistry.() -> Unit): RootComponent {
+internal fun rootComponent(
+    init: ContextRegistry.() -> Unit,
+    block: ComponentRegistry.() -> Unit): RootComponent {
     val windowContext = DummyWindowContextImpl()
     val gameContext = GameContext()
     val drawContext = DrawContext()
+    val contextRegistry = ContextRegistryInternal()
+    init(contextRegistry)
     return RootComponent(
-        contextRegistry = ContextRegistryInternal(),
+        contextRegistry = contextRegistry,
         windowContext,
         block = {
             provide<WindowContext>(windowContext) {

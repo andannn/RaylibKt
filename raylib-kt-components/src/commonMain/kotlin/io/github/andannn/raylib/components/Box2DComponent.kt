@@ -7,8 +7,10 @@ import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.State
 import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.onSync
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
 import raylib.interop.Fade
@@ -64,6 +66,9 @@ inline fun ComponentRegistry.box2DComponent(
         }
 
         aabbComponent(state.aabb, size)
+        onSync {
+            findOrNull<CollisionCollectionContext>()?.register(state)
+        }
         block()
     }
 }

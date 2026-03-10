@@ -70,7 +70,6 @@ fun CValue<Vector2>.hitTest(localRect: CValue<Rectangle>): Boolean {
     return localPoint.isCollisionWith(localRect)
 }
 
-
 class Transform2DContext : Context {
     @PublishedApi
     internal var internalMatrix: CValue<Matrix>? = null
@@ -119,7 +118,7 @@ inline fun ComponentRegistry.transform2DComponent(
         Transform2DContext()
     }
     when (find<WindowContext>().renderPhase) {
-        RenderPhase.UPDATE -> {
+        RenderPhase.SYNC, RenderPhase.UPDATE -> {
             transform2DContext.internalMatrix = worldMatrix().multiply(transform.toMatrix())
             provide<Transform2DContext>(transform2DContext) {
                 children(transform)
