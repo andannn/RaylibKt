@@ -3,7 +3,21 @@ plugins {
 }
 
 kmpExtension {
-    macosArm64()
+    macosArm64 {
+        binaries {
+            getTest("debug").apply {
+                linkerOpts(
+                    "-framework", "Foundation",
+                    "-framework", "AppKit",
+                    "-framework", "IOKit",
+                    "-framework", "CoreVideo",
+                    "-framework", "CoreGraphics",
+                    "-framework", "QuartzCore",
+                    "-framework", "OpenGL"
+                )
+            }
+        }
+    }
     androidNativeArm64()
 
     withSourceSets {
@@ -14,6 +28,10 @@ kmpExtension {
         it.commonMain.dependencies {
             implementation(project(":raylib-kt-core"))
             implementation(project(":raylib-kt-easings"))
+        }
+
+        it.commonTest.dependencies {
+            implementation(project(":raylib-kt-core"))
         }
     }
 }
