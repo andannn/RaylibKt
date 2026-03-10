@@ -42,12 +42,6 @@ inline fun <reified R> ComponentRegistry.remember(block: RememberScope.() -> R):
 
 interface ComponentScope : WindowFunction, DisposableRegistry, ComponentRegistry, ContextProvider
 
-inline fun ComponentScope.onSync(crossinline block: () -> Unit) {
-    if (find<WindowContext>().renderPhase == RenderPhase.SYNC) {
-        block()
-    }
-}
-
 inline fun ComponentScope.onUpdate(crossinline block: GameContext.(Float) -> Unit) {
     if (find<WindowContext>().renderPhase == RenderPhase.UPDATE) {
         block(find<GameContext>(), find<WindowContext>().frameTimeSeconds)

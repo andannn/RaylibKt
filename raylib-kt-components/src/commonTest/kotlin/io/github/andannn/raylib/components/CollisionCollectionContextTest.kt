@@ -11,15 +11,15 @@ import kotlin.test.assertEquals
 class CollisionCollectionContextTest {
     @Test
     fun spatialCollection_query() {
-        val collection = CollisionCollectionContext(50)
+        val collection = Collision2DContext(50)
         var state: Any? = null
         val control = buildComponents(
             init = { provideStaticDependency(collection) }
         ) {
             state = remember {
-                Spatial2DBoxStateAlloc(position = Vector2(40f, 40f))
+                positional2DAlloc(position = Vector2(40f, 40f))
             }
-            box2DComponent(
+            positional2DComponent(
                 state,
                 Vector2(20f, 20f)
             ) {
@@ -29,9 +29,9 @@ class CollisionCollectionContextTest {
 
         control.rebuild()
 
-        assertEquals(state, collection.queryIn(Rectangle(width = 50f, height = 50f)).first())
-        assertEquals(state, collection.queryIn(Rectangle(0f, 50f, width = 50f, height = 50f)).first())
-        assertEquals(state, collection.queryIn(Rectangle(50f, 0f, width = 50f, height = 50f)).first())
-        assertEquals(state, collection.queryIn(Rectangle(50f, 50f, width = 50f, height = 50f)).first())
+        assertEquals(state, collection.queryInRect(Rectangle(width = 50f, height = 50f)).first())
+        assertEquals(state, collection.queryInRect(Rectangle(0f, 50f, width = 50f, height = 50f)).first())
+        assertEquals(state, collection.queryInRect(Rectangle(50f, 0f, width = 50f, height = 50f)).first())
+        assertEquals(state, collection.queryInRect(Rectangle(50f, 50f, width = 50f, height = 50f)).first())
     }
 }

@@ -7,33 +7,50 @@ import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.State
 import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onSync
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
 import raylib.interop.Fade
 
-class Spatial2DBoxState(
+class Positional2D(
     val transform: Transform2D,
-    val aabb: Aabb
+    val aabb: Aabb,
 )
 
-fun RememberScope.Spatial2DBoxStateAlloc(
+fun RememberScope.positional2DAlloc(
     position: CValue<Vector2> = Vector2(),
     scale: CValue<Vector2> = Vector2(1f, 1f),
     offset: CValue<Vector2> = Vector2(),
     angle: State<Float> = mutableStateOf(0f),
-) = Spatial2DBoxState(
+) = Positional2D(
     transform = Transform2DAlloc(
         position = position,
         scale = scale,
         offset = offset,
         angle = angle
     ),
-    aabb = AabbAlloc()
+    aabb = AabbAlloc(),
 )
+
+inline fun ComponentRegistry.positional2DComponent(
+    size: CValue<Vector2>,
+    position: CValue<Vector2> = Vector2(),
+    scale: CValue<Vector2> = Vector2(1f, 1f),
+    offset: CValue<Vector2> = Vector2(),
+    angle: State<Float> = mutableStateOf(0f),
+    tag: String = "",
+    crossinline block: ComponentRegistry.() -> Unit
+) {
+    val state = remember {
+        positional2DAlloc(position = position, scale = scale, offset = offset, angle = angle)
+    }
+    positional2DComponent(
+        state = state,
+        size = size,
+        tag = tag, block = block,
+    )
+}
 
 /**
  * A structural component that provides a 2D coordinate system and bounding box logic.
@@ -43,8 +60,8 @@ fun RememberScope.Spatial2DBoxStateAlloc(
  * @param tag Identification tag for the component tree.
  * @param block Child components to be rendered within this box's coordinate space.
  */
-inline fun ComponentRegistry.box2DComponent(
-    state: Spatial2DBoxState,
+inline fun ComponentRegistry.positional2DComponent(
+    state: Positional2D,
     size: CValue<Vector2>,
     tag: String = "",
     crossinline block: ComponentRegistry.() -> Unit
@@ -66,9 +83,6 @@ inline fun ComponentRegistry.box2DComponent(
         }
 
         aabbComponent(state.aabb, size)
-        onSync {
-            findOrNull<CollisionCollectionContext>()?.register(state)
-        }
         block()
     }
 }

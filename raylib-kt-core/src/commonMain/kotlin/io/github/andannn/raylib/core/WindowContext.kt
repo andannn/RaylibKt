@@ -30,5 +30,5 @@ internal class WindowContextImpl(
     WindowFunction by windowFunction,
     FontFunction by fontFunction,
     ImageFunction by imageFunction {
-    override var renderPhase = RenderPhase.SYNC
+    override var renderPhase = RenderPhase.UPDATE
 }

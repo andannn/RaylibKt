@@ -44,10 +44,6 @@ fun window(
         try {
             windowFunction.gameLoop {
                 // update state
-                windowContext.renderPhase = RenderPhase.SYNC
-                buildComponents()
-
-                // update state
                 windowContext.renderPhase = RenderPhase.UPDATE
                 buildComponents()
 
@@ -67,7 +63,6 @@ fun window(
 }
 
 enum class RenderPhase {
-    SYNC,
     UPDATE,
     DRAW
 }

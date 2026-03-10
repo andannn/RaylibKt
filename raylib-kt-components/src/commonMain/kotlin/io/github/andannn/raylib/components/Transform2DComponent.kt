@@ -118,7 +118,7 @@ inline fun ComponentRegistry.transform2DComponent(
         Transform2DContext()
     }
     when (find<WindowContext>().renderPhase) {
-        RenderPhase.SYNC, RenderPhase.UPDATE -> {
+        RenderPhase.UPDATE -> {
             transform2DContext.internalMatrix = worldMatrix().multiply(transform.toMatrix())
             provide<Transform2DContext>(transform2DContext) {
                 children(transform)

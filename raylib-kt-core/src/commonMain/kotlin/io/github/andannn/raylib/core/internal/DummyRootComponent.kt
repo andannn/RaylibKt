@@ -21,7 +21,7 @@ fun buildComponents(
     init: ContextRegistry.() -> Unit = {},
     block: ComponentRegistry.() -> Unit
 ): RebuildControl {
-    val root = rootComponent(init,block)
+    val root = rootComponent(block, init)
     return object : RebuildControl {
         override fun rebuild() {
             root.buildComponents()
@@ -30,8 +30,9 @@ fun buildComponents(
 }
 
 internal fun rootComponent(
-    init: ContextRegistry.() -> Unit,
-    block: ComponentRegistry.() -> Unit): RootComponent {
+    block: ComponentRegistry.() -> Unit,
+    init: ContextRegistry.() -> Unit = {},
+): RootComponent {
     val windowContext = DummyWindowContextImpl()
     val gameContext = GameContext()
     val drawContext = DrawContext()
