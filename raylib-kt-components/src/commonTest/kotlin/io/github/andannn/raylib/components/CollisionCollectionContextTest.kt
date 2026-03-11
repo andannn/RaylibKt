@@ -11,17 +11,23 @@ import kotlin.test.assertEquals
 class CollisionCollectionContextTest {
     @Test
     fun spatialCollection_query() {
+        class FakeEntity(override val state: Positional2D) : Positional2DEntity
+
         val collection = Collision2DContext(50)
         var state: Any? = null
         val control = buildComponents(
             init = { provideStaticDependency(collection) }
         ) {
             state = remember {
-                positional2DAlloc(position = Vector2(40f, 40f))
+                FakeEntity(
+                    positional2DAlloc(
+                        size = Vector2(20f, 20f),
+                        position = Vector2(40f, 40f)
+                    )
+                )
             }
-            positional2DComponent(
+            positional2DEntityComponent(
                 state,
-                Vector2(20f, 20f)
             ) {
 
             }

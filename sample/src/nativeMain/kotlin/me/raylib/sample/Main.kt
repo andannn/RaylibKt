@@ -76,6 +76,7 @@ fun main() = window(
     width = 800,
     height = 450,
     initialFps = 60,
+    isDebug = true,
     initialBackGroundColor = Colors.RAYWHITE,
     init = {
         rlDisableBackfaceCulling()

@@ -6,7 +6,9 @@ import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.Context
 import io.github.andannn.raylib.core.ContextProvider
 import io.github.andannn.raylib.core.GameContext
+import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.core.provide
@@ -15,6 +17,15 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import kotlin.math.floor
 
+/**
+ * Provides a 2D spatial partitioning environment for the child component tree.
+ * Using a Spatial Hash Grid, this reduces collision complexity from O(N²) to near O(N).
+ *
+ * @param tag Identification tag for the context component.
+ * @param cellSize Dimensions of a single grid square. Optimization depends on this value
+ *                 matching the average entity size.
+ * @param block Subtree where spatial queries and registrations will occur.
+ */
 inline fun ComponentRegistry.collision2DComponent(
     tag: String = "",
     cellSize: Int,
@@ -28,25 +39,6 @@ inline fun ComponentRegistry.collision2DComponent(
     }
 
     context.clear()
-}
-
-inline fun ComponentRegistry.positional2DEntityComponent(
-    positional2DEntity: Positional2DEntity,
-    size: CValue<Vector2>,
-    tag: String = "",
-    crossinline block: ComponentRegistry.() -> Unit
-) = positional2DComponent(
-    positional2DEntity.state,
-    size,
-    tag,
-) {
-    component("") {
-        onUpdate {
-            findOrNull<Collision2DContext>()?.register(positional2DEntity)
-        }
-
-        block()
-    }
 }
 
 context(_: GameContext, contextProvider: ContextProvider)
@@ -71,8 +63,12 @@ inline fun <reified T : Positional2DEntity> Positional2D.queryNearbyUntil(crossi
         ?.any { block(it) }
 }
 
+/**
+ * For 2D spatial partitioning.
+ * Maps world coordinates to discrete grid cells to optimize broad-phase collision detection.
+ */
 class Collision2DContext(
-    private val cellSize: Int
+    private val cellSize: Int,
 ) : Context {
     internal val cells = mutableMapOf<Long, MutableList<Positional2DEntity>>()
 

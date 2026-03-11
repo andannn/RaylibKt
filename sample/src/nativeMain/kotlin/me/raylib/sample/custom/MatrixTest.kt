@@ -29,6 +29,7 @@ fun ComponentRegistry.matrixTest() {
     collision2DComponent("matrixTest", cellSize = 50) {
         val positional2D = remember {
             positional2DAlloc(
+                size = Vector2(50f, 50f),
                 offset = Vector2(-25f, -25f)
             )
         }
@@ -56,15 +57,13 @@ fun ComponentRegistry.matrixTest() {
 
         val someHitbox by remember {
             nativeStateOf {
-                SomeHitbox(state = positional2DAlloc(Vector2()))
+                SomeHitbox(state = positional2DAlloc(size = Vector2(30f, 30f)))
             }
         }
         positional2DEntityComponent(
             someHitbox,
-            size = Vector2(30f, 30f),
             tag = "Collision"
         ) {
-
         }
 
         positional2DComponent(

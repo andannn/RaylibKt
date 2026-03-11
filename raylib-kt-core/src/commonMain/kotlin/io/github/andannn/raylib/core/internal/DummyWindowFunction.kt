@@ -15,9 +15,9 @@ import io.github.andannn.raylib.core.WindowContextImpl
 import io.github.andannn.raylib.base.WindowFunction
 
 fun DummyWindowContextImpl(): WindowContext {
-    return WindowContextImpl(DummyWindowFunction(), ImageFunction() , FontFunction())
+    return WindowContextImpl(DummyWindowFunction(true), ImageFunction() , FontFunction())
 }
-class DummyWindowFunction: WindowFunction {
+class DummyWindowFunction(override val isDebug: Boolean) : WindowFunction {
     override var backGroundColor: CValue<Color>?
         get() = TODO("Not yet implemented")
         set(value) {}

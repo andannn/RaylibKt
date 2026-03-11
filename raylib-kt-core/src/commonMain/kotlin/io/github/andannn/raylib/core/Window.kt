@@ -18,6 +18,7 @@ fun window(
     width: Int,
     height: Int,
     initialFps: Int = 60,
+    isDebug: Boolean = false,
     initialBackGroundColor: CValue<Color>? = null,
     init: ContextRegistry.() -> Unit = {},
     block: ComponentRegistry.() -> Unit
@@ -27,7 +28,8 @@ fun window(
         title = title,
         screenWidth = width,
         screenHeight = height,
-        backGroundColor = initialBackGroundColor
+        backGroundColor = initialBackGroundColor,
+        isDebug = isDebug,
     )
 
     val windowContext = WindowContext(windowFunction)

@@ -21,6 +21,7 @@ import raylib.interop.ToggleFullscreen
 import raylib.interop.WindowShouldClose
 
 interface WindowFunction {
+    val isDebug: Boolean
     var backGroundColor: CValue<Color>?
     val title: String
     val screenWidth: Int
@@ -47,13 +48,15 @@ fun WindowFunction(
     title: String,
     screenWidth: Int,
     screenHeight: Int,
-    backGroundColor: CValue<Color>? = null
+    backGroundColor: CValue<Color>? = null,
+    isDebug: Boolean = false,
 ): WindowFunction = DefaultWindowFunction(
     initialFps,
     title,
     screenWidth,
     screenHeight,
     backGroundColor,
+    isDebug,
 )
 
 internal class DefaultWindowFunction(
@@ -61,7 +64,8 @@ internal class DefaultWindowFunction(
     override val title: String,
     override val screenWidth: Int,
     override val screenHeight: Int,
-    override var backGroundColor: CValue<Color>? = null
+    override var backGroundColor: CValue<Color>? = null,
+    override val isDebug: Boolean
 ) : WindowFunction {
 
     override val frameTimeSeconds: Float
