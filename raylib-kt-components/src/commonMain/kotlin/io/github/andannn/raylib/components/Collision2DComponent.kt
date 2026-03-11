@@ -30,19 +30,19 @@ inline fun ComponentRegistry.collision2DComponent(
     context.clear()
 }
 
-inline fun ComponentRegistry.hitbox2DComponent(
-    positional2DIdentity: Positional2DIdentity,
+inline fun ComponentRegistry.positional2DEntityComponent(
+    positional2DEntity: Positional2DEntity,
     size: CValue<Vector2>,
     tag: String = "",
     crossinline block: ComponentRegistry.() -> Unit
 ) = positional2DComponent(
-    positional2DIdentity.state,
+    positional2DEntity.state,
     size,
     tag,
 ) {
     component("") {
         onUpdate {
-            findOrNull<Collision2DContext>()?.register(positional2DIdentity)
+            findOrNull<Collision2DContext>()?.register(positional2DEntity)
         }
 
         block()
@@ -50,16 +50,33 @@ inline fun ComponentRegistry.hitbox2DComponent(
 }
 
 context(_: GameContext, contextProvider: ContextProvider)
-inline fun Positional2D.queryNearby(crossinline block: (Positional2DIdentity) -> Unit) {
+inline fun Positional2D.queryNearby(crossinline block: (Positional2DEntity) -> Unit) {
     contextProvider.findOrNull<Collision2DContext>()?.queryInRect(this.aabb.toRect())?.forEach(block)
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun <reified T : Positional2DEntity> Positional2D.queryNearby(crossinline block: (T) -> Unit) {
+    contextProvider.findOrNull<Collision2DContext>()?.queryInRect(this.aabb.toRect())?.filterIsInstance<T>()
+        ?.forEach(block)
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun Positional2D.queryNearbyUntil(crossinline block: (Positional2DEntity) -> Boolean) {
+    val _ = contextProvider.findOrNull<Collision2DContext>()?.queryInRect(this.aabb.toRect())?.any { block(it) }
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun <reified T : Positional2DEntity> Positional2D.queryNearbyUntil(crossinline block: (T) -> Boolean) {
+    val _ = contextProvider.findOrNull<Collision2DContext>()?.queryInRect(this.aabb.toRect())?.filterIsInstance<T>()
+        ?.any { block(it) }
 }
 
 class Collision2DContext(
     private val cellSize: Int
 ) : Context {
-    internal val cells = mutableMapOf<Long, MutableList<Positional2DIdentity>>()
+    internal val cells = mutableMapOf<Long, MutableList<Positional2DEntity>>()
 
-    fun register(identity: Positional2DIdentity) {
+    fun register(identity: Positional2DEntity) {
         val aabb = identity.state.aabb
         val xStart = floor(aabb.min.x / cellSize).toInt()
         val xEnd = floor(aabb.max.x / cellSize).toInt()
@@ -75,14 +92,14 @@ class Collision2DContext(
 
     fun queryInRect(
         rect: CValue<Rectangle>,
-    ): Iterable<Positional2DIdentity> = rect.useContents {
+    ): Iterable<Positional2DEntity> = rect.useContents {
         val rangeRect = this
         val xStart = floor(rangeRect.x / cellSize).toInt()
         val xEnd = floor((rangeRect.x + rangeRect.width) / cellSize).toInt()
         val yStart = floor(rangeRect.y / cellSize).toInt()
         val yEnd = floor((rangeRect.y + rangeRect.height) / cellSize).toInt()
 
-        val result = mutableSetOf<Positional2DIdentity>()
+        val result = mutableSetOf<Positional2DEntity>()
         for (x in xStart..xEnd) {
             for (y in yStart..yEnd) {
                 cells[getCellKeyHash(x, y)]?.let { result.addAll(it) }

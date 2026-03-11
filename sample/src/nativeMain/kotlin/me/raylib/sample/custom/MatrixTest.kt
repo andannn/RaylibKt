@@ -7,13 +7,13 @@ import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.base.randomColor
-import io.github.andannn.raylib.components.Positional2DIdentity
+import io.github.andannn.raylib.components.Positional2DEntity
 import io.github.andannn.raylib.components.Positional2D
 import io.github.andannn.raylib.components.collision2DComponent
 import io.github.andannn.raylib.components.positional2DAlloc
 import io.github.andannn.raylib.components.positional2DComponent
 import io.github.andannn.raylib.components.hitTest
-import io.github.andannn.raylib.components.hitbox2DComponent
+import io.github.andannn.raylib.components.positional2DEntityComponent
 import io.github.andannn.raylib.components.queryNearby
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
@@ -59,7 +59,7 @@ fun ComponentRegistry.matrixTest() {
                 SomeHitbox(state = positional2DAlloc(Vector2()))
             }
         }
-        hitbox2DComponent(
+        positional2DEntityComponent(
             someHitbox,
             size = Vector2(30f, 30f),
             tag = "Collision"
@@ -111,6 +111,6 @@ private fun ComponentRegistry.someItemFollowParent() = component("follow parent"
     }
 }
 
-class SomeHitbox(override val state: Positional2D) : Positional2DIdentity {
+class SomeHitbox(override val state: Positional2D) : Positional2DEntity {
 
 }
