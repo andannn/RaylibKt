@@ -28,7 +28,7 @@ class MutableStateTest {
     @Test
     fun managedStateListTest_build() = with(rememberScope) {
         val list = mutableStateListOf<String>()
-        list.addState { nativeStateOf { "1" } }
+        list.addState { "1" }
         assertEquals(1, list.size)
     }
 
@@ -36,26 +36,23 @@ class MutableStateTest {
     fun managedStateListTest_add(): Unit = with(rememberScope) {
         val list = mutableStateListOf<Vector2>()
         list.addState {
-            nativeStateOf { alloc<Vector2> { x = 1f } }
+            alloc<Vector2> { x = 1f }
         }
         assertEquals(1, list.size)
 
-        list.addState { nativeStateOf { alloc<Vector2> { x = 2f } } }
+        list.addState { alloc<Vector2> { x = 2f } }
         assertEquals(2, list.size)
     }
 
     @Test
     fun managedStateListTest_remove(): Unit = with(rememberScope) {
-        val state1 = nativeStateOf {
+        val list = mutableStateListOf<Vector2>()
+        val state1 = list.addState {
             alloc<Vector2>().apply { x = 1f }
         }
-        val list = mutableStateListOf<Vector2>()
-        list.addState { state1 }
 
         list.addState {
-            nativeStateOf {
-                alloc<Vector2>()
-            }
+            alloc<Vector2>()
         }
         assertEquals(2, list.size)
         state1.dispose()

@@ -65,7 +65,7 @@ class ManagedStateList<T>(
     private val innerList: MutableList<NativeState<T>> = mutableListOf()
 ) : List<NativeState<T>> by innerList, Disposable {
 
-    fun addState(init: NativePlacement.() -> T): Disposable {
+    fun addState(init: NativePlacement.() -> T): NativeState<T> {
         val state = NativeState(initialValue = init)
 
         innerList.add(state)
