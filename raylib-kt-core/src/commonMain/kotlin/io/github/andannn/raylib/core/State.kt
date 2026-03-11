@@ -78,7 +78,9 @@ class ManagedStateList<T>(
     }
 
     override fun dispose() {
-        innerList.forEach { it.dispose() }
+        for (i in innerList.lastIndex downTo 0) {
+            innerList[i].dispose()
+        }
     }
 }
 

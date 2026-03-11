@@ -87,4 +87,17 @@ class MutableStateTest {
         assertTrue(state.isDisposed)
         assertTrue(state.isFreed)
     }
+
+    @Test
+    fun disposableStateTest_all_state_disposed_when_managed_list_dispose() = with(rememberScope) {
+        val list = mutableStateListOf<Vector2>()
+        val state1 = list.addState { alloc<Vector2> {} }
+        val state2 = list.addState { alloc<Vector2> {} }
+        val state3 = list.addState { alloc<Vector2> {} }
+        list.dispose()
+
+        assertTrue(state1.isDisposed)
+        assertTrue(state2.isDisposed)
+        assertTrue(state3.isDisposed)
+    }
 }
