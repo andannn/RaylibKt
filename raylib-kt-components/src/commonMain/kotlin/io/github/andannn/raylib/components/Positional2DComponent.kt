@@ -74,7 +74,7 @@ inline fun ComponentRegistry.positional2DEntityComponent(
 ) {
     component("") {
         onUpdate {
-            findOrNull<Collision2DContext>()?.register(positional2DEntity)
+            findOrNull<WorldGrid2DContext>()?.register(positional2DEntity)
         }
 
         block()

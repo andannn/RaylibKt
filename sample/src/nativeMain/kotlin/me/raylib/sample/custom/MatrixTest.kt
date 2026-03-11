@@ -9,7 +9,7 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.components.Positional2DEntity
 import io.github.andannn.raylib.components.Positional2D
-import io.github.andannn.raylib.components.collision2DComponent
+import io.github.andannn.raylib.components.world2DGridComponent
 import io.github.andannn.raylib.components.positional2DAlloc
 import io.github.andannn.raylib.components.positional2DComponent
 import io.github.andannn.raylib.components.hitTest
@@ -26,7 +26,7 @@ import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.matrixTest() {
-    collision2DComponent("matrixTest", cellSize = 50) {
+    world2DGridComponent("matrixTest", cellSize = 50) {
         val positional2D = remember {
             positional2DAlloc(
                 size = Vector2(50f, 50f),

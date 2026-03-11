@@ -15,12 +15,10 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
-import io.github.andannn.raylib.components.Collision2DContext
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.onUpdate
-import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.provideStaticDependency
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.window

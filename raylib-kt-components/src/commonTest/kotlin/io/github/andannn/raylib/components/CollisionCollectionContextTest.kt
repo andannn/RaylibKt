@@ -13,7 +13,7 @@ class CollisionCollectionContextTest {
     fun spatialCollection_query() {
         class FakeEntity(override val state: Positional2D) : Positional2DEntity
 
-        val collection = Collision2DContext(50)
+        val collection = WorldGrid2DContext(50)
         var state: Any? = null
         val control = buildComponents(
             init = { provideStaticDependency(collection) }
