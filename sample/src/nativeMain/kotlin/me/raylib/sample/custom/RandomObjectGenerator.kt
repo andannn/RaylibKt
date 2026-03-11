@@ -8,6 +8,7 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.base.randomValue
+import io.github.andannn.raylib.core.downEach
 import io.github.andannn.raylib.core.mutableStateListOf
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
@@ -31,13 +32,13 @@ fun ComponentRegistry.randomObjectGenerator() {
             frameCount++
             if (frameCount % 5 == 0) {
                 if (stateList.size <= 10000) {
-                    stateList.addState { nativeStateOf { newId++ } }
+                    stateList.addState { newId++ }
                 }
             }
         }
     }
 
-    stateList.forEach { state ->
+    stateList.downEach { _, state ->
         generatedObject(state)
     }
 }

@@ -43,20 +43,30 @@ internal abstract class MutableStateBox<T>(
         }
 }
 
-fun <T> RememberScope.mutableStateListOf() = ManagedStateList<T>(this)
+fun <T> RememberScope.mutableStateListOf() = ManagedStateList<T>()
+    .also {
+        disposeOnClose(it)
+    }
 
 fun <T> RememberScope.nativeStateOf(initialValue: NativePlacement.() -> T): NativeState<T> =
     NativeState(initialValue).also {
         disposeOnClose(it)
     }
 
-class ManagedStateList<T>(
-    private val scope: RememberScope,
-    private val innerList: MutableList<NativeState<T>> = mutableListOf()
-) : List<NativeState<T>> by innerList {
+inline fun <T> ManagedStateList<T>.downEach(block: (index: Int, element: NativeState<T>) -> Unit) {
+    for (i in size - 1 downTo 0) {
+        if (i < size) {
+            block(i, this[i])
+        }
+    }
+}
 
-    fun addState(init: RememberScope.() -> NativeState<T>): Disposable {
-        val state = scope.init()
+class ManagedStateList<T>(
+    private val innerList: MutableList<NativeState<T>> = mutableListOf()
+) : List<NativeState<T>> by innerList, Disposable {
+
+    fun addState(init: NativePlacement.() -> T): Disposable {
+        val state = NativeState(initialValue = init)
 
         innerList.add(state)
 
@@ -66,12 +76,16 @@ class ManagedStateList<T>(
 
         return state
     }
+
+    override fun dispose() {
+        innerList.forEach { it.dispose() }
+    }
 }
 
 class NativeState<T>(
     initialValue: NativePlacement.() -> T,
-) : State<T>, Disposable {
     private val arena: Arena = Arena()
+) : State<T>, Disposable {
     override val value = arena.initialValue()
 
     internal var isDisposed = false

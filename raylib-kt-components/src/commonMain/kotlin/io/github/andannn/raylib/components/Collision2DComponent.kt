@@ -19,7 +19,6 @@ import kotlin.math.floor
 
 /**
  * Provides a 2D spatial partitioning environment for the child component tree.
- * Using a Spatial Hash Grid, this reduces collision complexity from O(N²) to near O(N).
  *
  * @param tag Identification tag for the context component.
  * @param cellSize Dimensions of a single grid square. Optimization depends on this value
