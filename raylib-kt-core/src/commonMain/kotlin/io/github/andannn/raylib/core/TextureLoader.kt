@@ -5,10 +5,12 @@
 package io.github.andannn.raylib.core
 
 import io.github.andannn.raylib.base.Image
+import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.RenderTexture
 import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.Texture2D
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.useContents
 import raylib.interop.LoadRenderTexture
 import raylib.interop.LoadTexture
 import raylib.interop.LoadTextureFromImage

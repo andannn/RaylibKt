@@ -4,14 +4,12 @@ import io.github.andannn.raylib.base.Colors.BLUE
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.components.Anchor
 import io.github.andannn.raylib.components.Entity
-import io.github.andannn.raylib.components.Positional2DAlloc
-import io.github.andannn.raylib.components.positional2DComponent
-import io.github.andannn.raylib.components.queryNearby
+import io.github.andannn.raylib.components.Spatial2DAlloc
+import io.github.andannn.raylib.components.queryAABBCollision
 import io.github.andannn.raylib.components.registerEntityToWorldGrid2D
-import io.github.andannn.raylib.components.toGlobalRect
+import io.github.andannn.raylib.components.spatial2DComponent
 import io.github.andannn.raylib.components.world2DGridComponent
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
@@ -22,8 +20,8 @@ import kotlinx.cinterop.useContents
 
 fun ComponentRegistry.matrixTest() {
     world2DGridComponent("matrixTest", cellSize = 50) {
-        val positional2D = remember {
-            Positional2DAlloc(
+        val spatial2D = remember {
+            Spatial2DAlloc(
                 size = Vector2(50f, 50f),
                 scale = Vector2(2f, 2f),
                 anchor = Anchor.CENTER
@@ -32,7 +30,7 @@ fun ComponentRegistry.matrixTest() {
 
         component("update") {
             onUpdate { dt ->
-                val transform = positional2D.transform
+                val transform = spatial2D.transform
                 if (KeyboardKey.KEY_RIGHT.isDown()) {
                     transform.position.x += speed * dt
                 }
@@ -51,12 +49,12 @@ fun ComponentRegistry.matrixTest() {
             }
         }
 
-        positional2DComponent(
+        spatial2DComponent(
             "some item",
-            state = positional2D,
+            state = spatial2D,
         ) {
             onDraw {
-                val rect = positional2D.size.useContents { Rectangle(width = x, height = y) }
+                val rect = spatial2D.size.useContents { Rectangle(width = x, height = y) }
                 drawRectangle(rect, BLUE)
             }
 
@@ -68,7 +66,7 @@ fun ComponentRegistry.matrixTest() {
         val hitbox2 = remember {
             HitBox2()
         }
-        positional2DComponent(
+        spatial2DComponent(
             "some item2",
             size = Vector2(100f, 100f),
             position = Vector2(200f, 200f)
@@ -87,7 +85,7 @@ private inline fun ComponentRegistry.someHitbox(
         HitBox1()
     }
 
-    positional2DComponent(
+    spatial2DComponent(
         "hitbox1",
         size = Vector2(25f, 25f),
         anchor = Anchor.CENTER
@@ -95,10 +93,8 @@ private inline fun ComponentRegistry.someHitbox(
         registerEntityToWorldGrid2D(someHitbox, position)
 
         onUpdate {
-            position.queryNearby<HitBox2> { hitbox, d, any ->
-                if (position.toGlobalRect().isCollisionWith(d.toGlobalRect())) {
-                    onHit()
-                }
+            position.queryAABBCollision<HitBox2> { hitbox, d, any ->
+                onHit()
             }
         }
     }
