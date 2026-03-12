@@ -16,24 +16,22 @@ import kotlin.math.floor
 /**
  * Provides a 2D spatial partitioning environment for the child component tree.
  *
- * @param tag Identification tag for the context component.
+ * @param key Identification tag for the context component.
  * @param cellSize Dimensions of a single grid square. Optimization depends on this value
  *                 matching the average entity size.
  * @param block Subtree where spatial queries and registrations will occur.
  */
 inline fun ComponentRegistry.world2DGridComponent(
-    tag: String = "",
+    key: Any,
     cellSize: Int,
     crossinline block: ComponentRegistry.() -> Unit
-) = component(tag) {
+) = component(key) {
     val context = remember {
         WorldGrid2DContext(cellSize)
     }
     provide(context) {
         block()
     }
-
-    context.clear()
 }
 
 context(_: GameContext, contextProvider: ContextProvider)
@@ -58,6 +56,28 @@ inline fun <reified T : Positional2DEntity> Positional2D.queryNearbyUntil(crossi
         ?.any { block(it) }
 }
 
+context(_: GameContext)
+inline fun ContextProvider.queryAll(crossinline block: (Positional2DEntity) -> Unit) {
+    findOrNull<WorldGrid2DContext>()?.queryAll()?.forEach(block)
+}
+
+context(_: GameContext)
+inline fun <reified T : Positional2DEntity> ContextProvider.queryAll(crossinline block: (T) -> Unit) {
+    findOrNull<WorldGrid2DContext>()?.queryAll()?.filterIsInstance<T>()
+        ?.forEach(block)
+}
+
+context(_: GameContext)
+inline fun ContextProvider.queryAllUntil(crossinline block: (Positional2DEntity) -> Boolean) {
+    val _ = findOrNull<WorldGrid2DContext>()?.queryAll()?.any { block(it) }
+}
+
+context(_: GameContext)
+inline fun <reified T : Positional2DEntity> ContextProvider.queryAllUntil(crossinline block: (T) -> Boolean) {
+    val _ = findOrNull<WorldGrid2DContext>()?.queryAll()?.filterIsInstance<T>()
+        ?.any { block(it) }
+}
+
 /**
  * For 2D spatial partitioning.
  * Maps world coordinates to discrete grid cells to optimize broad-phase collision detection.
@@ -66,8 +86,11 @@ class WorldGrid2DContext(
     private val cellSize: Int,
 ) : Context {
     internal val cells = mutableMapOf<Long, MutableList<Positional2DEntity>>()
+    private val allEntities = mutableListOf<Positional2DEntity>()
 
     fun register(identity: Positional2DEntity) {
+        allEntities.add(identity)
+
         val aabb = identity.state.aabb
         val xStart = floor(aabb.min.x / cellSize).toInt()
         val xEnd = floor(aabb.max.x / cellSize).toInt()
@@ -81,10 +104,12 @@ class WorldGrid2DContext(
         }
     }
 
+    fun queryAll(): Iterable<Positional2DEntity> = allEntities
+
     fun queryInRect(
         rect: CValue<Rectangle>,
     ): Iterable<Positional2DEntity> = rect.useContents {
-        inflate(2f)
+        inflate(cellSize / 2f)
 
         val xStart = floor(x / cellSize).toInt()
         val xEnd = floor((x + width) / cellSize).toInt()
@@ -101,7 +126,15 @@ class WorldGrid2DContext(
     }
 
     fun clear() {
-        cells.clear()
+        allEntities.clear()
+        cells.values.forEach {
+            it.clear()
+        }
+    }
+
+    fun remove(identity: Positional2DEntity) {
+        allEntities.remove(identity)
+        val _ = cells.values.any { it.remove(identity) }
     }
 
     private fun getCellKeyHash(x: Int, y: Int): Long {

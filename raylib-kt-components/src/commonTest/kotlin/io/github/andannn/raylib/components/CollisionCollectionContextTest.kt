@@ -20,13 +20,14 @@ class CollisionCollectionContextTest {
         ) {
             state = remember {
                 FakeEntity(
-                    positional2DAlloc(
+                    Positional2DAlloc(
                         size = Vector2(20f, 20f),
                         position = Vector2(40f, 40f)
                     )
                 )
             }
             positional2DEntityComponent(
+                "",
                 state,
             ) {
 

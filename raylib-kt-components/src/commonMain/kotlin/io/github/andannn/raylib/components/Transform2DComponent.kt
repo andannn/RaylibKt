@@ -106,14 +106,14 @@ fun RememberScope.Transform2DAlloc(
  * without triggering re-allocations or losing state between frames.
  *
  * @param transform Persistent state holding position, scale, rotation, and pivot offset.
- * @param tag Debugging label used to identify this node within complex transformation hierarchies.
+ * @param key Debugging label used to identify this node within complex transformation hierarchies.
  * @param children Scoped closure for child components affected by this transformation.
  */
 inline fun ComponentRegistry.transform2DComponent(
+    key: Any,
     transform: Transform2D,
-    tag: String = "",
     crossinline children: ComponentRegistry.(Transform2D) -> Unit
-) = component("Transform2D_$tag") {
+) = component("Transform2D_$key") {
     val transform2DContext = remember {
         Transform2DContext()
     }

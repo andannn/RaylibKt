@@ -7,10 +7,11 @@ import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.base.randomColor
+import io.github.andannn.raylib.components.Anchor
 import io.github.andannn.raylib.components.Positional2DEntity
 import io.github.andannn.raylib.components.Positional2D
 import io.github.andannn.raylib.components.world2DGridComponent
-import io.github.andannn.raylib.components.positional2DAlloc
+import io.github.andannn.raylib.components.Positional2DAlloc
 import io.github.andannn.raylib.components.positional2DComponent
 import io.github.andannn.raylib.components.hitTest
 import io.github.andannn.raylib.components.positional2DEntityComponent
@@ -24,13 +25,14 @@ import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
+import raylib.interop.Fade
 
 fun ComponentRegistry.matrixTest() {
     world2DGridComponent("matrixTest", cellSize = 50) {
         val positional2D = remember {
-            positional2DAlloc(
+            Positional2DAlloc(
                 size = Vector2(50f, 50f),
-                offset = Vector2(-25f, -25f)
+                anchor = Anchor.CENTER
             )
         }
 
@@ -57,18 +59,18 @@ fun ComponentRegistry.matrixTest() {
 
         val someHitbox by remember {
             nativeStateOf {
-                SomeHitbox(state = positional2DAlloc(size = Vector2(30f, 30f)))
+                SomeHitbox(state = Positional2DAlloc(size = Vector2(30f, 30f)))
             }
         }
         positional2DEntityComponent(
+            "Collision",
             someHitbox,
-            tag = "Collision"
         ) {
         }
 
         positional2DComponent(
+            "some item",
             state = positional2D,
-            size = Vector2(50f, 50f)
         ) {
             someItemGroup(positional2D)
         }
@@ -82,7 +84,7 @@ private fun ComponentRegistry.someItemGroup(positional2D: Positional2D) = compon
         mutableStateOf(RED)
     }
     val rect = remember {
-        Rectangle(0f, 0f, 50f, 50f)
+        Rectangle(0f, 0f, 100f, 100f)
     }
     onUpdate {
         if (MouseButton.MOUSE_BUTTON_LEFT.isPressed() &&
@@ -98,7 +100,7 @@ private fun ComponentRegistry.someItemGroup(positional2D: Positional2D) = compon
     }
 
     onDraw {
-        drawRectangle(rect, color = randomColor)
+        drawRectangle(rect, color = Fade(randomColor, 0.4f))
     }
 
     someItemFollowParent()
