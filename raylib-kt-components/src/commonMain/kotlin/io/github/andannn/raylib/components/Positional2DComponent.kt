@@ -7,21 +7,18 @@ import io.github.andannn.raylib.base.Vector2Alloc
 import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.base.withWorldSpace
 import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.RenderPhase
 import io.github.andannn.raylib.core.State
 import io.github.andannn.raylib.core.WindowContext
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.doOnce
 import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
-import raylib.interop.Fade
 import kotlin.math.abs
 
 /**
@@ -34,14 +31,7 @@ class Positional2D(
     val aabb: Aabb,
 )
 
-interface Positional2DEntity : Entity {
-    val state: Positional2D
-}
-
-/**
- * Convenience extension to get the current AABB as a Raylib Rectangle.
- */
-fun Positional2DEntity.getRect() = state.aabb.toRect()
+fun Positional2D.toGlobalRect() = aabb.toGlobalRect()
 
 /**
  * Allocates a [Positional2D] state within a [RememberScope].
@@ -69,33 +59,6 @@ fun RememberScope.Positional2DAlloc(
     )
 }
 
-/**
- * Entity-specific Spatial Component.
- * Mounts a [Positional2DEntity] into the component tree and handles its
- * automatic registration into the spatial grid every frame.
- *
- * @param positional2DEntity The business entity instance to be synced.
- */
-inline fun ComponentRegistry.positional2DEntityComponent(
-    key: Any,
-    positional2DEntity: Positional2DEntity,
-    crossinline block: ComponentRegistry.() -> Unit
-) = positional2DComponent(
-    key,
-    positional2DEntity.state,
-) {
-    doOnce {
-        val contextOrNull = findOrNull<WorldGrid2DContext>()
-        contextOrNull?.register(positional2DEntity)
-
-        disposeOnClose {
-            contextOrNull?.remove(identity = positional2DEntity)
-        }
-    }
-
-    block()
-}
-
 object Anchor {
     val TOP_LEFT = Vector2(0.0f, 0.0f)
     val TOP_CENTER = Vector2(0.5f, 0.0f)
@@ -120,7 +83,7 @@ inline fun ComponentRegistry.positional2DComponent(
     scale: CValue<Vector2> = Vector2(1f, 1f),
     angle: State<Float> = mutableStateOf(0f),
     anchor: CValue<Vector2> = Anchor.TOP_LEFT,
-    crossinline block: ComponentRegistry.() -> Unit
+    crossinline block: ComponentScope.(Positional2D) -> Unit
 ) {
     val state = remember {
         Positional2DAlloc(size = size, position = position, scale = scale, anchor = anchor, angle = angle)
@@ -128,7 +91,9 @@ inline fun ComponentRegistry.positional2DComponent(
     positional2DComponent(
         key = key,
         state = state,
-        block = block,
+        block = {
+            block(state)
+        },
     )
 }
 
@@ -142,28 +107,27 @@ inline fun ComponentRegistry.positional2DComponent(
 inline fun ComponentRegistry.positional2DComponent(
     key: Any,
     state: Positional2D,
-    crossinline block: ComponentRegistry.() -> Unit
+    crossinline block: ComponentScope.() -> Unit
 ) = transform2DComponent(key = key, state.transform) {
-    component("positional2DComponent") {
-        if (find<WindowContext>().isDebug) {
-            val debugRectColor = remember {
-                randomColor()
-            }
-            val aabbRectColor = remember {
-                randomColor()
-            }
-            onDraw {
-                drawRectangle(Vector2(), state.size, Fade(debugRectColor, 0.6f))
+    if (find<WindowContext>().isDebug) {
+        val debugRectColor = remember {
+            randomColor()
+        }
+        val aabbRectColor = remember {
+            randomColor()
+        }
+        onDraw {
+            val (sizeX, sizeY) = state.size.useContents { x to y }
+            drawRectangleLines(Rectangle(0f, 0f, sizeX, sizeY), 1f, debugRectColor)
 
-                withWorldSpace {
-                    drawRectangle(state.aabb.toRect(), Fade(aabbRectColor, 0.6f))
-                }
+            withWorldSpace {
+                drawRectangleLines(state.aabb.toGlobalRect(), 1f, aabbRectColor)
             }
         }
-
-        aabbUpdate(state.aabb, state.size)
-        block()
     }
+
+    aabbUpdate(state.aabb, state.size)
+    block()
 }
 
 /**
@@ -225,7 +189,7 @@ class Aabb(
     }
 }
 
-fun Aabb.toRect(): CValue<Rectangle> = Rectangle(
+fun Aabb.toGlobalRect(): CValue<Rectangle> = Rectangle(
     x = min.x,
     y = min.y,
     width = max.x - min.x,

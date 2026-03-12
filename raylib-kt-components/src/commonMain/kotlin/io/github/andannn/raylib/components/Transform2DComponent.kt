@@ -32,6 +32,7 @@ import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.base.rlMatrix
 import io.github.andannn.raylib.base.transform
+import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.RememberScope
 
 
@@ -48,26 +49,6 @@ import io.github.andannn.raylib.core.RememberScope
  */
 fun ContextProvider.worldMatrix(): CValue<Matrix> {
     return findOrNull<Transform2DContext>()?.matrix ?: matrixIdentity()
-}
-
-/**
- * Performs a hit test to determine if this screen-space point intersects a
- * rectangle defined in the component's local coordinate system.
- *
- * This method leverages the [ContextProvider] to retrieve the current world
- * transformation. It then projects the point from screen space into local space
- * using matrix inversion, making it capable of handling complex nested
- * translations, rotations, and scales.
- *
- * @param localRect The axis-aligned rectangle defined in local coordinates.
- * @return True if the point lies within the rectangle after local-space projection.
- */
-context(contextProvider: ContextProvider)
-fun CValue<Vector2>.hitTest(localRect: CValue<Rectangle>): Boolean {
-    val world = contextProvider.worldMatrix()
-    val invWorld = world.invert()
-    val localPoint = this.transform(invWorld)
-    return localPoint.isCollisionWith(localRect)
 }
 
 class Transform2DContext : Context {
@@ -112,7 +93,7 @@ fun RememberScope.Transform2DAlloc(
 inline fun ComponentRegistry.transform2DComponent(
     key: Any,
     transform: Transform2D,
-    crossinline children: ComponentRegistry.(Transform2D) -> Unit
+    crossinline children: ComponentScope.(Transform2D) -> Unit
 ) = component("Transform2D_$key") {
     val transform2DContext = remember {
         Transform2DContext()

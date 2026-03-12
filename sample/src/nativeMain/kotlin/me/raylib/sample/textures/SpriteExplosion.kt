@@ -47,7 +47,7 @@ fun ComponentRegistry.spriteExplosion() {
             framesSpeed = mutableStateOf(12),
             dest = item.value.rect,
             origin = Vector2(50f, 50f),
-            tag = "explosion_${item.value.id}",
+            key = "explosion_${item.value.id}",
             onRestart = { item.dispose() }
         )
     }

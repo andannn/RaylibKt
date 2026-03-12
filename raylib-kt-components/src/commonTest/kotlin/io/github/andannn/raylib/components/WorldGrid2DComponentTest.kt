@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 class WorldGrid2DComponentTest {
     @Test
     fun worldGrid2DComponent_retained() {
-        class FakeEntity(override val state: Positional2D) : Positional2DEntity
+        class FakeEntity(val state: Positional2D) : Entity
 
         var state: Any? = null
         var context: WorldGrid2DContext? = null
@@ -31,7 +31,7 @@ class WorldGrid2DComponentTest {
                                     )
                                 )
                             }
-                            positional2DEntityComponent("A", state) {}
+                            registerEntityToWorldGrid2D(state, state.state)
                         }
                     }
                 }
@@ -39,10 +39,10 @@ class WorldGrid2DComponentTest {
         )
 
         control.rebuild()
-        assertTrue(context!!.queryAll().contains(state))
+        assertTrue(context!!.queryAll().any { it.entity == state })
 
         isDisposed = true
         control.rebuild()
-        assertFalse(context.queryAll().contains(state))
+        assertFalse(context.queryAll().any { it.entity == state })
     }
 }

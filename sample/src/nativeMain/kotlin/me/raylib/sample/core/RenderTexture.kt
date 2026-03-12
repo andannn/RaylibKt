@@ -39,6 +39,7 @@ fun ComponentRegistry.renderTexture() {
         }
 
         fixSizedTextureComponent(
+            key = "",
             width = renderTextureWidth,
             height = renderTextureHeight,
             dstRectangle = dst,
