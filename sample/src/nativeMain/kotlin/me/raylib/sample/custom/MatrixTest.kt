@@ -1,36 +1,32 @@
 package me.raylib.sample.custom
 
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.base.Colors.SKYBLUE
+import io.github.andannn.raylib.base.Colors.BLUE
 import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.randomColor
-import io.github.andannn.raylib.components.Positional2DEntity
-import io.github.andannn.raylib.components.Positional2D
-import io.github.andannn.raylib.components.world2DGridComponent
-import io.github.andannn.raylib.components.positional2DAlloc
+import io.github.andannn.raylib.base.isCollisionWith
+import io.github.andannn.raylib.components.Anchor
+import io.github.andannn.raylib.components.Entity
+import io.github.andannn.raylib.components.Positional2DAlloc
 import io.github.andannn.raylib.components.positional2DComponent
-import io.github.andannn.raylib.components.hitTest
-import io.github.andannn.raylib.components.positional2DEntityComponent
 import io.github.andannn.raylib.components.queryNearby
+import io.github.andannn.raylib.components.registerEntityToWorldGrid2D
+import io.github.andannn.raylib.components.toGlobalRect
+import io.github.andannn.raylib.components.world2DGridComponent
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import kotlinx.cinterop.useContents
 
 fun ComponentRegistry.matrixTest() {
     world2DGridComponent("matrixTest", cellSize = 50) {
         val positional2D = remember {
-            positional2DAlloc(
+            Positional2DAlloc(
                 size = Vector2(50f, 50f),
-                offset = Vector2(-25f, -25f)
+                scale = Vector2(2f, 2f),
+                anchor = Anchor.CENTER
             )
         }
 
@@ -55,61 +51,63 @@ fun ComponentRegistry.matrixTest() {
             }
         }
 
-        val someHitbox by remember {
-            nativeStateOf {
-                SomeHitbox(state = positional2DAlloc(size = Vector2(30f, 30f)))
+        positional2DComponent(
+            "some item",
+            state = positional2D,
+        ) {
+            onDraw {
+                val rect = positional2D.size.useContents { Rectangle(width = x, height = y) }
+                drawRectangle(rect, BLUE)
+            }
+
+            someHitbox {
+                println("hit ")
             }
         }
-        positional2DEntityComponent(
-            someHitbox,
-            tag = "Collision"
-        ) {
-        }
 
+        val hitbox2 = remember {
+            HitBox2()
+        }
         positional2DComponent(
-            state = positional2D,
-            size = Vector2(50f, 50f)
+            "some item2",
+            size = Vector2(100f, 100f),
+            position = Vector2(200f, 200f)
         ) {
-            someItemGroup(positional2D)
+            registerEntityToWorldGrid2D(hitbox2, it)
         }
     }
 }
 
 const val speed = 200f
 
-private fun ComponentRegistry.someItemGroup(positional2D: Positional2D) = component("content") {
-    var randomColor by remember {
-        mutableStateOf(RED)
+private inline fun ComponentRegistry.someHitbox(
+    crossinline onHit: () -> Unit
+) = component("content") {
+    val someHitbox = remember {
+        HitBox1()
     }
-    val rect = remember {
-        Rectangle(0f, 0f, 50f, 50f)
-    }
-    onUpdate {
-        if (MouseButton.MOUSE_BUTTON_LEFT.isPressed() &&
-            mousePosition.hitTest(rect)
-        ) {
-            randomColor = randomColor()
+
+    positional2DComponent(
+        "hitbox1",
+        size = Vector2(25f, 25f),
+        anchor = Anchor.CENTER
+    ) { position ->
+        registerEntityToWorldGrid2D(someHitbox, position)
+
+        onUpdate {
+            position.queryNearby<HitBox2> { hitbox, d, any ->
+                if (position.toGlobalRect().isCollisionWith(d.toGlobalRect())) {
+                    onHit()
+                }
+            }
         }
-
-        positional2D.queryNearby { identity ->
-            println("asdfadsf $identity")
-            randomColor = randomColor()
-        }
-    }
-
-    onDraw {
-        drawRectangle(rect, color = randomColor)
-    }
-
-    someItemFollowParent()
-}
-
-private fun ComponentRegistry.someItemFollowParent() = component("follow parent") {
-    onDraw {
-        drawCircle(100, 100, 50f, SKYBLUE)
     }
 }
 
-class SomeHitbox(override val state: Positional2D) : Positional2DEntity {
+class HitBox1() : Entity {
+
+}
+
+class HitBox2() : Entity {
 
 }

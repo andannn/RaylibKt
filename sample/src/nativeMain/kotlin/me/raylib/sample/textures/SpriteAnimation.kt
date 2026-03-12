@@ -51,6 +51,7 @@ fun ComponentRegistry.spriteAnimationSample() {
     }
 
     spriteAnimationComponent(
+        key = "",
         texture = scarfy,
         spriteGrid = 6 to 1,
         framesSpeed = framesSpeed,

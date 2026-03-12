@@ -40,6 +40,7 @@ import io.github.andannn.raylib.core.textureDrawScope
  * @param children DSL block to define components that will be rendered inside this texture.
  */
 inline fun ComponentRegistry.fixSizedTextureComponent(
+    key: Any,
     width: Int,
     height: Int,
     dstRectangle: Rectangle,
@@ -47,9 +48,8 @@ inline fun ComponentRegistry.fixSizedTextureComponent(
     rotation: State<Float> = mutableStateOf(0f),
     tint: CValue<Color> = WHITE,
     backgroundColor: CValue<Color> = WHITE,
-    tag: String = "",
     crossinline children: ComponentRegistry.(CValue<Texture>) -> Unit
-) = component("fixed_size_texture_$tag") {
+) = component("fixed_size_texture_$key") {
     val loadedTexture = remember {
         loadRenderTexture(width, height)
     }

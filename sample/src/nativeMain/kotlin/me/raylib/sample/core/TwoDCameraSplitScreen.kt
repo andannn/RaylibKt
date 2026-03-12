@@ -91,7 +91,7 @@ fun ComponentRegistry.twoDCameraSplitScreen() {
         }
 
         fixSizedTextureComponent(
-            tag = "player1",
+            key = "player1",
             width = screenWidth / 2,
             height = screenHeight,
             dstRectangle = rect1,
@@ -101,7 +101,7 @@ fun ComponentRegistry.twoDCameraSplitScreen() {
         }
 
         fixSizedTextureComponent(
-            tag = "player2",
+            key = "player2",
             width = screenWidth / 2,
             height = screenHeight,
             dstRectangle = rect2,

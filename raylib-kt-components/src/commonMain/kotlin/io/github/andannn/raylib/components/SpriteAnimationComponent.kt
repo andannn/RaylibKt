@@ -38,15 +38,15 @@ typealias SpriteGrid = Pair<Int, Int>
  * @param origin Pivot point for rotation and scaling.
  */
 inline fun ComponentRegistry.spriteAnimationComponent(
+    key: Any,
     texture: CValue<Texture2D>,
     spriteGrid: SpriteGrid,
     framesSpeed: State<Int>,
     dest: CValue<Rectangle>,
     origin: CValue<Vector2> = Vector2(),
-    tag: String = "spriteAnimation",
     crossinline onRestart: () -> Unit = {},
 ) {
-    component("spriteAnimation_$tag") {
+    component("spriteAnimation_$key") {
         val (textureWidth, textureHeight) = texture.useContents { width to height }
         val (numFramePerLine, numLine) = spriteGrid
         val frameWidth = textureWidth.toFloat() / numFramePerLine

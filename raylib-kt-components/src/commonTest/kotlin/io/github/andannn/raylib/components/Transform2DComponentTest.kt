@@ -28,6 +28,7 @@ class Transform2DComponentTest {
                 )
             }
             transform2DComponent(
+                "",
                 transform
             ) {
                 val expect = matrixIdentity()
@@ -55,6 +56,7 @@ class Transform2DComponentTest {
                 )
             }
             transform2DComponent(
+                "",
                 transform
             ) {
                 val transform2 = remember {
@@ -70,6 +72,7 @@ class Transform2DComponentTest {
                     .multiply(matrixRotateZ(90f / 180f * PI))
 
                 transform2DComponent(
+                    "",
                     transform2
                 ) {
                     assertEquals(

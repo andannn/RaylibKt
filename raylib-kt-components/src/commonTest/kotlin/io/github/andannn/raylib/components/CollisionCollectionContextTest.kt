@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 class CollisionCollectionContextTest {
     @Test
     fun spatialCollection_query() {
-        class FakeEntity(override val state: Positional2D) : Positional2DEntity
+        class FakeEntity(val state: Positional2D) : Entity
 
         val collection = WorldGrid2DContext(50)
         var state: Any? = null
@@ -20,24 +20,20 @@ class CollisionCollectionContextTest {
         ) {
             state = remember {
                 FakeEntity(
-                    positional2DAlloc(
+                    Positional2DAlloc(
                         size = Vector2(20f, 20f),
                         position = Vector2(40f, 40f)
                     )
                 )
             }
-            positional2DEntityComponent(
-                state,
-            ) {
-
-            }
+            registerEntityToWorldGrid2D(state, state.state)
         }
 
         control.rebuild()
 
-        assertEquals(state, collection.queryInRect(Rectangle(width = 50f, height = 50f)).first())
-        assertEquals(state, collection.queryInRect(Rectangle(0f, 50f, width = 50f, height = 50f)).first())
-        assertEquals(state, collection.queryInRect(Rectangle(50f, 0f, width = 50f, height = 50f)).first())
-        assertEquals(state, collection.queryInRect(Rectangle(50f, 50f, width = 50f, height = 50f)).first())
+        assertEquals(state, collection.queryInRect(Rectangle(width = 50f, height = 50f)).first().entity)
+        assertEquals(state, collection.queryInRect(Rectangle(0f, 50f, width = 50f, height = 50f)).first().entity)
+        assertEquals(state, collection.queryInRect(Rectangle(50f, 0f, width = 50f, height = 50f)).first().entity)
+        assertEquals(state, collection.queryInRect(Rectangle(50f, 50f, width = 50f, height = 50f)).first().entity)
     }
 }
