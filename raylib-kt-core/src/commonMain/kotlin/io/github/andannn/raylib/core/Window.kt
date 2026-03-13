@@ -42,6 +42,7 @@ fun window(
 
     init.invoke(contextRegistry)
 
+    windowContext.initAudioDevice()
     with(RootComponent(contextRegistry, windowContext, block)) {
         try {
             windowFunction.gameLoop {
@@ -62,6 +63,7 @@ fun window(
             dispose()
         }
     }
+    windowContext.closeAudioDevice()
 }
 
 enum class RenderPhase {
