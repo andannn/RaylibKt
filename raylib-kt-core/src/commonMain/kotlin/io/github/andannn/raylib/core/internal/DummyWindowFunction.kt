@@ -4,6 +4,7 @@
  */
 package io.github.andannn.raylib.core.internal
 
+import io.github.andannn.raylib.base.AudioFunction
 import kotlinx.cinterop.CValue
 import io.github.andannn.raylib.base.Color
 import io.github.andannn.raylib.base.ConfigFlags
@@ -15,7 +16,7 @@ import io.github.andannn.raylib.core.WindowContextImpl
 import io.github.andannn.raylib.base.WindowFunction
 
 fun DummyWindowContextImpl(): WindowContext {
-    return WindowContextImpl(DummyWindowFunction(true), ImageFunction() , FontFunction())
+    return WindowContextImpl(DummyWindowFunction(true), ImageFunction() , FontFunction(), AudioFunction())
 }
 class DummyWindowFunction(override val isDebug: Boolean) : WindowFunction {
     override var backGroundColor: CValue<Color>?
