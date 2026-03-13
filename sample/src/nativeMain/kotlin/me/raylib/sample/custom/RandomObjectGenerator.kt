@@ -8,7 +8,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.base.randomValue
-import io.github.andannn.raylib.core.downEach
+import io.github.andannn.raylib.core.ComponentScope
+import io.github.andannn.raylib.core.components
 import io.github.andannn.raylib.core.mutableStateListOf
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
@@ -21,6 +22,7 @@ fun ComponentRegistry.randomObjectGenerator() {
     val stateList = remember {
         mutableStateListOf<Int>()
     }
+
     component("random object generator") {
         var frameCount by remember {
             mutableStateOf(0)
@@ -30,7 +32,7 @@ fun ComponentRegistry.randomObjectGenerator() {
         }
         onUpdate {
             frameCount++
-            if (frameCount % 5 == 0) {
+            if (frameCount % 60 == 0) {
                 if (stateList.size <= 10000) {
                     stateList.addState { newId++ }
                 }
@@ -38,37 +40,36 @@ fun ComponentRegistry.randomObjectGenerator() {
         }
     }
 
-    stateList.downEach { _, state ->
+    components(stateList, { it }) { state ->
         generatedObject(state)
     }
 }
 
-private fun ComponentRegistry.generatedObject(state: NativeState<Int>) {
-    component(state.value) {
-        var frameCount by remember {
-            mutableStateOf(0f)
+private fun ComponentScope.generatedObject(state: NativeState<Int>) {
+    var frameCount by remember {
+        mutableStateOf(0f)
+    }
+    val color = remember { randomColor() }
+    val radius = remember { randomValue(1, 10) }
+    val position by remember {
+        nativeStateOf {
+            Vector2Alloc(
+                randomValue(0, screenWidth).toFloat(),
+                randomValue(0, screenHeight).toFloat()
+            )
         }
-        val color = remember { randomColor() }
-        val radius = remember { randomValue(1, 10) }
-        val position by remember {
-            nativeStateOf {
-                Vector2Alloc(
-                    randomValue(0, screenWidth).toFloat(),
-                    randomValue(0, screenHeight).toFloat()
-                )
-            }
-        }
-        onUpdate {
-            frameCount++
+    }
 
-            if (frameCount > 60) {
-                // make itself disappear
-                state.dispose()
-            }
-        }
+    onUpdate {
+        frameCount++
 
-        onDraw {
-            drawCircle(position.readValue(), radius.toFloat(), color)
+        if (frameCount > 60) {
+            // make itself disappear
+            state.dispose()
         }
+    }
+
+    onDraw {
+        drawCircle(position.readValue(), radius.toFloat(), color)
     }
 }

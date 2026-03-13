@@ -53,7 +53,22 @@ fun <T> RememberScope.nativeStateOf(initialValue: NativePlacement.() -> T): Nati
         disposeOnClose(it)
     }
 
-inline fun <T> ManagedStateList<T>.downEach(block: (index: Int, element: NativeState<T>) -> Unit) {
+inline fun <reified T> ComponentRegistry.components(
+    items: ManagedStateList<T>,
+    crossinline key: (T) -> Any,
+    crossinline block: ComponentScope.(NativeState<T>) -> Unit
+) {
+    items.downEach { _, element ->
+        val key = key(element.value)
+
+        component(key) {
+            block.invoke(this, element)
+        }
+    }
+}
+
+@PublishedApi
+internal inline fun <T> ManagedStateList<T>.downEach(block: (index: Int, element: NativeState<T>) -> Unit) {
     for (i in size - 1 downTo 0) {
         if (i < size) {
             block(i, this[i])

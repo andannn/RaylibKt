@@ -30,12 +30,14 @@ typealias SpriteGrid = Pair<Int, Int>
 /**
  * Coroutine-driven spritesheet animation.
  *
+ * @param key Unique ID to persist state (current frame) and prevent collisions.
  * @param texture The spritesheet texture.
  * @param spriteGrid The grid layout of the spritesheet (columns to rows).
  * @param framesSpeed Playback speed (FPS). Reactive via [State].
  * @param dest Position and scale on screen.
- * @param tag Unique ID to persist state (current frame) and prevent collisions.
  * @param origin Pivot point for rotation and scaling.
+ * @param onFrame called when frame start playing.
+ * @param onRestart called when sprite animation play again.
  */
 inline fun ComponentRegistry.spriteAnimationComponent(
     key: Any,
@@ -44,43 +46,44 @@ inline fun ComponentRegistry.spriteAnimationComponent(
     framesSpeed: State<Int>,
     dest: CValue<Rectangle>,
     origin: CValue<Vector2> = Vector2(),
+    crossinline onFrame: (Int) -> Unit = {},
     crossinline onRestart: () -> Unit = {},
-) {
-    component("spriteAnimation_$key") {
-        val (textureWidth, textureHeight) = texture.useContents { width to height }
-        val (numFramePerLine, numLine) = spriteGrid
-        val frameWidth = textureWidth.toFloat() / numFramePerLine
-        val frameHeight = textureHeight.toFloat() / numLine
-        val frameCount = numFramePerLine * numLine
+) = component("spriteAnimation_$key") {
+    val (textureWidth, textureHeight) = texture.useContents { width to height }
+    val (numFramePerLine, numLine) = spriteGrid
+    val frameWidth = textureWidth.toFloat() / numFramePerLine
+    val frameHeight = textureHeight.toFloat() / numLine
+    val frameCount = numFramePerLine * numLine
 
-        val frameRec by remember {
-            nativeStateOf {
-                RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
+    val frameRec by remember {
+        nativeStateOf {
+            RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
+        }
+    }
+    var currentFrame by remember {
+        mutableStateOf(0)
+    }
+
+    rememberSuspendingTask {
+        while (true) {
+            val speed = framesSpeed.value.coerceAtLeast(1)
+            val frameDurationMs = (1000 / speed).toLong()
+
+            onFrame(currentFrame)
+
+            awaitDuration(frameDurationMs.milliseconds)
+            currentFrame = (currentFrame + 1)
+            if (currentFrame >= frameCount) {
+                currentFrame = 0
+                onRestart()
             }
-        }
-        var currentFrame by remember {
-            mutableStateOf(0)
-        }
 
-        rememberSuspendingTask {
-            while (true) {
-                val speed = framesSpeed.value.coerceAtLeast(1)
-                val frameDurationMs = (1000 / speed).toLong()
-                awaitDuration(frameDurationMs.milliseconds)
-
-                currentFrame = (currentFrame + 1)
-                if (currentFrame >= frameCount) {
-                    currentFrame = 0
-                    onRestart()
-                }
-
-                frameRec.x = (currentFrame % numFramePerLine) * frameRec.width
-                frameRec.y = (currentFrame / numFramePerLine).toFloat() * frameRec.height
-            }
+            frameRec.x = (currentFrame % numFramePerLine) * frameRec.width
+            frameRec.y = (currentFrame / numFramePerLine).toFloat() * frameRec.height
         }
+    }
 
-        onDraw {
-            drawTexture(texture, frameRec.readValue(), dest, origin, WHITE)
-        }
+    onDraw {
+        drawTexture(texture, frameRec.readValue(), dest, origin, WHITE)
     }
 }
