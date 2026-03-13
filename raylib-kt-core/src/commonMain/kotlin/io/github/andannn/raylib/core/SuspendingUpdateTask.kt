@@ -97,8 +97,6 @@ internal class SuspendingUpdateTask(
     private val block: suspend SuspendingUpdateEventScope.() -> Unit,
 ) : SuspendingUpdateEventScope, UpdateHandler, TaskController {
     private var activeHandler: EventHandlerCoroutine<*>? = null
-    private var isInDispatch = false
-    private var newHandlerRegisteredInDispatch = false
 
     override suspend fun <R> awaitUpdateEventScope(block: suspend AwaitUpdateEventScope.() -> R): R =
         suspendCancellableCoroutine { continuation ->
@@ -108,23 +106,13 @@ internal class SuspendingUpdateTask(
             activeHandler = handlerCoroutine
             block.createCoroutine(handlerCoroutine, handlerCoroutine).resume(Unit)
 
-            if (isInDispatch) newHandlerRegisteredInDispatch = true
 
             continuation.invokeOnCancellation { handlerCoroutine.cancel(it) }
         }
 
     private fun dispatchUpdateEvent(deltaTime: Float) {
-        if (activeHandler == null) return
-
-        isInDispatch = true
-
-        do {
-            newHandlerRegisteredInDispatch = false
-            val current = activeHandler
-            current?.doUpdate(deltaTime)
-        } while (newHandlerRegisteredInDispatch)
-
-        isInDispatch = false
+        val current = activeHandler
+        current?.doUpdate(deltaTime)
     }
 
     override fun performUpdate(deltaTime: Float) {
