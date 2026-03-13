@@ -11,7 +11,6 @@ import raylib.interop.BeginScissorMode
 import raylib.interop.EndMode2D
 import raylib.interop.EndScissorMode
 
-
 inline fun mode2d(camera: Camera2D, crossinline block: () -> Unit) {
     mode2d(camera.readValue(), block)
 }
