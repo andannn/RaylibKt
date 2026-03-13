@@ -24,6 +24,10 @@ import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.window
 import io.github.andannn.raylib.gui.GuiContext
 import io.github.andannn.raylib.gui.onDrawGui
+import me.raylib.sample.audio.modulePlaying
+import me.raylib.sample.audio.soundLoading
+import raygui.interop.FLAG_MSAA_4X_HINT
+import raylib.interop.SetConfigFlags
 import raylib.interop.rlDisableBackfaceCulling
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -65,6 +69,8 @@ enum class Example(val title: String) {
     SPRITE_EXPLOSION("Sprite explosion"),
     MATRIX_TEST("Matrix test"),
     IMAGE_DRAWING("Image drawing"),
+    MODULE_PLAYING("Module playing"),
+    SOUND_LOADING("Sound Loading"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -156,6 +162,8 @@ fun main() = window(
         Example.SPRITE_EXPLOSION -> spriteExplosion()
         Example.MATRIX_TEST -> matrixTest()
         Example.IMAGE_DRAWING -> imageDrawing()
+        Example.MODULE_PLAYING -> modulePlaying()
+        Example.SOUND_LOADING -> soundLoading()
     }
 
     if (currentExample.value != null) {

@@ -6,9 +6,10 @@ package io.github.andannn.raylib.core
 
 import io.github.andannn.raylib.base.WindowFunction
 import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.Cleaner
 import kotlin.native.ref.createCleaner
 
-interface ComponentRegistry: ContextRegistry
+interface ComponentRegistry : ContextRegistry
 
 inline fun ComponentRegistry.component(id: Any, crossinline block: ComponentScope.() -> Unit) {
     (this as ComponentStore)
@@ -40,7 +41,7 @@ inline fun <reified R> ComponentRegistry.remember(block: RememberScope.() -> R):
     } as R
 }
 
-interface ComponentScope : WindowFunction, DisposableRegistry, ComponentRegistry, ContextProvider
+interface ComponentScope : WindowContext, DisposableRegistry, ComponentRegistry, ContextProvider
 
 inline fun ComponentScope.onUpdate(crossinline block: GameContext.(Float) -> Unit) {
     if (find<WindowContext>().renderPhase == RenderPhase.UPDATE) {
@@ -71,7 +72,7 @@ internal class RootComponent(
     contextRegistry: ContextRegistryInternal,
     windowContext: WindowContext,
     private val block: ComponentRegistry.() -> Unit,
-    ) : Component("root", contextRegistry, windowContext), Disposable {
+) : Component("root", contextRegistry, windowContext), Disposable {
     fun buildComponents() {
         buildComponents(block)
     }
@@ -88,29 +89,39 @@ internal fun Component(
     contextRegistry: ContextRegistryInternal,
 ): Component = object : Component(id, contextRegistry) {}
 
+@OptIn(ExperimentalNativeApi::class)
 internal abstract class Component(
     val componentId: Any,
     private val contextRegistry: ContextRegistryInternal,
     private val windowContext: WindowContext = contextRegistry.find<WindowContext>(),
     private val disposableRegistry: DisposableRegistryImpl = DisposableRegistryImpl(),
-    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(contextRegistry, disposableRegistry, windowContext)
+    private val componentsBuilder: ComponentsBuilder = ComponentsBuilder(
+        contextRegistry,
+        disposableRegistry,
+        windowContext
+    )
 ) : ComponentScope,
     ComponentFactory by componentsBuilder,
     ComponentStore by componentsBuilder,
     ContextRegistryInternal by contextRegistry,
     DisposableRegistry by disposableRegistry,
-    WindowFunction by windowContext,
+    WindowContext by windowContext,
     Disposable {
     internal val children: Iterable<Component>
         get() = componentsBuilder.activeStates.values
 
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = createCleaner(componentId) {
-        println("Runtime Monitor: Component [$it] has been Garbage Collected.")
+    private lateinit var cleaner: Cleaner
+
+    init {
+        if (windowContext.isDebug) {
+            cleaner = createCleaner(componentId) {
+                println("Runtime Monitor: Component [$it] has been Garbage Collected.")
+            }
+        }
     }
 
     override fun dispose() {
-        println("Component [${componentId}] has been disposed.")
+        if (windowContext.isDebug) println("Component [${componentId}] has been disposed.")
 
         children.forEach {
             it.dispose()
