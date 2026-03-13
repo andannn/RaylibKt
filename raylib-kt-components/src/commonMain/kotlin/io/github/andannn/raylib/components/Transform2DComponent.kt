@@ -13,17 +13,13 @@ import io.github.andannn.raylib.core.Context
 import io.github.andannn.raylib.core.ContextProvider
 import io.github.andannn.raylib.base.Matrix
 import io.github.andannn.raylib.core.MutableState
-import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.core.RenderPhase
 import io.github.andannn.raylib.core.State
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.Vector2Alloc
 import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.findOrNull
-import io.github.andannn.raylib.base.invert
-import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.base.matrixIdentity
 import io.github.andannn.raylib.base.multiply
 import io.github.andannn.raylib.core.mutableStateOf
@@ -31,10 +27,9 @@ import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.base.rlMatrix
-import io.github.andannn.raylib.base.transform
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.RememberScope
-
+import io.github.andannn.raylib.core.Vector2Alloc
 
 /**
  * Retrieves the current global transformation matrix for the calling component.
@@ -70,14 +65,13 @@ fun RememberScope.Transform2DAlloc(
     scale: CValue<Vector2> = Vector2(1f, 1f),
     offset: CValue<Vector2> = Vector2(),
     angle: State<Float> = mutableStateOf(0f),
-) = nativeStateOf {
+) =
     Transform2D(
-        position = position.useContents { Vector2Alloc(x = x, y = y) },
-        scale = scale.useContents { Vector2Alloc(x = x, y = y) },
-        offset = offset.useContents { Vector2Alloc(x = x, y = y) },
+        position = position.useContents { Vector2Alloc(x = x, y = y).value },
+        scale = scale.useContents { Vector2Alloc(x = x, y = y).value },
+        offset = offset.useContents { Vector2Alloc(x = x, y = y).value },
         angle = mutableStateOf(angle.value)
     )
-}.value
 
 /**
  * A persistent state container for 2D spatial transformations.

@@ -33,6 +33,7 @@ import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.base.subtract
 import io.github.andannn.raylib.base.worldToScreenPosition
+import io.github.andannn.raylib.core.Vector2Alloc
 
 private enum class CameraOption(val description: String) {
     FollowPlayerCenter("Follow player center"),
@@ -49,7 +50,7 @@ fun ComponentRegistry.towDCameraPlatformer() {
         mutableStateOf(CameraOption.FollowPlayerCenter)
     }
     val player by remember {
-        nativeStateOf { Player(alloc<Vector2>().apply { x = 400f; y = 200f }, 0f, true) }
+        nativeStateOf { Player(Vector2Alloc(x = 400f, y = 200f).value, 0f, true) }
     }
     val camera by remember {
         nativeStateOf { alloc<Camera2D> { zoom = 1f } }

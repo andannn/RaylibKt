@@ -1,3 +1,7 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.components
 
 import io.github.andannn.raylib.base.Vector2

@@ -7,7 +7,7 @@ import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.RectangleAlloc
-import io.github.andannn.raylib.base.Vector2Alloc
+
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
@@ -21,13 +21,15 @@ import io.github.andannn.easings.Ease
 import io.github.andannn.easings.animateTo
 import io.github.andannn.easings.awaitDuration
 import io.github.andannn.easings.awaitEasingAnimation
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.RectangleAlloc
 import raylib.interop.Fade
 import kotlin.time.Duration.Companion.seconds
 
 fun ComponentRegistry.easingBox() {
     component("A") {
         val rec by remember {
-            nativeStateOf { RectangleAlloc(screenWidth / 2.0f, -100f, 100f, 100f) }
+            RectangleAlloc(screenWidth / 2.0f, -100f, 100f, 100f)
         }
         var rotation by remember {
             mutableStateOf(0.0f)
@@ -76,15 +78,13 @@ fun ComponentRegistry.easingBox() {
         }
 
         onDraw {
-            memScoped {
-                drawRectangle(
-                    rectangle = rec.readValue(),
-                    origin = Vector2Alloc(rec.width / 2, rec.height / 2).readValue(),
-                    rotation = rotation,
-                    Fade(BLACK, alpha)
-                )
-                drawText("PRESS [SPACE] TO RESET BOX ANIMATION!", 10, screenHeight - 25, 20, LIGHTGRAY)
-            }
+            drawRectangle(
+                rectangle = rec.readValue(),
+                origin = Vector2(rec.width / 2, rec.height / 2),
+                rotation = rotation,
+                Fade(BLACK, alpha)
+            )
+            drawText("PRESS [SPACE] TO RESET BOX ANIMATION!", 10, screenHeight - 25, 20, LIGHTGRAY)
         }
     }
 }

@@ -10,31 +10,29 @@ import io.github.andannn.raylib.base.Colors.RED
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.RectangleAlloc
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.components.fixSizedTextureComponent
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.mode2d
-import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.onUpdate
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.base.setOffset
 import io.github.andannn.raylib.base.setTarget
+import io.github.andannn.raylib.core.RectangleAlloc
+import io.github.andannn.raylib.core.nativeStateOf
 
 private const val PLAYER_SIZE = 40
 
 fun ComponentRegistry.twoDCameraSplitScreen() {
     component("components") {
         val player1 by remember {
-            nativeStateOf {
-                alloc<Rectangle> {
-                    width = PLAYER_SIZE.toFloat()
-                    height = PLAYER_SIZE.toFloat()
-                    x = 200.0f
-                    y = 200.0f
-                }
-            }
+            RectangleAlloc(
+                width = PLAYER_SIZE.toFloat(),
+                height = PLAYER_SIZE.toFloat(),
+                x = 200.0f,
+                y = 200.0f,
+            )
         }
         val player2 by remember {
             nativeStateOf {
@@ -68,11 +66,11 @@ fun ComponentRegistry.twoDCameraSplitScreen() {
         }
 
         val rect1 by remember {
-            nativeStateOf { RectangleAlloc(0f, 0f, screenWidth / 2f, screenHeight.toFloat()) }
+            RectangleAlloc(0f, 0f, screenWidth / 2f, screenHeight.toFloat())
         }
 
         val rect2 by remember {
-            nativeStateOf { RectangleAlloc(screenWidth / 2f, 0f, screenWidth / 2f, screenHeight.toFloat()) }
+            RectangleAlloc(screenWidth / 2f, 0f, screenWidth / 2f, screenHeight.toFloat())
         }
 
         onUpdate {

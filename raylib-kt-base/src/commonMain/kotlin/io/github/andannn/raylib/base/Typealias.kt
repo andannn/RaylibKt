@@ -83,10 +83,6 @@ fun Vector2(x: Float = 0f, y: Float = 0f): CValue<Vector2> = cValue {
     this.x = x
     this.y = y
 }
-fun NativePlacement.Vector2Alloc(x: Float = 0f, y: Float = 0f) = alloc<Vector2>().apply {
-    this.x = x
-    this.y = y
-}
 fun Vector2.set(x: Float = 0f, y: Float = 0f) {
     this.x = x
     this.y = y

@@ -1,9 +1,12 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.components
 
 import io.github.andannn.raylib.base.Matrix
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.Vector2Alloc
 import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.base.withWorldSpace
 import io.github.andannn.raylib.core.ComponentRegistry
@@ -11,10 +14,10 @@ import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.RenderPhase
 import io.github.andannn.raylib.core.State
+import io.github.andannn.raylib.core.Vector2Alloc
 import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.onDraw
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
@@ -151,12 +154,10 @@ internal fun ComponentRegistry.aabbUpdate(
     }
 }
 
-private fun RememberScope.AabbAlloc(): Aabb = nativeStateOf {
-    Aabb(
-        Vector2Alloc(),
-        Vector2Alloc(),
-    )
-}.value
+private fun RememberScope.AabbAlloc(): Aabb = Aabb(
+    Vector2Alloc().value,
+    Vector2Alloc().value,
+)
 
 /**
  * An Axis-Aligned Bounding Box (AABB) in world space coordinates.
