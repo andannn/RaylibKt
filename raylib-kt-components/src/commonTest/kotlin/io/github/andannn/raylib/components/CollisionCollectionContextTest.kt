@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 class CollisionCollectionContextTest {
     @Test
     fun spatialCollection_query() {
-        class FakeEntity(val state: Positional2D) : Entity
+        class FakeEntity(val state: Spatial2D) : Entity
 
         val collection = WorldGrid2DContext(50)
         var state: Any? = null
@@ -20,7 +20,7 @@ class CollisionCollectionContextTest {
         ) {
             state = remember {
                 FakeEntity(
-                    Positional2DAlloc(
+                    Spatial2DAlloc(
                         size = Vector2(20f, 20f),
                         position = Vector2(40f, 40f)
                     )

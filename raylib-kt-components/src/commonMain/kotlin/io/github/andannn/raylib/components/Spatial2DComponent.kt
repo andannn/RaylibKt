@@ -25,29 +25,29 @@ import kotlin.math.abs
  * Spatial State Carrier for 2D objects.
  * Encapsulates the core physical data required for an entity in the 2D world.
  */
-class Positional2D(
+class Spatial2D(
     val size: CValue<Vector2>,
     val transform: Transform2D,
     val aabb: Aabb,
 )
 
-fun Positional2D.toGlobalRect() = aabb.toGlobalRect()
+fun Spatial2D.toGlobalRect() = aabb.toGlobalRect()
 
 /**
- * Allocates a [Positional2D] state within a [RememberScope].
+ * Allocates a [Spatial2D] state within a [RememberScope].
  */
-fun RememberScope.Positional2DAlloc(
+fun RememberScope.Spatial2DAlloc(
     size: CValue<Vector2>,
     position: CValue<Vector2> = Vector2(),
     scale: CValue<Vector2> = Vector2(1f, 1f),
     angle: State<Float> = mutableStateOf(0f),
     anchor: CValue<Vector2> = Anchor.TOP_LEFT,
-): Positional2D {
+): Spatial2D {
     val (anchorX, anchorY) = anchor.useContents { x to y }
     val offset = size.useContents {
         Vector2(-x * anchorX, -y * anchorY)
     }
-    return Positional2D(
+    return Spatial2D(
         size = size,
         transform = Transform2DAlloc(
             position = position,
@@ -76,19 +76,19 @@ object Anchor {
  * Useful for objects that require a coordinate system but don't need
  * to be identified as a specific business entity (e.g., static decor).
  */
-inline fun ComponentRegistry.positional2DComponent(
+inline fun ComponentRegistry.spatial2DComponent(
     key: Any,
     size: CValue<Vector2>,
     position: CValue<Vector2> = Vector2(),
     scale: CValue<Vector2> = Vector2(1f, 1f),
     angle: State<Float> = mutableStateOf(0f),
     anchor: CValue<Vector2> = Anchor.TOP_LEFT,
-    crossinline block: ComponentScope.(Positional2D) -> Unit
+    crossinline block: ComponentScope.(Spatial2D) -> Unit
 ) {
     val state = remember {
-        Positional2DAlloc(size = size, position = position, scale = scale, anchor = anchor, angle = angle)
+        Spatial2DAlloc(size = size, position = position, scale = scale, anchor = anchor, angle = angle)
     }
-    positional2DComponent(
+    spatial2DComponent(
         key = key,
         state = state,
         block = {
@@ -104,9 +104,9 @@ inline fun ComponentRegistry.positional2DComponent(
  * @param state The persistent spatial state for this box.
  * @param block Child components to be rendered within this box's coordinate space.
  */
-inline fun ComponentRegistry.positional2DComponent(
+inline fun ComponentRegistry.spatial2DComponent(
     key: Any,
-    state: Positional2D,
+    state: Spatial2D,
     crossinline block: ComponentScope.() -> Unit
 ) = transform2DComponent(key = key, state.transform) {
     if (find<WindowContext>().isDebug) {
@@ -136,7 +136,8 @@ inline fun ComponentRegistry.positional2DComponent(
  * @param aabb The target AABB to update.
  * @param size The local size of the object.
  */
-fun ComponentRegistry.aabbUpdate(
+@PublishedApi
+internal fun ComponentRegistry.aabbUpdate(
     aabb: Aabb,
     size: CValue<Vector2>,
 ) {
@@ -150,7 +151,7 @@ fun ComponentRegistry.aabbUpdate(
     }
 }
 
-fun RememberScope.AabbAlloc(): Aabb = nativeStateOf {
+private fun RememberScope.AabbAlloc(): Aabb = nativeStateOf {
     Aabb(
         Vector2Alloc(),
         Vector2Alloc(),

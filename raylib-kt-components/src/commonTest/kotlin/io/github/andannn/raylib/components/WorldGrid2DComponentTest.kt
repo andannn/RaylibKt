@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 class WorldGrid2DComponentTest {
     @Test
     fun worldGrid2DComponent_retained() {
-        class FakeEntity(val state: Positional2D) : Entity
+        class FakeEntity(val state: Spatial2D) : Entity
 
         var state: Any? = null
         var context: WorldGrid2DContext? = null
@@ -25,7 +25,7 @@ class WorldGrid2DComponentTest {
                         component("child") {
                             state = remember {
                                 FakeEntity(
-                                    Positional2DAlloc(
+                                    Spatial2DAlloc(
                                         size = Vector2(20f, 20f),
                                         position = Vector2(40f, 40f)
                                     )

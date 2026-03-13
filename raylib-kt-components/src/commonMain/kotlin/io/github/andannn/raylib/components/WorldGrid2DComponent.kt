@@ -1,6 +1,7 @@
 package io.github.andannn.raylib.components
 
 import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.Context
@@ -38,12 +39,12 @@ inline fun ComponentRegistry.world2DGridComponent(
 
 fun ComponentRegistry.registerEntityToWorldGrid2D(
     entity: Entity,
-    position: Positional2D,
+    position: Spatial2D,
     extra: Any? = null
 ) {
     doOnce {
         val contextOrNull = findOrNull<WorldGrid2DContext>()
-        val entity = PositionalEntity(entity, position, extra)
+        val entity = Spatial2DModel(entity, position, extra)
         contextOrNull?.register(entity)
 
         disposeOnClose {
@@ -52,37 +53,65 @@ fun ComponentRegistry.registerEntityToWorldGrid2D(
     }
 }
 
-context(_: GameContext, contextProvider: ContextProvider)
-inline fun Positional2D.queryNearby(crossinline block: (PositionalEntity) -> Unit) {
-    contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())?.forEach(block)
+inline fun <reified T : Entity> ContextProvider.allEntities(): List<T> {
+    return findOrNull<WorldGrid2DContext>()
+        ?.queryAll()
+        ?.mapNotNull { it.entity as? T }
+        ?: emptyList()
+}
+
+inline fun <reified T : Entity> ContextProvider.firstOrNull(): Pair<T, Spatial2D>? {
+    val model = findOrNull<WorldGrid2DContext>()
+        ?.queryAll()
+        ?.firstOrNull { it.entity is T } ?: return null
+
+    return Pair(model.entity as T, model.position)
 }
 
 context(_: GameContext, contextProvider: ContextProvider)
-inline fun <reified T : Entity> Positional2D.queryNearby(crossinline block: (T, Positional2D, Any?) -> Unit) {
-    contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())
-        ?.filter { (entity, _, _) -> entity is T }
+inline fun Spatial2D.queryAABBCollision(crossinline block: (Spatial2DModel) -> Unit) {
+    val targetRect = this.aabb.toGlobalRect()
+    contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(targetRect)
+        ?.filter {
+            it.position.toGlobalRect().isCollisionWith(targetRect)
+        }
+        ?.forEach(block)
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun <reified T : Entity> Spatial2D.queryAABBCollision(crossinline block: (T, Spatial2D, Any?) -> Unit) {
+    val targetRect = this.aabb.toGlobalRect()
+    contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(targetRect)
+        ?.filter { (entity, position, _) ->
+            entity is T && position.toGlobalRect().isCollisionWith(targetRect)
+        }
         ?.forEach {
             block(it.entity as T, it.position, it.extra)
         }
 }
 
 context(_: GameContext, contextProvider: ContextProvider)
-inline fun Positional2D.queryNearbyUntil(crossinline block: (PositionalEntity) -> Boolean) {
-    val _ = contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())?.any { block(it) }
-}
-
-context(_: GameContext, contextProvider: ContextProvider)
-inline fun <reified T : Entity> Positional2D.queryNearbyUntil(crossinline block: (T, Positional2D, Any?) -> Boolean) {
-    val _ = contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())
-        ?.filter { (entity, _, _) -> entity is T }
+inline fun Spatial2D.queryAABBCollisionUntil(crossinline block: (Spatial2DModel) -> Boolean) {
+    val targetRect = this.aabb.toGlobalRect()
+    val _ = contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(targetRect)
         ?.any {
-            block(it.entity as T, it.position, it.extra)
+            it.position.toGlobalRect().isCollisionWith(targetRect) && block(it)
         }
 }
 
-data class PositionalEntity(
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun <reified T : Entity> Spatial2D.queryAABBCollisionUntil(crossinline block: (T, Spatial2D, Any?) -> Boolean) {
+    val targetRect = this.aabb.toGlobalRect()
+    val _ = contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(targetRect)
+        ?.any {
+            it.entity is T && it.position.toGlobalRect().isCollisionWith(targetRect) &&
+                    block(it.entity, it.position, it.extra)
+        }
+}
+
+data class Spatial2DModel(
     val entity: Entity,
-    val position: Positional2D,
+    val position: Spatial2D,
     val extra: Any? = null
 )
 
@@ -93,13 +122,13 @@ data class PositionalEntity(
 class WorldGrid2DContext(
     private val cellSize: Int,
 ) : Context {
-    private val cells = mutableMapOf<Long, MutableList<PositionalEntity>>()
-    private val allEntities = mutableListOf<PositionalEntity>()
+    private val cells = mutableMapOf<Long, MutableList<Spatial2DModel>>()
+    private val allEntities = mutableListOf<Spatial2DModel>()
 
-    fun register(positionalEntity: PositionalEntity) {
-        allEntities.add(positionalEntity)
+    fun register(spatial2DModel: Spatial2DModel) {
+        allEntities.add(spatial2DModel)
 
-        val aabb = positionalEntity.position.aabb
+        val aabb = spatial2DModel.position.aabb
         val xStart = floor(aabb.min.x / cellSize).toInt()
         val xEnd = floor(aabb.max.x / cellSize).toInt()
         val yStart = floor(aabb.min.y / cellSize).toInt()
@@ -107,16 +136,16 @@ class WorldGrid2DContext(
 
         for (x in xStart..xEnd) {
             for (y in yStart..yEnd) {
-                cells.getOrPut(getCellKeyHash(x, y)) { mutableListOf() }.add(positionalEntity)
+                cells.getOrPut(getCellKeyHash(x, y)) { mutableListOf() }.add(spatial2DModel)
             }
         }
     }
 
-    fun queryAll(): Iterable<PositionalEntity> = allEntities
+    fun queryAll(): Iterable<Spatial2DModel> = allEntities
 
     fun queryInRect(
         rect: CValue<Rectangle>,
-    ): Iterable<PositionalEntity> = rect.useContents {
+    ): Iterable<Spatial2DModel> = rect.useContents {
         inflate(cellSize / 2f)
 
         val xStart = floor(x / cellSize).toInt()
@@ -124,7 +153,7 @@ class WorldGrid2DContext(
         val yStart = floor(y / cellSize).toInt()
         val yEnd = floor((y + height) / cellSize).toInt()
 
-        val result = mutableSetOf<PositionalEntity>()
+        val result = mutableSetOf<Spatial2DModel>()
         for (x in xStart..xEnd) {
             for (y in yStart..yEnd) {
                 cells[getCellKeyHash(x, y)]?.let { result.addAll(it) }
@@ -133,7 +162,7 @@ class WorldGrid2DContext(
         return result
     }
 
-    fun remove(identity: PositionalEntity) {
+    fun remove(identity: Spatial2DModel) {
         allEntities.remove(identity)
         val _ = cells.values.forEach { it.remove(identity) }
     }
