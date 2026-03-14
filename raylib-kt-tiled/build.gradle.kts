@@ -15,6 +15,7 @@ kmpExtension {
         it.commonMain.dependencies {
             api(project(":raylib-kt-core"))
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.io)
         }
     }
 }
