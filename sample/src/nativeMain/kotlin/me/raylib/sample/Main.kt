@@ -71,6 +71,7 @@ enum class Example(val title: String) {
     IMAGE_DRAWING("Image drawing"),
     MODULE_PLAYING("Module playing"),
     SOUND_LOADING("Sound Loading"),
+    TILE_MAP_TEST("Tile map test"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -88,7 +89,7 @@ fun main() = window(
     }
 ) {
     val active = remember {
-        nativeStateOf { alloc<IntVar> { value = -1 } }
+        nativeStateOf { alloc<IntVar> { value = Example.entries.lastIndex } }
     }
 
     val currentExample = remember {
@@ -164,6 +165,7 @@ fun main() = window(
         Example.IMAGE_DRAWING -> imageDrawing()
         Example.MODULE_PLAYING -> modulePlaying()
         Example.SOUND_LOADING -> soundLoading()
+        Example.TILE_MAP_TEST -> tileMapTest()
     }
 
     if (currentExample.value != null) {

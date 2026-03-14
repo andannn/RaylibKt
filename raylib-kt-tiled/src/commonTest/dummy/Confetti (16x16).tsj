@@ -1,0 +1,14 @@
+{ "columns":6,
+ "image":"resource\/Confetti (16x16).png",
+ "imageheight":16,
+ "imagewidth":96,
+ "margin":0,
+ "name":"Confetti (16x16)",
+ "spacing":0,
+ "tilecount":6,
+ "tiledversion":"1.12.0",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}
