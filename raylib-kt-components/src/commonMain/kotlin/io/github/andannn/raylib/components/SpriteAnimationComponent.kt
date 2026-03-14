@@ -27,6 +27,11 @@ import kotlin.time.Duration.Companion.milliseconds
 
 typealias SpriteGrid = Pair<Int, Int>
 
+data class FrameInfo(
+    val frameNum: Int,
+    val repeatTimes: Int,
+)
+
 /**
  * Coroutine-driven spritesheet animation.
  *
@@ -46,7 +51,7 @@ inline fun ComponentRegistry.spriteAnimationComponent(
     framesSpeed: State<Int>,
     dest: CValue<Rectangle>,
     origin: CValue<Vector2> = Vector2(),
-    crossinline onFrame: (Int) -> Unit = {},
+    crossinline onFrame: (FrameInfo) -> Unit = {},
     crossinline onRestart: () -> Unit = {},
 ) = component("spriteAnimation_$key") {
     val (textureWidth, textureHeight) = texture.useContents { width to height }
@@ -60,6 +65,9 @@ inline fun ComponentRegistry.spriteAnimationComponent(
             RectangleAlloc(0.0f, 0.0f, frameWidth, frameHeight)
         }
     }
+    var repeatTimes by remember {
+        mutableStateOf(0)
+    }
     var currentFrame by remember {
         mutableStateOf(0)
     }
@@ -69,12 +77,13 @@ inline fun ComponentRegistry.spriteAnimationComponent(
             val speed = framesSpeed.value.coerceAtLeast(1)
             val frameDurationMs = (1000 / speed).toLong()
 
-            onFrame(currentFrame)
+            onFrame(FrameInfo(currentFrame, repeatTimes))
 
             awaitDuration(frameDurationMs.milliseconds)
             currentFrame = (currentFrame + 1)
             if (currentFrame >= frameCount) {
                 currentFrame = 0
+                repeatTimes++
                 onRestart()
             }
 
