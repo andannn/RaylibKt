@@ -1,0 +1,63 @@
+{ "compressionlevel":-1,
+ "height":8,
+ "infinite":false,
+ "layers":[
+        {
+         "id":3,
+         "layers":[
+                {
+                 "id":4,
+                 "layers":[
+                        {
+                         "data":[92, 183, 183, 183, 183, 183, 0, 0, 0, 115,
+                            183, 183, 183, 183, 183, 183, 0, 0, 0, 0,
+                            183, 183, 183, 183, 183, 183, 0, 0, 0, 0,
+                            183, 183, 183, 183, 183, 183, 183, 0, 0, 0,
+                            183, 183, 183, 183, 183, 183, 245, 0, 0, 0,
+                            183, 183, 183, 183, 183, 183, 245, 0, 0, 0,
+                            0, 183, 183, 183, 183, 0, 0, 0, 0, 0,
+                            114, 0, 0, 183, 0, 0, 0, 0, 0, 115],
+                         "height":8,
+                         "id":1,
+                         "name":"Tile Layer 1",
+                         "opacity":1,
+                         "type":"tilelayer",
+                         "visible":true,
+                         "width":10,
+                         "x":0,
+                         "y":0
+                        }],
+                 "name":"Group Layer 2",
+                 "opacity":1,
+                 "type":"group",
+                 "visible":true,
+                 "x":0,
+                 "y":0
+                }],
+         "name":"Group Layer 1",
+         "opacity":1,
+         "type":"group",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":5,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.0",
+ "tileheight":16,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"Terrain (16x16).tsj"
+        }, 
+        {
+         "firstgid":243,
+         "source":"Confetti (16x16).tsj"
+        }],
+ "tilewidth":16,
+ "type":"map",
+ "version":"1.10",
+ "width":10
+}
