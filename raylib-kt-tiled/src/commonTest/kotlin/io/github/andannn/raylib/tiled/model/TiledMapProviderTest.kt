@@ -1,7 +1,11 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.tiled.model
 
-import io.github.andannn.raylib.tiled.component.TiledMapFiles
-import io.github.andannn.raylib.tiled.component.TiledMapProvider
+import io.github.andannn.raylib.tiled.TiledMapFiles
+import io.github.andannn.raylib.tiled.TiledMapProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

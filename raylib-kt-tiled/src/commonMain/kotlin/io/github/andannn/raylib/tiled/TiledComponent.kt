@@ -1,15 +1,15 @@
-package io.github.andannn.raylib.tiled.component
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
+package io.github.andannn.raylib.tiled
 
 import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.add
-import io.github.andannn.raylib.base.format
-import io.github.andannn.raylib.components.Transform2D
 import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.components.transform2DComponent
-import io.github.andannn.raylib.components.worldMatrix
 import io.github.andannn.raylib.core.*
 import io.github.andannn.raylib.tiled.model.GID
 import io.github.andannn.raylib.tiled.model.GroupLayer
@@ -18,24 +18,26 @@ import io.github.andannn.raylib.tiled.model.Layer
 import io.github.andannn.raylib.tiled.model.ObjectGroupLayer
 import io.github.andannn.raylib.tiled.model.TileLayer
 import io.github.andannn.raylib.tiled.model.TiledMap
+import io.github.andannn.raylib.tiled.model.TiledObject
 import io.github.andannn.raylib.tiled.model.Tileset
 import kotlinx.cinterop.CValue
-import kotlinx.cinterop.useContents
 import kotlinx.io.files.Path
 
-fun ComponentRegistry.tiledComponent(
+inline fun ComponentRegistry.tiledComponent(
     key: Any,
     tmJsonFile: String,
-    txJsonFileDictionary: String = Path(tmJsonFile).parent.toString()
-) = tiledComponent(key, TiledMapProvider(tmJsonFile, txJsonFileDictionary))
+    txJsonFileDictionary: String = Path(tmJsonFile).parent.toString(),
+    crossinline onBindObject: ComponentScope.(TiledObject) -> Unit = {}
+) = tiledComponent(key, TiledMapProvider(tmJsonFile, txJsonFileDictionary), onBindObject)
 
-fun ComponentRegistry.tiledComponent(
+inline fun ComponentRegistry.tiledComponent(
     key: Any,
-    tiledMapProvider: TiledMapProvider
+    tiledMapProvider: TiledMapProvider,
+    crossinline onBindObject: ComponentScope.(TiledObject) -> Unit = {}
 ) = component(key) {
     val tiledMap = remember { tiledMapProvider.getMap() }
     val tiledSetManager = remember {
-        TiledSetTextureManager(this, tiledMap)
+        TiledSetManager(this, tiledMap)
     }
 
     val flattenedLayers = remember {
@@ -43,13 +45,34 @@ fun ComponentRegistry.tiledComponent(
     }
 
     context(tiledSetManager) {
-        flattenedLayers.forEach { layer ->
-            drawLayer(layer)
+        flattenedLayers.forEach { flatTileLayer ->
+            val globalOpacity: Float = flatTileLayer.globalOpacity
+            val globalOffsetX: Float = flatTileLayer.globalOffsetX
+            val globalOffsetY: Float = flatTileLayer.globalOffsetY
+// TODO: handle Parallax factor.
+
+            val localOffsetX: Float = globalOffsetX
+            val localOffsetY: Float = globalOffsetY
+
+            val transform = remember {
+                Transform2DAlloc(position = Vector2(localOffsetX, localOffsetY))
+            }
+
+            transform2DComponent(flatTileLayer.layer.id, transform) { transform ->
+                flatTileLayer.layer.mode.blend {
+                    when (val layer = flatTileLayer.layer) {
+                        is TileLayer -> drawTileLayer(layer)
+                        is ObjectGroupLayer -> bindObjects(layer.objects, onBindObject)
+                        is ImageLayer -> TODO()
+                        is GroupLayer -> error("Never")
+                    }
+                }
+            }
         }
     }
 
     onDraw {
-        if (find<WindowContext>().isDebug) {
+        if (isDebug) {
             val totalHeight = tiledMap.height * tiledMap.tileHeight.toFloat()
             val totalWidth = tiledMap.width * tiledMap.tileWidth.toFloat()
 
@@ -58,32 +81,10 @@ fun ComponentRegistry.tiledComponent(
     }
 }
 
-context(_: TiledSetTextureManager)
-private fun ComponentScope.drawLayer(flatTileLayer: FlatTileLayer) {
-    val globalOpacity: Float = flatTileLayer.globalOpacity
-    val globalOffsetX: Float = flatTileLayer.globalOffsetX
-    val globalOffsetY: Float = flatTileLayer.globalOffsetY
-// TODO: handle Parallax factor.
 
-    val localOffsetX: Float = globalOffsetX
-    val localOffsetY: Float = globalOffsetY
-
-    val transform = remember {
-        Transform2DAlloc(position = Vector2(localOffsetX, localOffsetY))
-    }
-
-    transform2DComponent(flatTileLayer.layer.id, transform) { transform ->
-        when (val layer = flatTileLayer.layer) {
-            is GroupLayer -> error("Never")
-            is TileLayer -> drawTileLayer(layer)
-            is ImageLayer -> TODO()
-            is ObjectGroupLayer -> TODO()
-        }
-    }
-}
-
-context(manager: TiledSetTextureManager)
-private fun ComponentScope.drawTileLayer(tileLayer: TileLayer) {
+@PublishedApi
+context(manager: TiledSetManager)
+internal fun ComponentScope.drawTileLayer(tileLayer: TileLayer) {
     onDraw {
         for (y in 0 until tileLayer.height) {
             for (x in 0 until tileLayer.width) {
@@ -96,7 +97,7 @@ private fun ComponentScope.drawTileLayer(tileLayer: TileLayer) {
             }
         }
 
-        if (find<WindowContext>().isDebug) {
+        if (isDebug) {
             val height = tileLayer.height
             val width = tileLayer.width
             val tileHeight = manager.tileHeight
@@ -123,7 +124,8 @@ private fun ComponentScope.drawTileLayer(tileLayer: TileLayer) {
     }
 }
 
-private fun TiledMap.flattenTileLayers(): List<FlatTileLayer> {
+@PublishedApi
+internal fun TiledMap.flattenTileLayers(): List<FlatTileLayer> {
     return buildList {
         fun collect(
             layers: List<Layer>,
@@ -155,7 +157,8 @@ private fun TiledMap.flattenTileLayers(): List<FlatTileLayer> {
     }
 }
 
-private data class FlatTileLayer(
+@PublishedApi
+internal data class FlatTileLayer(
     val layer: Layer,
     val globalOpacity: Float,
     val globalOffsetX: Float,
@@ -172,20 +175,34 @@ private class TiledSetKey(
     val localIdRange: IntRange,
 )
 
+
+@PublishedApi
+internal interface TiledSetManager {
+    val tileHeight: Int
+    val tileWidth: Int
+    fun get(x: Int, y: Int, gID: GID): Triple<CValue<Rectangle>, CValue<Rectangle>, CValue<Texture>>
+}
+
+@PublishedApi
+internal fun TiledSetManager(
+    rememberScope: RememberScope,
+    tiledMap: TiledMap,
+): TiledSetManager = TiledSetTextureManager(rememberScope, tiledMap)
+
 private class TiledSetTextureManager(
     val rememberScope: RememberScope,
     val tiledMap: TiledMap,
-) {
+) : TiledSetManager {
     private val textureMap: Map<TiledSetKey, TiledSetWithTexture> = buildMap {
         tiledMap.tilesets.forEach {
             put(it.key(), TiledSetWithTexture(it, rememberScope.loadTexture(it.requireImage())))
         }
     }
 
-    val tileHeight = tiledMap.tileHeight
-    val tileWidth = tiledMap.tileWidth
+    override val tileHeight = tiledMap.tileHeight
+    override val tileWidth = tiledMap.tileWidth
 
-    fun get(x: Int, y: Int, gID: GID): Triple<CValue<Rectangle>, CValue<Rectangle>, CValue<Texture>> {
+    override fun get(x: Int, y: Int, gID: GID): Triple<CValue<Rectangle>, CValue<Rectangle>, CValue<Texture>> {
         val flipHorizontal = gID.flipHorizontal
         val flipVertical = gID.flipVertical
         val flipDiagonal = gID.flipDiagonal

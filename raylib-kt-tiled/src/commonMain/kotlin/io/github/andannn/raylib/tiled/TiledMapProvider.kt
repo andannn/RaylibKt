@@ -1,4 +1,8 @@
-package io.github.andannn.raylib.tiled.component
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
+package io.github.andannn.raylib.tiled
 
 import io.github.andannn.raylib.tiled.model.TiledMap
 import io.github.andannn.raylib.tiled.model.Tileset
@@ -45,7 +49,7 @@ private class TiledMapProviderImpl(
 
     override fun getMap(): TiledMap {
         val tmJson = SystemFileSystem.source(Path(files.tmJsonFile())).buffered().readString()
-        val map = Json.decodeFromString<TiledMap>(tmJson)
+        val map = json.decodeFromString<TiledMap>(tmJson)
         val txJsonFiles = files.txJsonFiles()
 
         val tilesets = map.tilesets.map { tileset ->

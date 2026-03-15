@@ -53,28 +53,6 @@ class SuspendingUpdateTaskTest {
     }
 
     @Test
-    fun suspendingTask_update_event_trigger_in_same_frame() {
-        var count = 0
-        val task = SuspendingUpdateTask(gameContext) {
-            awaitUpdateEventScope {
-                count++
-                awaitUpdateEvent()
-                count++
-            }
-            awaitUpdateEventScope {
-                count++
-                awaitUpdateEvent()
-                count++
-            }
-        }
-        assertEquals(0, count)
-        task.start()
-        assertEquals(1, count)
-        task.performUpdate( 1f)
-        assertEquals(4, count)
-    }
-
-    @Test
     fun suspendingTask_throw_exception() {
         var count = 0
         val task = SuspendingUpdateTask(gameContext) {

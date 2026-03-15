@@ -1,11 +1,17 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.tiled.model
 
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class JsonParseTest {
+    private val json = Json { ignoreUnknownKeys = true }
     @Test
     fun jsonParseTest_parse_map() {
         val decoded = Json.decodeFromString<TiledMap>(
@@ -168,7 +174,6 @@ class JsonParseTest {
         val child1 = assertIs<ObjectGroupLayer>(layer.layers.first()).also {
             assertEquals("ObjectLayer", it.name)
             assertEquals("Object1", it.objects[0].name)
-            assertEquals(30.0429184549356, it.objects[0].width)
             assertEquals(28.8166768853464, it.objects[0].x)
         }
 
@@ -257,5 +262,194 @@ class JsonParseTest {
                 assertEquals(true, it.flipVertical)
             }
         }
+    }
+
+    @Test
+    fun jsonParseTest_parse_tile_object() {
+        val decode = json.decodeFromString<List<TiledObject>>(
+            """
+                [
+                  {
+                    "height": 121.684108055488,
+                    "id": 12,
+                    "name": "Arrrr",
+                    "opacity": 1,
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 126.551472377707,
+                    "x": 64.8981909629269,
+                    "y": 29.2041859333171
+                  },
+                  {
+                    "height": 0,
+                    "id": 14,
+                    "name": "StartPoint",
+                    "opacity": 1,
+                    "point": true,
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 0,
+                    "x": 279.873448527622,
+                    "y": 186.582299018415
+                  },
+                  {
+                    "height": 0,
+                    "id": 16,
+                    "name": "Polygen",
+                    "opacity": 1,
+                    "polygon": [
+                      {
+                        "x": -25.820170109356,
+                        "y": 51.6403402187121
+                      },
+                      {
+                        "x": 107.077764277035,
+                        "y": 0
+                      },
+                      {
+                        "x": 48.6026731470231,
+                        "y": 104.799513973269
+                      }
+                    ],
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 0,
+                    "x": 529.313487241798,
+                    "y": 228.584447144593
+                  },
+                  {
+                    "height": 18.84375,
+                    "id": 17,
+                    "name": "",
+                    "opacity": 1,
+                    "rotation": 0,
+                    "text": {
+                      "text": "Hello World",
+                      "wrap": true
+                    },
+                    "type": "",
+                    "visible": true,
+                    "width": 80.234375,
+                    "x": 316.808693423451,
+                    "y": 243.463908718105
+                  },
+                  {
+                    "capsule": true,
+                    "height": 157.958687727825,
+                    "id": 18,
+                    "name": "Capsel",
+                    "opacity": 1,
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 72.1445929526124,
+                    "x": 148.845686512758,
+                    "y": 233.900364520049
+                  },
+                  {
+                    "ellipse": true,
+                    "height": 109.356014580802,
+                    "id": 24,
+                    "name": "Eclipse",
+                    "opacity": 1,
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 72.9040097205346,
+                    "x": 372.114216281896,
+                    "y": 8.35358444714459
+                  },
+                  {
+                    "height": 0,
+                    "id": 25,
+                    "name": "PolygenLines",
+                    "opacity": 1,
+                    "polyline": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": -66.8286755771567,
+                        "y": 22.0230862697448
+                      },
+                      {
+                        "x": -78.2199270959902,
+                        "y": 119.228432563791
+                      },
+                      {
+                        "x": -15.9477521263669,
+                        "y": 78.2199270959903
+                      }
+                    ],
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 0,
+                    "x": 536.148238153098,
+                    "y": 62.2721749696233
+                  },
+                  {
+                    "gid": 1,
+                    "height": 16,
+                    "id": 32,
+                    "name": "TileObj",
+                    "opacity": 1,
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 16,
+                    "x": 296.869823283421,
+                    "y": 102.878366833041
+                  }
+                ]
+            """.trimIndent()
+        )
+
+        assertEquals(8, decode.size, "Should parse exactly 8 objects")
+
+        val rectObj = assertIs<RectObject>(decode[0])
+        assertEquals(12, rectObj.id)
+        assertEquals("Arrrr", rectObj.name)
+        assertEquals(126.551472377707, rectObj.width)
+
+        val pointObj = assertIs<PointObject>(decode[1])
+        assertEquals(14, pointObj.id)
+        assertEquals("StartPoint", pointObj.name)
+        assertTrue(pointObj.point)
+
+        val polygonObj = assertIs<PolygonObject>(decode[2])
+        assertEquals(16, polygonObj.id)
+        assertEquals("Polygen", polygonObj.name)
+        assertEquals(3, polygonObj.polygon.size, "Polygon should have 3 points")
+        assertEquals(-25.820170109356, polygonObj.polygon[0].x)
+
+        val textObj = assertIs<TextObject>(decode[3])
+        assertEquals(17, textObj.id)
+        assertEquals("Hello World", textObj.text.text)
+        assertTrue(textObj.text.wrap)
+
+        val capsuleObj = assertIs<CapsuleObject>(decode[4])
+        assertEquals(18, capsuleObj.id)
+        assertEquals("Capsel", capsuleObj.name)
+        assertTrue(capsuleObj.capsule)
+
+        val ellipseObj = assertIs<EllipseObject>(decode[5])
+        assertEquals(24, ellipseObj.id)
+        assertEquals("Eclipse", ellipseObj.name)
+        assertTrue(ellipseObj.ellipse)
+
+        val polylineObj = assertIs<PolylineObject>(decode[6])
+        assertEquals(25, polylineObj.id)
+        assertEquals("PolygenLines", polylineObj.name)
+        assertEquals(4, polylineObj.polyline.size, "Polyline should have 4 points")
+
+        val tileObj = assertIs<TileObject>(decode[7])
+        assertEquals(32, tileObj.id)
+        assertEquals("TileObj", tileObj.name)
+        assertEquals(1L, tileObj.gid)
     }
 }

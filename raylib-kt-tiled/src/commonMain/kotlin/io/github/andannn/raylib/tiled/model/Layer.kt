@@ -1,3 +1,7 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.tiled.model
 
 import kotlinx.serialization.SerialName
@@ -21,7 +25,7 @@ sealed class Layer {
     abstract val locked: Boolean
 
     /** The blend mode to use when rendering the layer. (since 1.12) */
-    abstract val mode: String?
+    abstract val mode: TiledBlendMode
 
     /** Name assigned to this layer */
     abstract val name: String
@@ -99,7 +103,7 @@ data class TileLayer(
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: String? = null,
+    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,
@@ -166,7 +170,7 @@ data class ObjectGroupLayer(
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: String? = null,
+    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,
@@ -212,7 +216,7 @@ data class ImageLayer(
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: String? = null,
+    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,
@@ -237,7 +241,7 @@ data class GroupLayer(
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: String? = null,
+    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,
@@ -251,34 +255,3 @@ data class GroupLayer(
     @SerialName("x") override val x: Int = 0,
     @SerialName("y") override val y: Int = 0
 ) : Layer()
-
-value class GID(val rawGid: UInt) {
-
-    val tileId: Int
-        get() = (rawGid and MASK.inv()).toInt()
-
-    val hasFlips: Boolean
-        get() = (rawGid and MASK) != 0u
-
-    val flipHorizontal: Boolean get() = (rawGid and FLIPPED_HORIZONTALLY_FLAG) != 0u
-    val flipVertical: Boolean get() = (rawGid and FLIPPED_VERTICALLY_FLAG) != 0u
-    val flipDiagonal: Boolean get() = (rawGid and FLIPPED_DIAGONALLY_FLAG) != 0u
-
-
-    override fun toString(): String {
-        return "[GID: $tileId, flipHorizontal=$flipHorizontal, flipVertical=$flipVertical, flipDiagonal=$flipDiagonal]"
-
-    }
-
-    private companion object {
-        private const val FLIPPED_HORIZONTALLY_FLAG = 0x80000000u
-        private const val FLIPPED_VERTICALLY_FLAG = 0x40000000u
-        private const val FLIPPED_DIAGONALLY_FLAG = 0x20000000u
-        private const val FLIPPED_ANTI_DIAGONALLY_FLAG = 0x10000000u
-
-        private val MASK = FLIPPED_HORIZONTALLY_FLAG or
-                FLIPPED_VERTICALLY_FLAG or
-                FLIPPED_DIAGONALLY_FLAG or
-                FLIPPED_ANTI_DIAGONALLY_FLAG
-    }
-}

@@ -11,17 +11,22 @@ import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.base.withWorldSpace
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.ComponentScope
+import io.github.andannn.raylib.core.Context
+import io.github.andannn.raylib.core.ContextRegistry
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.RenderPhase
 import io.github.andannn.raylib.core.State
 import io.github.andannn.raylib.core.Vector2Alloc
 import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.find
+import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
+import platform.posix.err
 import kotlin.math.abs
 
 /**
@@ -33,6 +38,19 @@ class Spatial2D(
     val transform: Transform2D,
     val aabb: Aabb,
 )
+
+class Spatial2DContext : Context {
+    @PublishedApi
+    internal var internalSpatial2D: Spatial2D? = null
+    val spatial2D: Spatial2D
+        get() = internalSpatial2D!!
+}
+
+fun ContextRegistry.requireParentSpatial2D(): Spatial2D = parentSpatial2D() ?: error("No parent spatial2D found")
+
+fun ContextRegistry.parentSpatial2D(): Spatial2D? {
+    return findOrNull<Spatial2DContext>()?.spatial2D
+}
 
 fun Spatial2D.toGlobalRect() = aabb.toGlobalRect()
 
@@ -112,7 +130,10 @@ inline fun ComponentRegistry.spatial2DComponent(
     state: Spatial2D,
     crossinline block: ComponentScope.() -> Unit
 ) = transform2DComponent(key = key, state.transform) {
-    if (find<WindowContext>().isDebug) {
+    val context = remember {
+        Spatial2DContext()
+    }
+    if (isDebug) {
         val debugRectColor = remember {
             randomColor()
         }
@@ -130,7 +151,11 @@ inline fun ComponentRegistry.spatial2DComponent(
     }
 
     aabbUpdate(state.aabb, state.size)
-    block()
+
+    context.internalSpatial2D = state
+    provide(context) {
+        block()
+    }
 }
 
 /**
