@@ -12,6 +12,7 @@ import io.github.andannn.raylib.base.Colors
 import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.base.blendMode
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
@@ -71,6 +72,8 @@ enum class Example(val title: String) {
     IMAGE_DRAWING("Image drawing"),
     MODULE_PLAYING("Module playing"),
     SOUND_LOADING("Sound Loading"),
+    TILE_MAP_TEST("Tile map test"),
+    BLEND_MODES("Blend Modes"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -88,7 +91,7 @@ fun main() = window(
     }
 ) {
     val active = remember {
-        nativeStateOf { alloc<IntVar> { value = -1 } }
+        nativeStateOf { alloc<IntVar> { value = Example.entries.lastIndex -1 } }
     }
 
     val currentExample = remember {
@@ -164,6 +167,8 @@ fun main() = window(
         Example.IMAGE_DRAWING -> imageDrawing()
         Example.MODULE_PLAYING -> modulePlaying()
         Example.SOUND_LOADING -> soundLoading()
+        Example.TILE_MAP_TEST -> tileMapTest()
+        Example.BLEND_MODES -> blendModes()
     }
 
     if (currentExample.value != null) {

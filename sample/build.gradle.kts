@@ -57,6 +57,7 @@ kotlin {
         nativeMain.dependencies {
             implementation(project(":raylib-kt-gui"))
             implementation(project(":raylib-kt-easings"))
+            implementation(project(":raylib-kt-tiled"))
             implementation(project(":raylib-kt-components"))
         }
     }

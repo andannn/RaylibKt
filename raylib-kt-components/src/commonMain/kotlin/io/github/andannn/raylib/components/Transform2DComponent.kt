@@ -4,6 +4,9 @@
  */
 package io.github.andannn.raylib.components
 
+import io.github.andannn.raylib.base.Colors.DARKGREEN
+import io.github.andannn.raylib.base.Colors.LIGHTGRAY
+import io.github.andannn.raylib.base.Colors.RED
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.readValue
@@ -30,6 +33,8 @@ import io.github.andannn.raylib.base.rlMatrix
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.Vector2Alloc
+import io.github.andannn.raylib.core.onDraw
+import raylib.interop.DrawCircle
 
 /**
  * Retrieves the current global transformation matrix for the calling component.
@@ -102,6 +107,13 @@ inline fun ComponentRegistry.transform2DComponent(
 
         RenderPhase.DRAW -> transform2DDrawInterceptor(transform) {
             children(transform)
+
+            if (isDebug) {
+                onDraw {
+                    drawLine(-20, 0, 20, 0, DARKGREEN)
+                    drawLine(0,  -20, 0, 20, DARKGREEN)
+                }
+            }
         }
     }
 }
