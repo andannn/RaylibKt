@@ -1,0 +1,44 @@
+{
+    "activeFile": "test.tmj",
+    "expandedProjectPaths": [
+        "tilesets",
+        "."
+    ],
+    "fileStates": {
+        "test.tmj": {
+            "scale": 0.5644,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 492.5584691708008,
+                "y": 490.7866761162295
+            }
+        },
+        "tilesets/Confetti.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "/Users/jhc/source/mine/RaylibKt/sample/resources",
+    "map.height": 60,
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 60,
+    "openFiles": [
+        "test.tmj",
+        "tilesets/Confetti.tsj"
+    ],
+    "project": "test.tiled-project",
+    "recentFiles": [
+        "tilesets/Confetti.tsj",
+        "test.tmj",
+        "Confetti (16x16).tsj",
+        "Terrain (16x16).tsj",
+        "Spike.tsj"
+    ],
+    "tileset.lastUsedFormat": "json",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

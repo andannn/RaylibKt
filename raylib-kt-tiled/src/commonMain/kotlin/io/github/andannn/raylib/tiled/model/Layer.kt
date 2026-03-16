@@ -4,6 +4,10 @@
  */
 package io.github.andannn.raylib.tiled.model
 
+import io.github.andannn.raylib.base.Color
+import io.github.andannn.raylib.base.Colors.WHITE
+import io.github.andannn.raylib.tiled.util.toRaylibColor
+import kotlinx.cinterop.CValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -60,6 +64,10 @@ sealed class Layer {
 
     /** Vertical layer offset in tiles. Always 0. */
     abstract val y: Int
+
+    val raylibTintColor : CValue<Color> by lazy {
+        tintColor?.toRaylibColor() ?: WHITE
+    }
 }
 
 @Serializable

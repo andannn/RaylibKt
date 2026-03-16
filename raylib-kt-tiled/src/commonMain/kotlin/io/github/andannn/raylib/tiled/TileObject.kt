@@ -16,7 +16,6 @@ import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.tiled.model.*
 
-
 inline fun ComponentScope.bindObjects(
     objects: List<TiledObject>,
     crossinline onBindObject: ComponentScope.(TiledObject) -> Unit
@@ -26,13 +25,13 @@ inline fun ComponentScope.bindObjects(
         when (obj) {
             is RectObject -> bindRect(obj, onBindObject)
             is PointObject -> bindPoint(obj, onBindObject)
+            is TileObject -> TODO()
             is CapsuleObject -> TODO()
             is EllipseObject -> TODO()
             is PolygonObject -> TODO()
             is PolylineObject -> TODO()
             is TemplateObject -> TODO()
             is TextObject -> TODO()
-            is TileObject -> TODO()
         }
     }
 }

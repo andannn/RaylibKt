@@ -4,7 +4,7 @@
  */
 package io.github.andannn.raylib.tiled.model
 
-import io.github.andannn.raylib.tiled.TiledMapFiles
+import io.github.andannn.raylib.tiled.TileMapFile
 import io.github.andannn.raylib.tiled.TiledMapProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -13,7 +13,7 @@ class TiledMapProviderTest {
 
     @Test
     fun tiledMapProviderTest_getMap() {
-        val provider = TiledMapProvider(object : TiledMapFiles {
+        val provider = TiledMapProvider(object : TileMapFile {
             override fun tmJsonFile(): String {
                 return "src/commonTest/dummy/test.tmj"
             }
