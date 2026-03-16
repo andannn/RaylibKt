@@ -7,8 +7,8 @@ import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.WindowShouldClose
@@ -21,7 +21,7 @@ fun ComponentRegistry.windowShouldClose(
     var exitWindowRequested by remember {
         mutableStateOf(false)
     }
-    onUpdate {
+    update {
         if (WindowShouldClose() || exitKey.isPressed()) exitWindowRequested = true
         if (exitWindowRequested) {
             // A request for close window has been issued, we can save data before closing
@@ -31,7 +31,7 @@ fun ComponentRegistry.windowShouldClose(
         }
     }
 
-    onDraw {
+    draw {
         if (exitWindowRequested) {
             drawRectangle(0, 100, screenWidth, 200, BLACK)
             drawText("Are you sure you want to exit program? [Y/N]", 40, 180, 30, WHITE)

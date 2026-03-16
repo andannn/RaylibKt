@@ -25,7 +25,7 @@ fun ComponentRegistry.blendModes() = component("blend modes") {
         mutableStateOf(BlendMode.BLEND_ADDITIVE)
     }
 
-    onUpdate {
+    update {
         if (KeyboardKey.KEY_SPACE.isPressed()) {
             val options = BlendMode.entries
             val nextIndex = (options.indexOf(blendMode) + 1) % options.size
@@ -33,7 +33,7 @@ fun ComponentRegistry.blendModes() = component("blend modes") {
         }
     }
 
-    onDraw {
+    draw {
         bgTexture.useContents {
             drawTexture(bgTexture, screenWidth/2 - width/2, screenHeight/2 - height/2, WHITE);
         }

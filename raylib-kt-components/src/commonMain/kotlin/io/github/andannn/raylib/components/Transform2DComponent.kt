@@ -5,36 +5,33 @@
 package io.github.andannn.raylib.components
 
 import io.github.andannn.raylib.base.Colors.DARKGREEN
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Colors.RED
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.cValue
-import kotlinx.cinterop.readValue
-import kotlinx.cinterop.useContents
+import io.github.andannn.raylib.base.Matrix
+import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.base.matrixIdentity
+import io.github.andannn.raylib.base.multiply
+import io.github.andannn.raylib.base.rlMatrix
 import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.Context
 import io.github.andannn.raylib.core.ContextProvider
-import io.github.andannn.raylib.base.Matrix
 import io.github.andannn.raylib.core.MutableState
+import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.RenderPhase
 import io.github.andannn.raylib.core.State
-import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.core.Vector2Alloc
 import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.findOrNull
-import io.github.andannn.raylib.base.matrixIdentity
-import io.github.andannn.raylib.base.multiply
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.base.rlMatrix
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.RememberScope
-import io.github.andannn.raylib.core.Vector2Alloc
-import io.github.andannn.raylib.core.onDraw
-import raylib.interop.DrawCircle
+import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
+import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
 
 /**
  * Retrieves the current global transformation matrix for the calling component.
@@ -109,9 +106,12 @@ inline fun ComponentRegistry.transform2DComponent(
             children(transform)
 
             if (isDebug) {
-                onDraw {
+                val offsetX = transform.offset.x.toInt()
+                val offsetY = transform.offset.y.toInt()
+                draw {
                     drawLine(-20, 0, 20, 0, DARKGREEN)
                     drawLine(0,  -20, 0, 20, DARKGREEN)
+                    drawCircle(-offsetX, -offsetY, 2f, RED)
                 }
             }
         }

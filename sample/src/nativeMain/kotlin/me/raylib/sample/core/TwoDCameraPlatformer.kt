@@ -28,8 +28,8 @@ import io.github.andannn.raylib.base.scale
 import io.github.andannn.raylib.base.screenToWorldPosition
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.base.subtract
 import io.github.andannn.raylib.base.worldToScreenPosition
@@ -68,7 +68,7 @@ fun ComponentRegistry.towDCameraPlatformer() {
     }
 
     component("changeCameraOption") {
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_C.isPressed()) {
                 cameraOption.value = cameraOption.value.next()
             }
@@ -96,7 +96,7 @@ fun ComponentRegistry.towDCameraPlatformer() {
 
 private fun ComponentRegistry.envItemsComponent(camera: Camera2D, item: EnvItem) {
     component(item) {
-        onDraw {
+        draw {
             mode2d(camera) {
                 drawRectangle(item.rect.readValue(), item.color)
             }
@@ -120,7 +120,7 @@ private fun ComponentRegistry.followTargetCenterClampedCamera(
         val minY: Float
     )
     component("followPlayerCenterClampedCamera") {
-        onUpdate {
+        update {
             camera.target.x = target.x
             camera.target.y = target.y
             camera.offset.x = screenWidth / 2.0f
@@ -155,7 +155,7 @@ private fun ComponentRegistry.followTargetCamera(
     position: Vector2
 ) {
     component("followTargetCamera") {
-        onUpdate {
+        update {
             camera.offset.x = screenWidth.div(2f)
             camera.offset.y = screenHeight.div(2f)
             camera.target.x = position.x
@@ -173,7 +173,7 @@ private fun ComponentRegistry.followTargetSmoothCamera(
         val minEffectLength = 10;
         val fractionSpeed = 0.8f;
 
-        onUpdate { delta ->
+        update { delta ->
             camera.offset.x = screenWidth / 2.0f
             camera.offset.y = screenHeight / 2.0f
             val diff = position.readValue().subtract(camera.target.readValue())
@@ -194,7 +194,7 @@ private fun ComponentRegistry.playerPushCamera(
     position: Vector2
 ) {
     component("playerPushCamera") {
-        onUpdate {
+        update {
             val bbox = Vector2(0.2f, 0.2f)
             val bbox_x = bbox.useContents { x }
             val bbox_y = bbox.useContents { y }
@@ -236,7 +236,7 @@ private fun ComponentRegistry.followPlayerCenterHorizontallyCamera(
         var eveningOut = false
         var evenOutTarget = 0f
 
-        onUpdate { delta ->
+        update { delta ->
             camera.offset.x = screenWidth / 2.0f
             camera.offset.y = screenHeight / 2.0f
             camera.target.x = player.position.x
@@ -268,14 +268,14 @@ private fun ComponentRegistry.followPlayerCenterHorizontallyCamera(
 
 private fun ComponentRegistry.playerComponent(camera: Camera2D, player: Player, envItem: List<EnvItem>) {
     component("player") {
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_R.isPressed()) {
                 camera.zoom = 1.0f
                 player.position.x = 400f
                 player.position.y = 280f
             }
         }
-        onUpdate { delta ->
+        update { delta ->
             if (KeyboardKey.KEY_LEFT.isDown()) {
                 player.position.x -= PLAYER_HOR_SPD * delta
             }
@@ -312,7 +312,7 @@ private fun ComponentRegistry.playerComponent(camera: Camera2D, player: Player, 
             }
         }
 
-        onDraw {
+        draw {
             mode2d(camera) {
                 val playerRect = Rectangle(player.position.x - 20, player.position.y - 40, 40.0f, 40.0f)
                 drawRectangle(playerRect, RED)
@@ -324,7 +324,7 @@ private fun ComponentRegistry.playerComponent(camera: Camera2D, player: Player, 
 
 private fun ComponentRegistry.infoComponent(cameraOption: MutableState<CameraOption>) {
     component("info") {
-        onDraw {
+        draw {
             drawText("Controls:", 20, 20, 10, BLACK);
             drawText("- Right/Left to move", 40, 40, 10, DARKGRAY);
             drawText("- Space to jump", 40, 60, 10, DARKGRAY);

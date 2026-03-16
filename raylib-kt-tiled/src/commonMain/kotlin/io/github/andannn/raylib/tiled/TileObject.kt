@@ -12,7 +12,7 @@ import io.github.andannn.raylib.components.spatial2DComponent
 import io.github.andannn.raylib.components.transform2DComponent
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.tiled.model.*
 
@@ -53,7 +53,7 @@ inline fun ComponentScope.bindRect(
         onBindObject(obj)
 
         if (isDebug) {
-            onDraw {
+            draw {
                 drawText(obj.name, 0, -12, 10, RED)
             }
         }
@@ -74,7 +74,7 @@ inline fun ComponentScope.bindPoint(
         onBindObject(obj)
 
         if (isDebug) {
-            onDraw {
+            draw {
                 drawText(obj.name, 0, -10, 10, RED)
             }
         }

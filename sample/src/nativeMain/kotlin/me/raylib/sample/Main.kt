@@ -12,14 +12,13 @@ import io.github.andannn.raylib.base.Colors
 import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.blendMode
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.provideStaticDependency
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.window
@@ -27,8 +26,6 @@ import io.github.andannn.raylib.gui.GuiContext
 import io.github.andannn.raylib.gui.onDrawGui
 import me.raylib.sample.audio.modulePlaying
 import me.raylib.sample.audio.soundLoading
-import raygui.interop.FLAG_MSAA_4X_HINT
-import raylib.interop.SetConfigFlags
 import raylib.interop.rlDisableBackfaceCulling
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -99,7 +96,7 @@ fun main() = window(
     }
 
     component("menu_control") {
-        onUpdate {
+        update {
             if (active.value.value != -1) {
                 currentExample.value = Example.entries[active.value.value]
             } else {
@@ -175,13 +172,13 @@ fun main() = window(
         component("back") {
             val center = remember { Vector2(screenWidth - 20f, 20f) }
             val radius = 15f
-            onUpdate {
+            update {
                 if (MouseButton.MOUSE_BUTTON_LEFT.isPressed() && mousePosition.isCollisionWith(center, radius)) {
                     currentExample.value = null
                     active.value.value = -1
                 }
             }
-            onDraw {
+            draw {
                 drawCircle(center, radius, Colors.RED)
             }
         }

@@ -13,8 +13,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.Fade
@@ -37,7 +37,7 @@ fun ComponentRegistry.inputGestures() {
         val gestureStrings = remember {
             mutableListOf<String>()
         }
-        onUpdate {
+        update {
             lastGesture = currentGesture
             currentGesture = gestureDetected
             touchPosition = touchPosition(0)
@@ -52,7 +52,7 @@ fun ComponentRegistry.inputGestures() {
             }
         }
 
-        onDraw {
+        draw {
             drawRectangle(touchArea, GRAY)
             drawRectangle(225, 15, screenWidth - 240, screenHeight - 30, RAYWHITE);
             drawText(

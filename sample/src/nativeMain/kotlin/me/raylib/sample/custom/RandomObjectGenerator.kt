@@ -12,9 +12,8 @@ import io.github.andannn.raylib.core.Vector2Alloc
 import io.github.andannn.raylib.core.components
 import io.github.andannn.raylib.core.mutableStateListOf
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -30,7 +29,7 @@ fun ComponentRegistry.randomObjectGenerator() {
         var newId by remember {
             mutableStateOf(0)
         }
-        onUpdate {
+        update {
             frameCount++
             if (frameCount % 60 == 0) {
                 if (stateList.size <= 10000) {
@@ -58,7 +57,7 @@ private fun ComponentScope.generatedObject(state: NativeState<Int>) {
         )
     }
 
-    onUpdate {
+    update {
         frameCount++
 
         if (frameCount > 60) {
@@ -67,7 +66,7 @@ private fun ComponentScope.generatedObject(state: NativeState<Int>) {
         }
     }
 
-    onDraw {
+    draw {
         drawCircle(position.readValue(), radius.toFloat(), color)
     }
 }

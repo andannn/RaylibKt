@@ -10,8 +10,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.loadTexture
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -28,9 +28,9 @@ fun ComponentRegistry.srcrecDstrec() {
             mutableStateOf(0f)
         }
 
-        onUpdate { rotation++; }
+        update { rotation++; }
 
-        onDraw {
+        draw {
             drawTexture(scarfy, sourceRec, destRec, origin, WHITE, rotation)
 
             val (destRecX, destRecY) = destRec.useContents { x.toInt() to y.toInt() }

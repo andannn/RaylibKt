@@ -4,7 +4,6 @@
  */
 package io.github.andannn.raylib.core
 
-import io.github.andannn.raylib.base.WindowFunction
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.Cleaner
 import kotlin.native.ref.createCleaner
@@ -43,13 +42,13 @@ inline fun <reified R> ComponentRegistry.remember(block: RememberScope.() -> R):
 
 interface ComponentScope : WindowContext, DisposableRegistry, ComponentRegistry, ContextProvider
 
-inline fun ComponentScope.onUpdate(crossinline block: GameContext.(Float) -> Unit) {
+inline fun ComponentScope.update(crossinline block: GameContext.(Float) -> Unit) {
     if (find<WindowContext>().renderPhase == RenderPhase.UPDATE) {
         block(find<GameContext>(), find<WindowContext>().frameTimeSeconds)
     }
 }
 
-inline fun ComponentScope.onDraw(crossinline block: DrawContext.() -> Unit) {
+inline fun ComponentScope.draw(crossinline block: DrawContext.() -> Unit) {
     if (find<WindowContext>().renderPhase == RenderPhase.DRAW) {
         block(find<DrawContext>())
     }

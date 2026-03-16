@@ -71,7 +71,7 @@ inline fun ComponentRegistry.tiledComponent(
         }
     }
 
-    onDraw {
+    draw {
         if (isDebug) {
             val totalHeight = tiledMap.height * tiledMap.tileHeight.toFloat()
             val totalWidth = tiledMap.width * tiledMap.tileWidth.toFloat()
@@ -85,7 +85,7 @@ inline fun ComponentRegistry.tiledComponent(
 @PublishedApi
 context(manager: TiledSetManager)
 internal fun ComponentScope.drawTileLayer(tileLayer: TileLayer) {
-    onDraw {
+    draw {
         for (y in 0 until tileLayer.height) {
             for (x in 0 until tileLayer.width) {
                 val gid = tileLayer.gidArray[y * tileLayer.width + x]

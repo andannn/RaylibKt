@@ -15,8 +15,8 @@ import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -37,7 +37,7 @@ fun ComponentRegistry.linesBezier() {
         var mousePosition: CValue<Vector2>? by remember {
             mutableStateOf(null)
         }
-        onUpdate {
+        update {
             mousePosition = this.mousePosition
             if (mousePosition!!.isCollisionWith(
                     startPoint.readValue(),
@@ -69,7 +69,7 @@ fun ComponentRegistry.linesBezier() {
             }
         }
 
-        onDraw {
+        draw {
             drawText("MOVE START-END POINTS WITH MOUSE", 15, 20, 20, GRAY)
             // Draw line Cubic Bezier, in-out interpolation (easing), no control points
             drawLineBezier(startPoint.readValue(), endPoint.readValue(), 4.0f, BLUE)

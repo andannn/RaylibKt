@@ -18,7 +18,7 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.rememberSuspendingTask
 import io.github.andannn.raylib.core.setValue
@@ -92,7 +92,7 @@ inline fun ComponentRegistry.spriteAnimationComponent(
         }
     }
 
-    onDraw {
+    draw {
         drawTexture(texture, frameRec.readValue(), dest, origin, WHITE)
     }
 }

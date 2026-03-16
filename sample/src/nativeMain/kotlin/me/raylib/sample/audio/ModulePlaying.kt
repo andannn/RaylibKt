@@ -9,8 +9,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.musicStream
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import kotlinx.cinterop.copy
@@ -31,7 +31,7 @@ fun ComponentRegistry.modulePlaying() = component("module playing") {
         mutableStateOf(0f)
     }
 
-    onUpdate {
+    update {
         updateMusicStream(music)
 
         if (KeyboardKey.KEY_SPACE.isPressed()) {
@@ -57,7 +57,7 @@ fun ComponentRegistry.modulePlaying() = component("module playing") {
         timePlayedFactor = getMusicTimePlayed(music)/getMusicTimeLength(music)
     }
 
-    onDraw {
+    draw {
         drawRectangle(20, screenHeight - 20 - 12, screenWidth - 40, 12, LIGHTGRAY)
         drawRectangle(20, screenHeight - 20 - 12, (timePlayedFactor * (screenWidth - 40)).toInt(), 12, MAROON)
         drawRectangleLines(20, screenHeight - 20 - 12, screenWidth - 40, 12, GRAY)

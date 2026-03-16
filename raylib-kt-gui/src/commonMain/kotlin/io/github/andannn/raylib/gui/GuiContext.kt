@@ -9,10 +9,10 @@ import io.github.andannn.raylib.core.Context
 import io.github.andannn.raylib.core.ContextRegistry
 import io.github.andannn.raylib.core.DrawContext
 import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 
 fun ComponentScope.onDrawGui(block: GuiContext.() -> Unit) {
-    onDraw {
+    draw {
         with(find<GuiContext>()) {
             block()
         }

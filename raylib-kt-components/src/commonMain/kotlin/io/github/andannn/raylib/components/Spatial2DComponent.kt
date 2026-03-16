@@ -21,12 +21,11 @@ import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
-import platform.posix.err
 import kotlin.math.abs
 
 /**
@@ -140,7 +139,7 @@ inline fun ComponentRegistry.spatial2DComponent(
         val aabbRectColor = remember {
             randomColor()
         }
-        onDraw {
+        draw {
             val (sizeX, sizeY) = state.size.useContents { x to y }
             drawRectangleLines(Rectangle(0f, 0f, sizeX, sizeY), 1f, debugRectColor)
 

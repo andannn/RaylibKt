@@ -11,7 +11,7 @@ import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.loadTexture
 import io.github.andannn.raylib.core.mutableStateListOf
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import kotlinx.cinterop.CValue
@@ -28,7 +28,7 @@ fun ComponentRegistry.spriteExplosion() = component("explosion") {
         var id by remember {
             mutableStateOf(0L)
         }
-        onUpdate {
+        update {
             if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
                 explosionContainer.addState {
                     ExplosionState(

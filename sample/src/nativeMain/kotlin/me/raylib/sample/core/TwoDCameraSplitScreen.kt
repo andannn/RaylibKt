@@ -14,8 +14,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.components.fixSizedTextureComponent
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.mode2d
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.base.setOffset
 import io.github.andannn.raylib.base.setTarget
@@ -73,7 +73,7 @@ fun ComponentRegistry.twoDCameraSplitScreen() {
             RectangleAlloc(screenWidth / 2f, 0f, screenWidth / 2f, screenHeight.toFloat())
         }
 
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_S.isDown()) player1.y += 3.0f
             if (KeyboardKey.KEY_W.isDown()) player1.y -= 3.0f
             if (KeyboardKey.KEY_D.isDown()) player1.x += 3.0f
@@ -109,7 +109,7 @@ fun ComponentRegistry.twoDCameraSplitScreen() {
         }
 
         component("frame") {
-            onDraw {
+            draw {
                 drawRectangle(screenWidth / 2 - 2, 0, 4, screenHeight, RED)
             }
         }
@@ -121,7 +121,7 @@ private fun ComponentRegistry.playerAndWorldComponent(
     player1: Rectangle,
     player2: Rectangle,
 ) = component("player") {
-    onDraw {
+    draw {
         mode2d(camera2D) {
             val horizontalCount = screenWidth.div(PLAYER_SIZE) + 1
             repeat(horizontalCount) { i ->

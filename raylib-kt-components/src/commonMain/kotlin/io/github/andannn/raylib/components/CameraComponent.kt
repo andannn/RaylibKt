@@ -14,7 +14,7 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.base.add
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.base.length
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.base.scale
 import io.github.andannn.raylib.base.subtract
 import io.github.andannn.raylib.base.worldToScreenPosition
@@ -25,7 +25,7 @@ fun ComponentRegistry.cameraFollowTarget(
     target: Vector2
 ) {
     component("followTargetCamera") {
-        onUpdate {
+        update {
             camera.offset.x = screenWidth.div(2f)
             camera.offset.y = screenHeight.div(2f)
             camera.target.x = target.x
@@ -42,7 +42,7 @@ fun ComponentRegistry.cameraFollowTargetSmooth(
     fractionSpeed: Float = 0.8f,
 ) {
     component("followTargetSmooth") {
-        onUpdate { delta ->
+        update { delta ->
             camera.offset.x = screenWidth / 2.0f
             camera.offset.y = screenHeight / 2.0f
             val diff = target.readValue().subtract(camera.target.readValue())
@@ -70,7 +70,7 @@ fun ComponentRegistry.cameraFollowTargetCenterClamped(
         val minY: Float
     )
     component("followPlayerCenterClampedCamera") {
-        onUpdate {
+        update {
             camera.target.x = target.x
             camera.target.y = target.y
             camera.offset.x = screenWidth / 2.0f

@@ -10,7 +10,7 @@ import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.loadTextureFromImage
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.useFont
 import io.github.andannn.raylib.core.useImage
@@ -58,7 +58,7 @@ fun ComponentRegistry.imageDrawing() {
             }
         }
 
-        onDraw {
+        draw {
             val (textureWidth, textureHeight) = texture.useContents { width to height }
             drawTexture(texture, screenWidth / 2 - textureWidth / 2, screenHeight / 2 - textureHeight / 2 - 40, WHITE)
             drawRectangleLines(

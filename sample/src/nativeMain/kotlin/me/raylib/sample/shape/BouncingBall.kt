@@ -14,8 +14,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.rememberSuspendingTask
 import io.github.andannn.raylib.core.setValue
@@ -42,7 +42,7 @@ fun ComponentRegistry.bouncingBall() {
         val ballRadius = 20
         val gravity = 0.2f
 
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_G.isPressed()) useGravity = !useGravity;
             if (KeyboardKey.KEY_SPACE.isPressed()) { pause = !pause }
             if (!pause) {
@@ -57,7 +57,7 @@ fun ComponentRegistry.bouncingBall() {
             }
         }
 
-        onDraw {
+        draw {
             drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
             drawText("PRESS SPACE to PAUSE BALL MOVEMENT", 10, screenHeight - 25, 20, LIGHTGRAY)
             if (useGravity) drawText("GRAVITY: ON (Press G to disable)", 10, screenHeight - 50, 20, DARKGREEN)
@@ -80,7 +80,7 @@ fun ComponentRegistry.bouncingBall() {
                     showPaused = true
                 }
             }
-            onDraw {
+            draw {
                 if (showPaused) drawText("PAUSED", 350, 200, 30, GRAY)
             }
         }
