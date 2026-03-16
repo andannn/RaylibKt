@@ -8,6 +8,7 @@ import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.components.AssetManager
 import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.components.transform2DComponent
 import io.github.andannn.raylib.core.*
@@ -37,7 +38,7 @@ inline fun ComponentRegistry.tiledComponent(
 ) = component(key) {
     val tiledMap = remember { tiledMapProvider.getMap() }
     val tiledSetManager = remember {
-        TiledSetManager(this, tiledMap)
+        TiledSetManager(find<AssetManager>(), tiledMap)
     }
 
     val flattenedLayers = remember {
@@ -185,17 +186,17 @@ internal interface TiledSetManager {
 
 @PublishedApi
 internal fun TiledSetManager(
-    rememberScope: RememberScope,
+    assetManager: AssetManager,
     tiledMap: TiledMap,
-): TiledSetManager = TiledSetTextureManager(rememberScope, tiledMap)
+): TiledSetManager = TiledSetTextureManager(assetManager, tiledMap)
 
 private class TiledSetTextureManager(
-    val rememberScope: RememberScope,
+    val assetManager: AssetManager,
     val tiledMap: TiledMap,
 ) : TiledSetManager {
     private val textureMap: Map<TiledSetKey, TiledSetWithTexture> = buildMap {
         tiledMap.tilesets.forEach {
-            put(it.key(), TiledSetWithTexture(it, rememberScope.loadTexture(it.requireImage())))
+            put(it.key(), TiledSetWithTexture(it, assetManager.getTexture(it.requireImage())))
         }
     }
 

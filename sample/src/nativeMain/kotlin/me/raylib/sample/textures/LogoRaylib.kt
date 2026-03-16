@@ -3,16 +3,17 @@ package me.raylib.sample.textures
 import kotlinx.cinterop.useContents
 import io.github.andannn.raylib.base.Colors.GRAY
 import io.github.andannn.raylib.base.Colors.WHITE
+import io.github.andannn.raylib.components.AssetManager
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.loadTexture
 import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.remember
 
 fun ComponentRegistry.logoRaylib() {
     component("logo") {
         val texture = remember {
-            loadTexture("resources/raylib_logo.png")
+            find<AssetManager>().getTexture("resources/raylib_logo.png")
         }
         draw {
             val (width, height) = texture.useContents { width to height }
