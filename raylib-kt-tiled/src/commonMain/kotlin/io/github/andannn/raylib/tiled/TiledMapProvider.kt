@@ -7,7 +7,11 @@ package io.github.andannn.raylib.tiled
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.Layer
-import io.github.andannn.raylib.tiled.model.TiledMap
+import io.github.andannn.raylib.tiled.model.ObjectGroupLayer
+import io.github.andannn.raylib.tiled.model.TemplateObject
+import io.github.andannn.raylib.tiled.model.Template
+import io.github.andannn.raylib.tiled.model.TileMap
+import io.github.andannn.raylib.tiled.model.Object
 import io.github.andannn.raylib.tiled.model.Tileset
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -16,7 +20,7 @@ import kotlinx.io.readString
 import kotlinx.serialization.json.Json
 
 interface TiledMapProvider {
-    fun getMap(): TiledMap
+    fun getMap(): TileMap
 
     companion object Factory {
         fun json(file: String): TiledMapProvider = JsonTiledMapProvider(file)
@@ -30,14 +34,14 @@ private class JsonTiledMapProvider(
         ignoreUnknownKeys = true
     }
 
-    override fun getMap(): TiledMap {
+    override fun getMap(): TileMap {
         val tmJsonFile = Path(file)
         val tmJsonFileParent = tmJsonFile.parent ?: Path(".")
 
         val tmJson = SystemFileSystem.source(tmJsonFile).buffered().readString()
-        val srcMap = json.decodeFromString<TiledMap>(tmJson)
+        val srcMap = json.decodeFromString<TileMap>(tmJson)
 
-        val resolvedLayers = srcMap.layers.resolveImagePaths(tmJsonFileParent)
+        val resolvedLayers = srcMap.layers.resolvePaths(tmJsonFileParent)
 
         val resolvedTilesets = srcMap.tilesets.map { tileset ->
             if (tileset.source != null) {
@@ -53,7 +57,7 @@ private class JsonTiledMapProvider(
         )
     }
 
-    private fun List<Layer>.resolveImagePaths(basePath: Path): List<Layer> {
+    private fun List<Layer>.resolvePaths(basePath: Path): List<Layer> {
         return this.map { layer ->
             when (layer) {
                 is ImageLayer -> {
@@ -62,14 +66,37 @@ private class JsonTiledMapProvider(
                     layer.copy(image = absolutePath.toString())
                 }
 
+                is ObjectGroupLayer -> {
+                    val newObjects = layer.objects.map { obj ->
+                        when (obj) {
+                            is TemplateObject -> {
+                                resolveTemplateObj(basePath, obj)
+                            }
+
+                            else -> obj
+                        }
+                    }
+                    layer.copy(objects = newObjects)
+                }
+
                 is GroupLayer -> {
-                    layer.copy(layers = layer.layers.resolveImagePaths(basePath))
+                    layer.copy(layers = layer.layers.resolvePaths(basePath))
                 }
 
                 else -> layer
             }
         }
     }
+
+    private fun resolveTemplateObj(basePath: Path, obj: TemplateObject): Object {
+        val templatePath = Path(obj.template)
+        val absolutePath = if (templatePath.isAbsolute) templatePath else Path(basePath, obj.template)
+
+        val templateJson = SystemFileSystem.source(absolutePath).buffered().readString()
+        val template = json.decodeFromString<Template>(templateJson)
+        return template.obj.copyWith(obj.x, obj.y, obj.id)
+    }
+
 
     private fun mergeExternalTileset(
         base: Path,
@@ -105,3 +132,4 @@ private class JsonTiledMapProvider(
         )
     }
 }
+

@@ -4,7 +4,6 @@
  */
 package io.github.andannn.raylib.tiled.model
 
-import io.github.andannn.raylib.tiled.TileMapFile
 import io.github.andannn.raylib.tiled.TiledMapProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -13,18 +12,7 @@ class TiledMapProviderTest {
 
     @Test
     fun tiledMapProviderTest_getMap() {
-        val provider = TiledMapProvider(object : TileMapFile {
-            override fun tmJsonFile(): String {
-                return "src/commonTest/dummy/test.tmj"
-            }
-
-            override fun txJsonFiles(): List<String> {
-                return listOf(
-                    "src/commonTest/dummy/Confetti (16x16).tsj",
-                    "src/commonTest/dummy/Terrain (16x16).tsj",
-                )
-            }
-        })
+        val provider = TiledMapProvider.json("src/commonTest/dummy/test.tmj")
 
         val tileset0 = provider.getMap().tilesets[0]
         val tileset1 = provider.getMap().tilesets[1]
@@ -38,7 +26,7 @@ class TiledMapProviderTest {
 
     @Test
     fun tiledMapProviderTest_build_provider() {
-        val provider = TiledMapProvider("src/commonTest/dummy/test.tmj")
+        val provider = TiledMapProvider.json("src/commonTest/dummy/test.tmj")
         val tileset0 = provider.getMap().tilesets[0]
         assertEquals(1, tileset0.firstGid)
         assertEquals(16, tileset0.imageHeight)

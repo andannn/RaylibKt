@@ -8,7 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class TiledText(
+public data class Text(
     /** Whether to use a bold font (default: false) */
     @SerialName("bold") val bold: Boolean = false,
 

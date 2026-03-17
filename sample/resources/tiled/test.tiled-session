@@ -1,13 +1,14 @@
 {
     "activeFile": "test.tmj",
     "expandedProjectPaths": [
+        ".",
         "tilesets",
-        "."
+        "template"
     ],
     "fileStates": {
         "test.tmj": {
             "scale": 0.5644,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 492.5584691708008,
                 "y": 490.7866761162295
@@ -19,6 +20,7 @@
         }
     },
     "last.imagePath": "/Users/jhc/source/mine/RaylibKt/sample/resources",
+    "last.objectTemplatePath": "/Users/jhc/source/mine/RaylibKt/sample/resources/tiled/template",
     "map.height": 60,
     "map.lastUsedFormat": "json",
     "map.tileHeight": 16,

@@ -8,7 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TiledMap(
+data class TileMap(
   /** Hex-formatted color (#RRGGBB or #AARRGGBB) (optional) */
   @SerialName("backgroundcolor")
   val backgroundColor: String? = null,

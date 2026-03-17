@@ -10,16 +10,18 @@ import kotlin.native.ref.createCleaner
 
 interface ComponentRegistry : ContextRegistry
 
-inline fun ComponentRegistry.component(id: Any, crossinline block: ComponentScope.() -> Unit) {
+inline fun <T> ComponentRegistry.component(id: Any, crossinline block: ComponentScope.() -> T): T {
     (this as ComponentStore)
 
     val component = getCachedOrCreateComponent(id)
 
     // apply block to build children components.
-    component.block()
+    val ret = component.block()
     component.onEndBuildComponents()
 
     finishComponent(id, component)
+
+    return ret
 }
 
 inline fun ComponentRegistry.doOnce(crossinline block: RememberScope.() -> Unit) {

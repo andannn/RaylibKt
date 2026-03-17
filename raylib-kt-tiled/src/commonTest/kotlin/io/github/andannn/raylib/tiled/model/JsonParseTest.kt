@@ -14,7 +14,7 @@ class JsonParseTest {
     private val json = Json { ignoreUnknownKeys = true }
     @Test
     fun jsonParseTest_parse_map() {
-        val decoded = Json.decodeFromString<TiledMap>(
+        val decoded = Json.decodeFromString<TileMap>(
             """
             { "compressionlevel":4,
              "height":20,
@@ -184,7 +184,7 @@ class JsonParseTest {
 
     @Test
     fun jsonParseTest_parse_csv_layer_data() {
-        val decode = Json.decodeFromString<TiledMap>(
+        val decode = Json.decodeFromString<TileMap>(
             """
             { "compressionlevel":4,
              "height":20,
@@ -266,7 +266,7 @@ class JsonParseTest {
 
     @Test
     fun jsonParseTest_parse_tile_object() {
-        val decode = json.decodeFromString<List<TiledObject>>(
+        val decode = json.decodeFromString<List<Object>>(
             """
                 [
                   {

@@ -8,7 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class TiledBlendMode {
+enum class BlendMode {
     @SerialName("normal")
     NORMAL,
     @SerialName("add")
