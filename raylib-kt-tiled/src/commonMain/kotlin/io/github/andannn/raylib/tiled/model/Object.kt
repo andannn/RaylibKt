@@ -142,7 +142,7 @@ data class PolylineObject(
 
 @Serializable
 data class TileObject(
-    @SerialName("gid") val gid: Long,
+    @SerialName("gid") val gid: Int,
     @SerialName("rotation") val rotation: Double = 0.0,
     @SerialName("id") override val id: Int,
     @SerialName("x") override val x: Double? = null,
@@ -153,7 +153,11 @@ data class TileObject(
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
     @SerialName("opacity") override val opacity: Double = 1.0
-) : Object
+) : Object {
+    val gidObj: GID by lazy {
+        GID(gid.toUInt())
+    }
+}
 
 @Serializable
 data class TextObject(

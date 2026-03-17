@@ -1,3 +1,7 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.tiled.render
 
 import io.github.andannn.raylib.base.Color
@@ -7,6 +11,7 @@ import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.components.AssetManager
 import io.github.andannn.raylib.core.ComponentScope
+import io.github.andannn.raylib.core.DrawContext
 import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.remember
@@ -42,9 +47,7 @@ internal fun ComponentScope.drawTileLayer(tileLayer: TileLayer, tint: CValue<Col
                 val gid = tileLayer.gidArray[y * tileLayer.width + x]
                 if (gid.tileId == 0) continue
 
-                val (src, dst, texture) = manager.getTile(x, y, gid)
-
-                drawTexture(texture = texture, source = src, dest = dst, tint = tint)
+                drawTile(x.toFloat(), y.toFloat(), gid, getTileSetByGID(gid),tint)
             }
         }
 
@@ -81,7 +84,8 @@ private fun Tileset.key(): TiledSetKey {
     )
 }
 
-private class TiledSetKey(
+@PublishedApi
+internal class TiledSetKey(
     val localIdRange: IntRange,
 )
 
@@ -90,7 +94,46 @@ private class TiledSetKey(
 internal interface TiledSetManager {
     val tileHeight: Int
     val tileWidth: Int
-    fun getTile(x: Int, y: Int, gID: GID): Triple<CValue<Rectangle>, CValue<Rectangle>, CValue<Texture>>
+    val textureMap: Map<TiledSetKey, TiledSetWithTexture>
+}
+
+@PublishedApi
+context(tileSetManager: TiledSetManager)
+internal fun getTileSetByGID(gid: GID): TiledSetWithTexture {
+    val tileId = gid.tileId
+    val key = tileSetManager.textureMap.keys.firstOrNull { tileId in it.localIdRange }
+        ?: throw IllegalStateException("request gid: $gid is not registered in TiledSetTextureManager")
+    return tileSetManager.textureMap[key]!!
+}
+
+@PublishedApi
+internal fun DrawContext.drawTile(
+    x: Float,
+    y: Float,
+    gID: GID,
+    tileSet: TiledSetWithTexture,
+    tint: CValue<Color>,
+) {
+    val flipHorizontal = gID.flipHorizontal
+    val flipVertical = gID.flipVertical
+    val flipDiagonal = gID.flipDiagonal
+// TODO: handle flip
+
+    val tileId = gID.tileId
+    val (tileSet, texture) = tileSet
+
+    val localId = tileId - tileSet.requireFirstGid()
+    val srcRect = calculateSourceRect(localId, tileSet)
+
+    val tileWidth = tileSet.requireTileWidth().toFloat()
+    val tileHeight = tileSet.requireTileHeight().toFloat()
+    val destRect = Rectangle(
+        x * tileWidth,
+        y * tileHeight,
+        tileWidth,
+        tileHeight
+    )
+    drawTexture(texture = texture, source = srcRect, dest = destRect, tint = tint)
 }
 
 @PublishedApi
@@ -103,7 +146,7 @@ private class TiledSetTextureManager(
     val assetManager: AssetManager,
     val tileMap: TileMap,
 ) : TiledSetManager {
-    private val textureMap: Map<TiledSetKey, TiledSetWithTexture> = buildMap {
+    override val textureMap: Map<TiledSetKey, TiledSetWithTexture> = buildMap {
         tileMap.tilesets.forEach {
             put(it.key(), TiledSetWithTexture(it, assetManager.getTexture(it.requireImage())))
         }
@@ -111,31 +154,6 @@ private class TiledSetTextureManager(
 
     override val tileHeight = tileMap.tileHeight
     override val tileWidth = tileMap.tileWidth
-
-    override fun getTile(x: Int, y: Int, gID: GID): Triple<CValue<Rectangle>, CValue<Rectangle>, CValue<Texture>> {
-        val flipHorizontal = gID.flipHorizontal
-        val flipVertical = gID.flipVertical
-        val flipDiagonal = gID.flipDiagonal
-// TODO: handle flip
-
-        val tileId = gID.tileId
-
-        val key = textureMap.keys.firstOrNull { tileId in it.localIdRange }
-            ?: throw IllegalStateException("request gID: ${gID} is not registered in TiledSetTextureManager")
-        val (tileSet, texture) = textureMap[key]!!
-
-        val localId = tileId - tileSet.requireFirstGid()
-        val srcRect = calculateSourceRect(localId, tileSet)
-
-        val destRect = Rectangle(
-            x * tileMap.tileWidth.toFloat(),
-            y * tileMap.tileHeight.toFloat(),
-            tileMap.tileWidth.toFloat(),
-            tileMap.tileHeight.toFloat()
-        )
-
-        return Triple(srcRect, destRect, texture)
-    }
 }
 
 private fun calculateSourceRect(tileId: Int, tileset: Tileset): CValue<Rectangle> {
@@ -151,7 +169,8 @@ private fun calculateSourceRect(tileId: Int, tileset: Tileset): CValue<Rectangle
     )
 }
 
-private data class TiledSetWithTexture(
+@PublishedApi
+internal data class TiledSetWithTexture(
     val tileset: Tileset,
     val texture: CValue<Texture>
 )

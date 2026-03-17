@@ -450,6 +450,6 @@ class JsonParseTest {
         val tileObj = assertIs<TileObject>(decode[7])
         assertEquals(32, tileObj.id)
         assertEquals("TileObj", tileObj.name)
-        assertEquals(1L, tileObj.gid)
+        assertEquals(1, tileObj.gid)
     }
 }
