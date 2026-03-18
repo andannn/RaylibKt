@@ -14,8 +14,8 @@ import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.Fade
@@ -40,7 +40,7 @@ fun ComponentRegistry.rectangleScaling() {
             mutableStateOf(false)
         }
 
-        onUpdate {
+        update {
             mousePosition.x = mouseX.toFloat()
             mousePosition.y = mouseY.toFloat()
 
@@ -74,7 +74,7 @@ fun ComponentRegistry.rectangleScaling() {
                 if (MouseButton.MOUSE_BUTTON_LEFT.isReleased()) mouseScaleMode = false
             }
         }
-        onDraw {
+        draw {
             drawText("Scale rectangle dragging from bottom-right corner!", 10, 10, 20, GRAY)
             drawRectangle(rec.readValue(), Fade(GREEN, 0.5f))
             if (mouseScaleReady) {

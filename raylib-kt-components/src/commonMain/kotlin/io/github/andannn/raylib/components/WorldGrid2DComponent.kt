@@ -1,3 +1,7 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.components
 
 import io.github.andannn.raylib.base.Rectangle
@@ -51,6 +55,34 @@ fun ComponentRegistry.registerEntityToWorldGrid2D(
             contextOrNull?.remove(identity = entity)
         }
     }
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun Spatial2D.queryNearby(crossinline block: (Spatial2DModel) -> Unit) {
+    contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())?.forEach(block)
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun <reified T : Entity> Spatial2D.queryNearby(crossinline block: (T, Spatial2D, Any?) -> Unit) {
+    contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())
+        ?.filter { (entity, _, _) -> entity is T }
+        ?.forEach {
+            block(it.entity as T, it.position, it.extra)
+        }
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun Spatial2D.queryNearbyUntil(crossinline block: (Spatial2DModel) -> Boolean) {
+    val _ = contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())?.any { block(it) }
+}
+
+context(_: GameContext, contextProvider: ContextProvider)
+inline fun <reified T : Entity> Spatial2D.queryNearbyUntil(crossinline block: (T, Spatial2D, Any?) -> Boolean) {
+    val _ = contextProvider.findOrNull<WorldGrid2DContext>()?.queryInRect(this.aabb.toGlobalRect())
+        ?.filter { (entity, _, _) -> entity is T }
+        ?.any {
+            block(it.entity as T, it.position, it.extra)
+        }
 }
 
 inline fun <reified T : Entity> ContextProvider.allEntities(): List<T> {

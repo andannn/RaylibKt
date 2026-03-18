@@ -19,13 +19,13 @@ import io.github.andannn.raylib.core.State
 import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.TextureDrawFunction
 import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.base.textureDrawScope
 import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.loadRenderTexture
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.textureDrawScope
 
 /**
  * Creates a component that renders its children into an off-screen [RenderTexture2D].

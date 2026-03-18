@@ -16,8 +16,8 @@ import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.base.set
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.MeasureText
@@ -45,7 +45,7 @@ fun ComponentRegistry.collisionArea() {
             mutableStateOf(false)
         }
 
-        onUpdate {
+        update {
             if (!pause) boxA.x += boxASpeedX
             if (((boxA.x + boxA.width) >= screenWidth) || (boxA.x <= 0)) boxASpeedX *= -1
             boxB.x = mouseX - boxB.width / 2;
@@ -70,7 +70,7 @@ fun ComponentRegistry.collisionArea() {
             if (KeyboardKey.KEY_SPACE.isPressed()) pause = !pause;
         }
 
-        onDraw {
+        draw {
             drawRectangle(0, 0, screenWidth, screenUpperLimit, if (collision) RED else BLACK)
             drawRectangle(boxA.readValue(), GOLD)
             drawRectangle(boxB.readValue(), BLUE)

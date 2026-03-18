@@ -23,11 +23,6 @@ suspend fun SuspendingUpdateEventScope.awaitDuration(
     onProgress: (Float) -> Unit = {}
 ) = awaitUpdateEventScope {
     val totalSeconds = duration.toDouble(DurationUnit.SECONDS).toFloat()
-    if (totalSeconds <= 0f) {
-        onProgress(1f)
-        return@awaitUpdateEventScope
-    }
-
     var elapsedTime = 0f
 
     while (true) {

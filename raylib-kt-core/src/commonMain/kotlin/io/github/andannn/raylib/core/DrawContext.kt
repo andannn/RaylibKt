@@ -14,19 +14,6 @@ import raylib.interop.BeginTextureMode
 import raylib.interop.ClearBackground
 import raylib.interop.EndTextureMode
 
-inline fun textureDrawScope(
-    texture: CValue<RenderTexture>,
-    backGroundColor: CValue<Color>? = null,
-    crossinline block: () -> Unit
-): CValue<RenderTexture> {
-    BeginTextureMode(texture)
-    if (backGroundColor != null) {
-        ClearBackground(backGroundColor)
-    }
-    block()
-    EndTextureMode()
-    return texture
-}
 
 interface DrawContext : Context, BasicShapeDrawFunction, TextDrawFunction, TextureDrawFunction
 

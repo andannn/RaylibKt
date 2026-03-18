@@ -10,8 +10,8 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 
 internal fun ComponentRegistry.inputKeys() {
@@ -25,13 +25,13 @@ internal fun ComponentRegistry.inputKeys() {
             }
         }
 
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_RIGHT.isDown()) ballPosition.x += 2f
             if (KeyboardKey.KEY_LEFT.isDown()) ballPosition.x -= 2f
             if (KeyboardKey.KEY_UP.isDown()) ballPosition.y -= 2f
             if (KeyboardKey.KEY_DOWN.isDown()) ballPosition.y += 2f
         }
-        onDraw {
+        draw {
             drawText("move the ball with arrow keys", 10, 10, 20, Colors.DARKGRAY)
             drawCircle(ballPosition.readValue(), 50f, MAROON)
         }

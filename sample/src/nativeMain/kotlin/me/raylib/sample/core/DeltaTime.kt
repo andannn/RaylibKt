@@ -7,8 +7,8 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.KeyboardKey
@@ -25,7 +25,7 @@ internal fun ComponentRegistry.deltaTime() {
             mutableStateOf(Vector2(y = screenHeight.div(3f).times(2f)))
         }
 
-        onUpdate {
+        update {
             currentFps += mouseWheelMove.toInt()
 
             deltaCircle = deltaCircle.copy {
@@ -40,7 +40,7 @@ internal fun ComponentRegistry.deltaTime() {
                 frameCircle = frameCircle.copy { x = 0f }
             }
         }
-        onDraw {
+        draw {
             drawCircle(
                 center = deltaCircle,
                 radius = circleRadius,

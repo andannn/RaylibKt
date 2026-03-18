@@ -14,8 +14,8 @@ import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -29,7 +29,7 @@ fun ComponentRegistry.basicScreenManager() {
             mutableStateOf(0)
         }
 
-        onUpdate {
+        update {
             when (currentScreen) {
                 GameScreen.LOGO -> {
                     framesCounter++
@@ -67,7 +67,7 @@ fun ComponentRegistry.basicScreenManager() {
 
 private fun ComponentRegistry.screen(screen: GameScreen) {
     component(screen) {
-        onDraw {
+        draw {
             when (screen) {
                 GameScreen.LOGO -> {
                     // TODO: Draw LOGO screen here!

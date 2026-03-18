@@ -1,21 +1,28 @@
+/*
+ * Copyright 2026, the RaylibKt project contributors
+ * SPDX-License-Identifier: Zlib
+ */
 package io.github.andannn.raylib.components
 
 import io.github.andannn.raylib.base.Matrix
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.Vector2Alloc
 import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.base.withWorldSpace
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.ComponentScope
+import io.github.andannn.raylib.core.Context
+import io.github.andannn.raylib.core.ContextRegistry
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.RenderPhase
 import io.github.andannn.raylib.core.State
+import io.github.andannn.raylib.core.Vector2Alloc
 import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.find
+import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
@@ -30,6 +37,19 @@ class Spatial2D(
     val transform: Transform2D,
     val aabb: Aabb,
 )
+
+class Spatial2DContext : Context {
+    @PublishedApi
+    internal var internalSpatial2D: Spatial2D? = null
+    val spatial2D: Spatial2D
+        get() = internalSpatial2D!!
+}
+
+fun ContextRegistry.requireParentSpatial2D(): Spatial2D = parentSpatial2D() ?: error("No parent spatial2D found")
+
+fun ContextRegistry.parentSpatial2D(): Spatial2D? {
+    return findOrNull<Spatial2DContext>()?.spatial2D
+}
 
 fun Spatial2D.toGlobalRect() = aabb.toGlobalRect()
 
@@ -63,9 +83,9 @@ object Anchor {
     val TOP_LEFT = Vector2(0.0f, 0.0f)
     val TOP_CENTER = Vector2(0.5f, 0.0f)
     val TOP_RIGHT = Vector2(1.0f, 0.0f)
-    val CENTER_LEFT = Vector2(0.0f, 0.5f)
+    val LEFT_CENTER = Vector2(0.0f, 0.5f)
     val CENTER = Vector2(0.5f, 0.5f)
-    val CENTER_RIGHT = Vector2(1.0f, 0.5f)
+    val RIGHT_CENTER = Vector2(1.0f, 0.5f)
     val BOTTOM_LEFT = Vector2(0.0f, 1.0f)
     val BOTTOM_CENTER = Vector2(0.5f, 1.0f)
     val BOTTOM_RIGHT = Vector2(1.0f, 1.0f)
@@ -109,14 +129,17 @@ inline fun ComponentRegistry.spatial2DComponent(
     state: Spatial2D,
     crossinline block: ComponentScope.() -> Unit
 ) = transform2DComponent(key = key, state.transform) {
-    if (find<WindowContext>().isDebug) {
+    val context = remember {
+        Spatial2DContext()
+    }
+    if (isDebug) {
         val debugRectColor = remember {
             randomColor()
         }
         val aabbRectColor = remember {
             randomColor()
         }
-        onDraw {
+        draw {
             val (sizeX, sizeY) = state.size.useContents { x to y }
             drawRectangleLines(Rectangle(0f, 0f, sizeX, sizeY), 1f, debugRectColor)
 
@@ -127,7 +150,11 @@ inline fun ComponentRegistry.spatial2DComponent(
     }
 
     aabbUpdate(state.aabb, state.size)
-    block()
+
+    context.internalSpatial2D = state
+    provide(context) {
+        block()
+    }
 }
 
 /**
@@ -151,12 +178,10 @@ internal fun ComponentRegistry.aabbUpdate(
     }
 }
 
-private fun RememberScope.AabbAlloc(): Aabb = nativeStateOf {
-    Aabb(
-        Vector2Alloc(),
-        Vector2Alloc(),
-    )
-}.value
+private fun RememberScope.AabbAlloc(): Aabb = Aabb(
+    Vector2Alloc().value,
+    Vector2Alloc().value,
+)
 
 /**
  * An Axis-Aligned Bounding Box (AABB) in world space coordinates.

@@ -10,16 +10,13 @@ import io.github.andannn.raylib.base.Colors.WHITE
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.RectangleAlloc
-import io.github.andannn.raylib.components.Transform2DAlloc
+import io.github.andannn.raylib.components.AssetManager
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.components.spriteAnimationComponent
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.loadTexture
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.find
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 
 private const val MAX_FRAME_SPEED = 15
@@ -27,7 +24,7 @@ private const val MIN_FRAME_SPEED = 1
 
 fun ComponentRegistry.spriteAnimationSample() {
     val scarfy = remember {
-        loadTexture("resources/scarfy.png")
+        find<AssetManager>().getTexture("resources/scarfy.png")
     }
 
     val framesSpeed = remember {
@@ -35,7 +32,7 @@ fun ComponentRegistry.spriteAnimationSample() {
     }
 
     component("spriteAnimationSampleControl") {
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_RIGHT.isPressed()) {
                 framesSpeed.value = (framesSpeed.value + 1).coerceIn(MIN_FRAME_SPEED, MAX_FRAME_SPEED)
             }
@@ -59,7 +56,7 @@ fun ComponentRegistry.spriteAnimationSample() {
     )
 
     component("text info") {
-        onDraw {
+        draw {
             for (i in 0..<MAX_FRAME_SPEED) {
                 if (i < framesSpeed.value) drawRectangle(250 + 21 * i, 205, 20, 20, RED)
                 drawRectangleLines(250 + 21 * i, 205, 20, 20, MAROON)

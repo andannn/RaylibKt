@@ -83,17 +83,16 @@ fun Vector2(x: Float = 0f, y: Float = 0f): CValue<Vector2> = cValue {
     this.x = x
     this.y = y
 }
-fun NativePlacement.Vector2Alloc(x: Float = 0f, y: Float = 0f) = alloc<Vector2>().apply {
-    this.x = x
-    this.y = y
-}
+
 fun Vector2.set(x: Float = 0f, y: Float = 0f) {
     this.x = x
     this.y = y
 }
+
 fun Vector2.set(vec: Vector2) {
     set(vec.readValue())
 }
+
 fun Vector2.set(vec: CValue<Vector2>) {
     vec.useContents {
         this@set.set(x, y)
@@ -103,6 +102,7 @@ fun Vector2.set(vec: CValue<Vector2>) {
 typealias Float3 = float3
 typealias Float16 = float16
 typealias Matrix = raylib.interop.Matrix
+
 fun CValue<Matrix>.format(): String {
     return useContents {
         val row1 = TextFormat("| %7.2f %7.2f %7.2f %7.2f |", m0, m4, m8, m12)?.toKString() ?: ""
@@ -114,6 +114,17 @@ fun CValue<Matrix>.format(): String {
     }
 }
 typealias Color = raylib.interop.Color
+
+fun CValue<Color>.format(): String {
+    return useContents {
+        val aHex = a.toInt().toString(16).padStart(2, '0')
+        val rHex = r.toInt().toString(16).padStart(2, '0')
+        val gHex = g.toInt().toString(16).padStart(2, '0')
+        val bHex = b.toInt().toString(16).padStart(2, '0')
+
+        "#$aHex$rHex$gHex$bHex"
+    }
+}
 
 fun Color(r: Int, g: Int, b: Int, a: Int = 255): CValue<Color> {
     return cValue {
@@ -155,6 +166,7 @@ object Colors {
 }
 
 typealias Rectangle = raylib.interop.Rectangle
+
 fun CValue<Rectangle>.format(): String {
     return useContents {
         "x: $x, y: $y, width: $width, height: $height"
@@ -178,7 +190,7 @@ fun Rectangle.set(
     y: Float = 0f,
     width: Float = 0f,
     height: Float = 0f
-)  {
+) {
     this.x = x
     this.y = y
     this.width = width

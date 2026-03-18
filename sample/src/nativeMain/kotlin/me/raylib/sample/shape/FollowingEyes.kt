@@ -9,34 +9,31 @@ import io.github.andannn.raylib.base.Colors.BROWN
 import io.github.andannn.raylib.base.Colors.DARKGREEN
 import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.Vector2Alloc
+import io.github.andannn.raylib.core.Vector2Alloc
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.base.set
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
 fun ComponentRegistry.followingEyes() {
     component("A") {
         val scleraLeftPosition by remember {
-            nativeStateOf {
-                Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
-            }
+            Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
         }
         val scleraRightPosition by remember {
-            nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+            Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f)
         }
         val scleraRadius = 80f
         val irisLeftPosition by remember {
-            nativeStateOf { Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f) }
+            Vector2Alloc(screenWidth / 2.0f - 100.0f, screenHeight / 2.0f)
         }
         val irisRightPosition by remember {
-            nativeStateOf { Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f) }
+            Vector2Alloc(screenWidth / 2.0f + 100.0f, screenHeight / 2.0f)
         }
         val irisRadius = 24f
 
@@ -56,7 +53,7 @@ fun ComponentRegistry.followingEyes() {
             mutableStateOf(0.0f)
         }
 
-        onUpdate {
+        update {
             irisLeftPosition.set(mousePosition)
             irisRightPosition.set(mousePosition)
 
@@ -96,7 +93,7 @@ fun ComponentRegistry.followingEyes() {
             }
         }
 
-        onDraw {
+        draw {
             drawCircle(scleraLeftPosition.readValue(), scleraRadius, LIGHTGRAY);
             drawCircle(irisLeftPosition.readValue(), irisRadius, BROWN);
             drawCircle(irisLeftPosition.readValue(), 10f, BLACK);

@@ -13,8 +13,8 @@ import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.base.scissorMode
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -27,14 +27,14 @@ fun ComponentRegistry.scissorTest() {
             mutableStateOf(true)
         }
 
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_S.isPressed()) scissorMode = !scissorMode;
 
             scissorArea.x = mouseX - scissorArea.width / 2
             scissorArea.y = mouseY - scissorArea.height / 2
         }
 
-        onDraw {
+        draw {
             scissorMode(scissorArea, enabled = scissorMode) {
                 // Draw full screen rectangle and some text
                 // NOTE: Only part defined by scissor area will be rendered

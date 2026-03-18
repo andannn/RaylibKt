@@ -13,8 +13,8 @@ import io.github.andannn.raylib.components.spatial2DComponent
 import io.github.andannn.raylib.components.world2DGridComponent
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.useContents
 
@@ -29,7 +29,7 @@ fun ComponentRegistry.matrixTest() {
         }
 
         component("update") {
-            onUpdate { dt ->
+            update { dt ->
                 val transform = spatial2D.transform
                 if (KeyboardKey.KEY_RIGHT.isDown()) {
                     transform.position.x += speed * dt
@@ -53,7 +53,7 @@ fun ComponentRegistry.matrixTest() {
             "some item",
             state = spatial2D,
         ) {
-            onDraw {
+            draw {
                 val rect = spatial2D.size.useContents { Rectangle(width = x, height = y) }
                 drawRectangle(rect, BLUE)
             }
@@ -92,7 +92,7 @@ private inline fun ComponentRegistry.someHitbox(
     ) { position ->
         registerEntityToWorldGrid2D(someHitbox, position)
 
-        onUpdate {
+        update {
             position.queryAABBCollision<HitBox2> { hitbox, d, any ->
                 onHit()
             }

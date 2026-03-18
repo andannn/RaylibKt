@@ -9,8 +9,8 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -26,7 +26,7 @@ fun ComponentRegistry.inputMouse() {
             mutableStateOf(false)
         }
 
-        onUpdate {
+        update {
             cursorHidden = isCursorHidden
             if (KeyboardKey.KEY_H.isPressed()) {
                 if (isCursorHidden) {
@@ -55,7 +55,7 @@ fun ComponentRegistry.inputMouse() {
                 Colors.DARKBLUE
             }
         }
-        onDraw {
+        draw {
             drawCircle(ballPosition, 40f, ballColor)
             drawText(
                 "move ball with mouse and click mouse button to change color",

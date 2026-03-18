@@ -15,8 +15,8 @@ import io.github.andannn.raylib.components.fixSizedTextureComponent
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 
 private const val renderTextureWidth = 300
@@ -51,11 +51,11 @@ fun ComponentRegistry.renderTexture() {
             bouncingBallContent(rectWidth = textureWidth, rectHeight = textureHeight)
         }
 
-        onUpdate {
+        update {
             rotation.value += 0.5f;
         }
 
-        onDraw {
+        draw {
             drawText("DRAWING BOUNCING BALL INSIDE RENDER TEXTURE!", 10, screenHeight - 40, 20, BLACK)
             drawFPS(10, 10)
         }
@@ -79,7 +79,7 @@ private fun ComponentRegistry.bouncingBallContent(
             }
         }
 
-        onUpdate {
+        update {
             ballPosition.x += ballSpeed.x
             ballPosition.y += ballSpeed.y
 
@@ -88,7 +88,7 @@ private fun ComponentRegistry.bouncingBallContent(
             if ((ballPosition.y >= (rectHeight - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
         }
 
-        onDraw {
+        draw {
             drawRectangle(0, 0, 20, 20, RED)
             drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
         }

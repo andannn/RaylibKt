@@ -14,8 +14,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.GamepadButton
@@ -76,7 +76,7 @@ fun ComponentRegistry.inputActions() {
         var releaseAction by remember {
             mutableStateOf(false)
         }
-        onUpdate {
+        update {
             if (isDown(ActionType.ACTION_UP)) position.y -= 2f
             if (isDown(ActionType.ACTION_DOWN)) position.y += 2f
             if (isDown(ActionType.ACTION_LEFT)) position.x -= 2f
@@ -95,7 +95,7 @@ fun ComponentRegistry.inputActions() {
                 else currentKeySet = alternateKeySet
             }
         }
-        onDraw {
+        draw {
             drawRectangle(position.readValue(), size.readValue(), if (releaseAction) BLUE else RED)
             drawText(
                 if (actionSet) "Current input set: WASD (default)" else "Current input set: Arrow keys",
