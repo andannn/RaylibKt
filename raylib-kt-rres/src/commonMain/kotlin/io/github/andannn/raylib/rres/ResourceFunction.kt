@@ -8,6 +8,7 @@ import io.github.andannn.raylib.base.Font
 import io.github.andannn.raylib.base.Image
 import io.github.andannn.raylib.base.Mesh
 import io.github.andannn.raylib.base.Wave
+import io.github.andannn.raylib.core.Context
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer
@@ -20,15 +21,6 @@ import kotlinx.cinterop.pointed
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toKString
-
-interface ResourceFunction : RresFunction, RaylibRresFunction
-
-fun ResourceFunction(
-    rresFunction: RresFunction = RresFunction(),
-    raylibRresFunction: RaylibRresFunction = RaylibRresFunction(),
-): ResourceFunction = object : ResourceFunction,
-    RresFunction by rresFunction,
-    RaylibRresFunction by raylibRresFunction {}
 
 interface RresFunction {
     fun loadResourceChunk(fileName: String, rresId: UInt): CValue<RresResourceChunk>
@@ -51,7 +43,7 @@ interface RresFunction {
     fun getCipherPassword(): String?
 }
 
-private fun RresFunction(): RresFunction = DefaultRresFunction()
+fun RresFunction(): RresFunction = DefaultRresFunction()
 
 private class DefaultRresFunction : RresFunction {
     override fun loadResourceChunk(fileName: String, rresId: UInt): CValue<RresResourceChunk> {
@@ -120,7 +112,6 @@ interface RaylibRresFunction {
     fun loadMeshFromResource(multi: CValue<RresResourceMulti>): CValue<Mesh>
 
     fun unpackResourceChunk(chunk: CPointer<RresResourceChunk>): Int
-    fun setBaseDirectory(baseDir: String)
 }
 
 fun RaylibRresFunction(): RaylibRresFunction = DefaultRaylibRresFunction()
@@ -153,10 +144,6 @@ private class DefaultRaylibRresFunction : RaylibRresFunction {
 
     override fun unpackResourceChunk(chunk: CPointer<RresResourceChunk>): Int {
         return rres.interop.UnpackResourceChunk(chunk)
-    }
-
-    override fun setBaseDirectory(baseDir: String) {
-        rres.interop.SetBaseDirectory(baseDir)
     }
 }
 

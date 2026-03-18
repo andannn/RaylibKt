@@ -11,7 +11,7 @@ import io.github.andannn.raylib.core.DrawContext
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.draw
 
-fun ComponentScope.onDrawGui(block: GuiContext.() -> Unit) {
+fun ComponentScope.drawGui(block: GuiContext.() -> Unit) {
     draw {
         with(find<GuiContext>()) {
             block()
