@@ -50,6 +50,7 @@ kotlin {
                 add("-lOpenSLES")
                 add("-ldl")
                 add("-Wl,--undefined=ANativeActivity_onCreate")
+                add("-Wl,--wrap=fopen")
             }
         }
     }
