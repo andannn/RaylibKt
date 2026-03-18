@@ -9,7 +9,7 @@ import io.github.andannn.raylib.core.await
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.rememberSuspendingTask
 import io.github.andannn.raylib.core.setValue
@@ -70,7 +70,7 @@ fun ComponentRegistry.easingBall() {
             }
         }
 
-        onDraw {
+        draw {
             if (state >= 2) drawRectangle(0, 0, screenWidth, screenHeight, GREEN)
             drawCircle(ballPositionX, 200, ballRadius.toFloat(), Fade(RED, 1.0f - ballAlpha))
             if (state == 3) drawText("PRESS [ENTER] TO PLAY AGAIN!", 240, 200, 20, BLACK)

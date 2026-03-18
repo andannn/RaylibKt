@@ -26,16 +26,6 @@ fun DisposableRegistry.loadRenderTexture(
     return texture
 }
 
-fun DisposableRegistry.loadTexture(
-    fileName: String,
-): CValue<Texture> {
-    val texture = LoadTexture(fileName)
-    disposeOnClose {
-        UnloadTexture(texture)
-    }
-    return texture
-}
-
 fun DisposableRegistry.loadTextureFromImage(
     image: CValue<Image>
 ): CValue<Texture2D> {

@@ -24,8 +24,8 @@ import io.github.andannn.raylib.base.screenToWorldPosition
 import io.github.andannn.raylib.base.setOffset
 import io.github.andannn.raylib.base.setTarget
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.Clamp
@@ -48,7 +48,7 @@ fun ComponentRegistry.twoDCameraMouseZoom() {
         var mouseYPos by remember {
             mutableStateOf(0)
         }
-        onUpdate {
+        update {
             mouseXPos = mouseX
             mouseYPos = mouseY
             if (MouseButton.MOUSE_BUTTON_LEFT.isDown()) {
@@ -87,7 +87,7 @@ fun ComponentRegistry.twoDCameraMouseZoom() {
             }
         }
 
-        onDraw {
+        draw {
             mode2d(camera) {
                 rlMatrix {
                     rlTranslatef(0f, 25 * 50f, 0f)

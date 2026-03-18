@@ -35,7 +35,7 @@ inline fun ComponentScope.rememberSuspendingTask(
                 if (startImmediately) it.start()
             }
     }.also { task ->
-        onUpdate {
+        update {
             task.performUpdate(find<WindowContext>().frameTimeSeconds)
         }
     }

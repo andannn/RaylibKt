@@ -15,9 +15,8 @@ import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.base.set
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -54,7 +53,7 @@ fun ComponentRegistry.followingEyes() {
             mutableStateOf(0.0f)
         }
 
-        onUpdate {
+        update {
             irisLeftPosition.set(mousePosition)
             irisRightPosition.set(mousePosition)
 
@@ -94,7 +93,7 @@ fun ComponentRegistry.followingEyes() {
             }
         }
 
-        onDraw {
+        draw {
             drawCircle(scleraLeftPosition.readValue(), scleraRadius, LIGHTGRAY);
             drawCircle(irisLeftPosition.readValue(), irisRadius, BROWN);
             drawCircle(irisLeftPosition.readValue(), 10f, BLACK);

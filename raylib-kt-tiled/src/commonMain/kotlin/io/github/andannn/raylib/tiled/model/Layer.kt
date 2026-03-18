@@ -4,6 +4,10 @@
  */
 package io.github.andannn.raylib.tiled.model
 
+import io.github.andannn.raylib.base.Color
+import io.github.andannn.raylib.base.Colors.WHITE
+import io.github.andannn.raylib.tiled.util.toRaylibColor
+import kotlinx.cinterop.CValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -25,7 +29,7 @@ sealed class Layer {
     abstract val locked: Boolean
 
     /** The blend mode to use when rendering the layer. (since 1.12) */
-    abstract val mode: TiledBlendMode
+    abstract val mode: BlendMode
 
     /** Name assigned to this layer */
     abstract val name: String
@@ -60,6 +64,10 @@ sealed class Layer {
 
     /** Vertical layer offset in tiles. Always 0. */
     abstract val y: Int
+
+    val raylibTintColor : CValue<Color> by lazy {
+        tintColor?.toRaylibColor() ?: WHITE
+    }
 }
 
 @Serializable
@@ -103,7 +111,7 @@ data class TileLayer(
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
+    @SerialName("mode") override val mode: BlendMode = BlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,
@@ -165,12 +173,12 @@ data class ObjectGroupLayer(
 
     /** Array of objects. objectgroup only. */
     @SerialName("objects")
-    val objects: List<TiledObject>,
+    val objects: List<Object>,
 
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
+    @SerialName("mode") override val mode: BlendMode = BlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,
@@ -216,7 +224,7 @@ data class ImageLayer(
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
+    @SerialName("mode") override val mode: BlendMode = BlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,
@@ -241,7 +249,7 @@ data class GroupLayer(
     @SerialName("class") override val className: String? = null,
     @SerialName("id") override val id: Int,
     @SerialName("locked") override val locked: Boolean = false,
-    @SerialName("mode") override val mode: TiledBlendMode = TiledBlendMode.NORMAL,
+    @SerialName("mode") override val mode: BlendMode = BlendMode.NORMAL,
     @SerialName("name") override val name: String,
     @SerialName("offsetx") override val offsetX: Double = 0.0,
     @SerialName("offsety") override val offsetY: Double = 0.0,

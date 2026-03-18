@@ -3,22 +3,23 @@ package me.raylib.sample.textures
 import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.components.AssetManager
 import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.components
+import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.loadTexture
 import io.github.andannn.raylib.core.mutableStateListOf
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import kotlinx.cinterop.CValue
 
 fun ComponentRegistry.spriteExplosion() = component("explosion") {
     val explosion = remember {
-        loadTexture("resources/explosion.png")
+        find<AssetManager>().getTexture("resources/explosion.png")
     }
     val explosionContainer = remember {
         mutableStateListOf<ExplosionState>()
@@ -28,7 +29,7 @@ fun ComponentRegistry.spriteExplosion() = component("explosion") {
         var id by remember {
             mutableStateOf(0L)
         }
-        onUpdate {
+        update {
             if (MouseButton.MOUSE_BUTTON_LEFT.isPressed()) {
                 explosionContainer.addState {
                     ExplosionState(

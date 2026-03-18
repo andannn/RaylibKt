@@ -9,8 +9,8 @@ import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.base.forEachContentsIndexed
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import raylib.interop.Fade
 
@@ -22,11 +22,11 @@ fun ComponentRegistry.mouseTrail() {
     }
 
     component("AA") {
-        onUpdate {
+        update {
             trailPositions.removeLast()
             trailPositions.add(0, mousePosition)
         }
-        onDraw {
+        draw {
             trailPositions.forEachContentsIndexed { i, position ->
                 if (position.x != 0f || position.y != 0f) {
                     val ratio = (MAX_TRAIL_LENGTH - i).toFloat() / MAX_TRAIL_LENGTH

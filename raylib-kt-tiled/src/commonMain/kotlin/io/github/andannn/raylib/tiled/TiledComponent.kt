@@ -6,38 +6,38 @@ package io.github.andannn.raylib.tiled
 
 import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.components.AssetManager
 import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.components.transform2DComponent
-import io.github.andannn.raylib.core.*
-import io.github.andannn.raylib.tiled.model.GID
+import io.github.andannn.raylib.core.ComponentRegistry
+import io.github.andannn.raylib.core.ComponentScope
+import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.find
+import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.Layer
+import io.github.andannn.raylib.tiled.model.Object
 import io.github.andannn.raylib.tiled.model.ObjectGroupLayer
 import io.github.andannn.raylib.tiled.model.TileLayer
-import io.github.andannn.raylib.tiled.model.TiledMap
-import io.github.andannn.raylib.tiled.model.TiledObject
-import io.github.andannn.raylib.tiled.model.Tileset
-import kotlinx.cinterop.CValue
-import kotlinx.io.files.Path
-
-inline fun ComponentRegistry.tiledComponent(
-    key: Any,
-    tmJsonFile: String,
-    txJsonFileDictionary: String = Path(tmJsonFile).parent.toString(),
-    crossinline onBindObject: ComponentScope.(TiledObject) -> Unit = {}
-) = tiledComponent(key, TiledMapProvider(tmJsonFile, txJsonFileDictionary), onBindObject)
+import io.github.andannn.raylib.tiled.model.TileMap
+import io.github.andannn.raylib.tiled.render.TiledSetManager
+import io.github.andannn.raylib.tiled.render.bindObjects
+import io.github.andannn.raylib.tiled.render.drawImageLayer
+import io.github.andannn.raylib.tiled.render.drawTileLayer
+import io.github.andannn.raylib.tiled.util.blend
+import io.github.andannn.raylib.tiled.util.multiplyAlpha
 
 inline fun ComponentRegistry.tiledComponent(
     key: Any,
     tiledMapProvider: TiledMapProvider,
-    crossinline onBindObject: ComponentScope.(TiledObject) -> Unit = {}
-) = component(key) {
+    crossinline onBindObject: ComponentScope.(Object) -> Unit = {}
+): TileMap = component(key) {
     val tiledMap = remember { tiledMapProvider.getMap() }
     val tiledSetManager = remember {
-        TiledSetManager(this, tiledMap)
+        TiledSetManager(find<AssetManager>(), tiledMap)
     }
 
     val flattenedLayers = remember {
@@ -53,17 +53,17 @@ inline fun ComponentRegistry.tiledComponent(
 
             val localOffsetX: Float = globalOffsetX
             val localOffsetY: Float = globalOffsetY
-
+            val tintColor = flatTileLayer.layer.raylibTintColor.multiplyAlpha(globalOpacity)
             val transform = remember {
                 Transform2DAlloc(position = Vector2(localOffsetX, localOffsetY))
             }
 
-            transform2DComponent(flatTileLayer.layer.id, transform) { transform ->
+            transform2DComponent(flatTileLayer.layer.id, transform) {
                 flatTileLayer.layer.mode.blend {
                     when (val layer = flatTileLayer.layer) {
-                        is TileLayer -> drawTileLayer(layer)
+                        is TileLayer -> drawTileLayer(layer, tintColor)
+                        is ImageLayer -> drawImageLayer(layer, tintColor)
                         is ObjectGroupLayer -> bindObjects(layer.objects, onBindObject)
-                        is ImageLayer -> TODO()
                         is GroupLayer -> error("Never")
                     }
                 }
@@ -71,7 +71,7 @@ inline fun ComponentRegistry.tiledComponent(
         }
     }
 
-    onDraw {
+    draw {
         if (isDebug) {
             val totalHeight = tiledMap.height * tiledMap.tileHeight.toFloat()
             val totalWidth = tiledMap.width * tiledMap.tileWidth.toFloat()
@@ -79,53 +79,20 @@ inline fun ComponentRegistry.tiledComponent(
             drawRectangleLines(Rectangle(0f, 0f, totalWidth, totalHeight), 2f, LIGHTGRAY)
         }
     }
-}
 
-
-@PublishedApi
-context(manager: TiledSetManager)
-internal fun ComponentScope.drawTileLayer(tileLayer: TileLayer) {
-    onDraw {
-        for (y in 0 until tileLayer.height) {
-            for (x in 0 until tileLayer.width) {
-                val gid = tileLayer.gidArray[y * tileLayer.width + x]
-                if (gid.tileId == 0) continue
-
-                val (src, dst, texture) = manager.get(x, y, gid)
-
-                drawTexture(texture, src, dst)
-            }
-        }
-
-        if (isDebug) {
-            val height = tileLayer.height
-            val width = tileLayer.width
-            val tileHeight = manager.tileHeight
-            val tileWidth = manager.tileWidth
-            val totalHeight = height * tileHeight.toFloat()
-            for (i in 0..width) {
-                drawLine(
-                    Vector2(i * tileWidth.toFloat(), 0f),
-                    Vector2(i * tileWidth.toFloat(), totalHeight),
-                    color = LIGHTGRAY
-                )
-            }
-
-            val totalWidth = width * tileWidth.toFloat()
-            for (j in 0..height) {
-                drawLine(
-                    Vector2(0f, j * tileHeight.toFloat()),
-                    Vector2(totalWidth, j * tileHeight.toFloat()),
-                    color = LIGHTGRAY
-                )
-            }
-        }
-
-    }
+    tiledMap
 }
 
 @PublishedApi
-internal fun TiledMap.flattenTileLayers(): List<FlatTileLayer> {
+internal data class FlatTileLayer(
+    val layer: Layer,
+    val globalOpacity: Float,
+    val globalOffsetX: Float,
+    val globalOffsetY: Float
+)
+
+@PublishedApi
+internal fun TileMap.flattenTileLayers(): List<FlatTileLayer> {
     return buildList {
         fun collect(
             layers: List<Layer>,
@@ -156,92 +123,3 @@ internal fun TiledMap.flattenTileLayers(): List<FlatTileLayer> {
         collect(this@flattenTileLayers.layers)
     }
 }
-
-@PublishedApi
-internal data class FlatTileLayer(
-    val layer: Layer,
-    val globalOpacity: Float,
-    val globalOffsetX: Float,
-    val globalOffsetY: Float
-)
-
-private fun Tileset.key(): TiledSetKey {
-    return TiledSetKey(
-        requireFirstGid()..<(requireFirstGid() + requireTileCount())
-    )
-}
-
-private class TiledSetKey(
-    val localIdRange: IntRange,
-)
-
-
-@PublishedApi
-internal interface TiledSetManager {
-    val tileHeight: Int
-    val tileWidth: Int
-    fun get(x: Int, y: Int, gID: GID): Triple<CValue<Rectangle>, CValue<Rectangle>, CValue<Texture>>
-}
-
-@PublishedApi
-internal fun TiledSetManager(
-    rememberScope: RememberScope,
-    tiledMap: TiledMap,
-): TiledSetManager = TiledSetTextureManager(rememberScope, tiledMap)
-
-private class TiledSetTextureManager(
-    val rememberScope: RememberScope,
-    val tiledMap: TiledMap,
-) : TiledSetManager {
-    private val textureMap: Map<TiledSetKey, TiledSetWithTexture> = buildMap {
-        tiledMap.tilesets.forEach {
-            put(it.key(), TiledSetWithTexture(it, rememberScope.loadTexture(it.requireImage())))
-        }
-    }
-
-    override val tileHeight = tiledMap.tileHeight
-    override val tileWidth = tiledMap.tileWidth
-
-    override fun get(x: Int, y: Int, gID: GID): Triple<CValue<Rectangle>, CValue<Rectangle>, CValue<Texture>> {
-        val flipHorizontal = gID.flipHorizontal
-        val flipVertical = gID.flipVertical
-        val flipDiagonal = gID.flipDiagonal
-// TODO: handle flip
-
-        val tileId = gID.tileId
-
-        val key = textureMap.keys.firstOrNull { tileId in it.localIdRange }
-            ?: throw IllegalStateException("request gID: ${gID} is not registered in TiledSetTextureManager")
-        val (tileSet, texture) = textureMap[key]!!
-
-        val localId = tileId - tileSet.requireFirstGid()
-        val srcRect = calculateSourceRect(localId, tileSet)
-
-        val destRect = Rectangle(
-            x * tiledMap.tileWidth.toFloat(),
-            y * tiledMap.tileHeight.toFloat(),
-            tiledMap.tileWidth.toFloat(),
-            tiledMap.tileHeight.toFloat()
-        )
-
-        return Triple(srcRect, destRect, texture)
-    }
-}
-
-private fun calculateSourceRect(tileId: Int, tileset: Tileset): CValue<Rectangle> {
-    val tileWidth = tileset.requireTileWidth().toFloat()
-    val tileHeight = tileset.requireTileHeight().toFloat()
-    val columns = tileset.requireColumns()
-
-    return Rectangle(
-        (tileId % columns) * tileWidth,
-        (tileId / columns).toFloat() * tileHeight,
-        tileWidth,
-        tileHeight
-    )
-}
-
-private data class TiledSetWithTexture(
-    val tileset: Tileset,
-    val texture: CValue<Texture>
-)

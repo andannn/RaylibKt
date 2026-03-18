@@ -1,19 +1,16 @@
 package me.raylib.sample.shape
 
-import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.readValue
 import io.github.andannn.raylib.base.Colors.BLACK
 import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.RectangleAlloc
 
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.rememberSuspendingTask
 import io.github.andannn.raylib.core.setValue
@@ -71,13 +68,13 @@ fun ComponentRegistry.easingBox() {
             }
         }
 
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_SPACE.isPressed()) {
                 animationTaskController.start()
             }
         }
 
-        onDraw {
+        draw {
             drawRectangle(
                 rectangle = rec.readValue(),
                 origin = Vector2(rec.width / 2, rec.height / 2),

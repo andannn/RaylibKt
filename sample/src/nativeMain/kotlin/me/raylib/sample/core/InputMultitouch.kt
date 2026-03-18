@@ -7,8 +7,8 @@ import io.github.andannn.raylib.base.Colors.ORANGE
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 
 fun ComponentRegistry.inputMultitouch() {
@@ -16,10 +16,10 @@ fun ComponentRegistry.inputMultitouch() {
         var pointers = remember {
             emptyList<CValue<Vector2>>()
         }
-        onUpdate {
+        update {
             pointers = touchPositions().toList()
         }
-        onDraw {
+        draw {
             pointers.forEachIndexed { index, position ->
                 position.useContents {
                     if (x > 0 && y > 0) {

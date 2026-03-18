@@ -16,8 +16,8 @@ import io.github.andannn.raylib.base.WindowFunction
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.base.randomColor
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
@@ -36,7 +36,7 @@ fun ComponentRegistry.randomSequence() {
         var rects by remember {
             mutableStateOf(generateRandomColorRectSequence(rectCount, rectSize))
         }
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_SPACE.isPressed()) {
                 rects = rects.shuffled()
             }
@@ -64,7 +64,7 @@ fun ComponentRegistry.randomSequence() {
                 }
             }
         }
-        onDraw {
+        draw {
             rects.forEach { rectWithPos ->
                 drawRectangle(
                     Rectangle(

@@ -15,8 +15,8 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.DrawText
@@ -36,7 +36,7 @@ fun ComponentRegistry.windowFlags() {
             mutableStateOf(0)
         }
 
-        onUpdate {
+        update {
             // modifies window size when scaling!
             if (KeyboardKey.KEY_F.isPressed()) toggleFullScreen()
 
@@ -115,7 +115,7 @@ fun ComponentRegistry.windowFlags() {
             if ((ballPosition.y >= (screenHeight - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -0.95f
         }
 
-        onDraw {
+        draw {
             drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
             drawRectangleLines(
                 Rectangle(width = screenWidth.toFloat(), height = screenHeight.toFloat()), 4f, RAYWHITE
@@ -124,7 +124,7 @@ fun ComponentRegistry.windowFlags() {
         }
     }
     component("key2") {
-        onDraw {
+        draw {
             // Draw window state info
             DrawText("Following flags can be set after window creation:", 10, 60, 10, GRAY)
 

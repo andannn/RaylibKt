@@ -24,8 +24,8 @@ import io.github.andannn.raylib.base.randomValue
 import io.github.andannn.raylib.base.setOffset
 import io.github.andannn.raylib.base.setTarget
 import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 import raylib.interop.DrawLine
@@ -70,7 +70,7 @@ fun ComponentRegistry.twoDCamera() {
         }
 
         // update player.
-        onUpdate {
+        update {
             if (KeyboardKey.KEY_RIGHT.isDown()) {
                 player.x += 2.0f
             } else if (KeyboardKey.KEY_LEFT.isDown()) {
@@ -92,7 +92,7 @@ fun ComponentRegistry.twoDCamera() {
             }
         }
 
-        onDraw {
+        draw {
             mode2d(camera.readValue()) {
                 drawRectangle(-6000, 320, 13000, 8000, DARKGRAY)
                 buildings.forEach { (buildingRect, color) ->
@@ -115,7 +115,7 @@ fun ComponentRegistry.twoDCamera() {
                 )
             }
         }
-        onDraw {
+        draw {
             drawText("SCREEN AREA", 640, 10, 20, RED);
 
             drawRectangle(0, 0, screenWidth, 5, RED);

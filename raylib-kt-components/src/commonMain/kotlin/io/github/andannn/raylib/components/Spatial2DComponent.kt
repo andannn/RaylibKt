@@ -21,12 +21,11 @@ import io.github.andannn.raylib.core.WindowContext
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.findOrNull
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
-import platform.posix.err
 import kotlin.math.abs
 
 /**
@@ -84,9 +83,9 @@ object Anchor {
     val TOP_LEFT = Vector2(0.0f, 0.0f)
     val TOP_CENTER = Vector2(0.5f, 0.0f)
     val TOP_RIGHT = Vector2(1.0f, 0.0f)
-    val CENTER_LEFT = Vector2(0.0f, 0.5f)
+    val LEFT_CENTER = Vector2(0.0f, 0.5f)
     val CENTER = Vector2(0.5f, 0.5f)
-    val CENTER_RIGHT = Vector2(1.0f, 0.5f)
+    val RIGHT_CENTER = Vector2(1.0f, 0.5f)
     val BOTTOM_LEFT = Vector2(0.0f, 1.0f)
     val BOTTOM_CENTER = Vector2(0.5f, 1.0f)
     val BOTTOM_RIGHT = Vector2(1.0f, 1.0f)
@@ -140,7 +139,7 @@ inline fun ComponentRegistry.spatial2DComponent(
         val aabbRectColor = remember {
             randomColor()
         }
-        onDraw {
+        draw {
             val (sizeX, sizeY) = state.size.useContents { x to y }
             drawRectangleLines(Rectangle(0f, 0f, sizeX, sizeY), 1f, debugRectColor)
 

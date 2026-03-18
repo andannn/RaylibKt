@@ -18,8 +18,8 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.onDraw
-import io.github.andannn.raylib.core.onUpdate
+import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.setValue
 
@@ -29,10 +29,10 @@ fun ComponentRegistry.basicShapes() {
             mutableStateOf(0.0f)
         }
 
-        onUpdate {
+        update {
             rotation += 0.2f;
         }
-        onDraw {
+        draw {
             drawText("some basic shapes available on raylib", 20, 20, 20, DARKGRAY);
             drawCircle(screenWidth / 5, 120, 35f, DARKBLUE);
             drawCircleGradient(screenWidth / 5, 220, 60f, GREEN, SKYBLUE);

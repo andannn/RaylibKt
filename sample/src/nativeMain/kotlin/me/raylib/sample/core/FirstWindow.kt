@@ -6,7 +6,7 @@ import io.github.andannn.raylib.base.Colors
 import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.onDraw
+import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.remember
 
 internal fun ComponentRegistry.firstWindow(
@@ -16,7 +16,7 @@ internal fun ComponentRegistry.firstWindow(
         remember {
             backGroundColor = initialBackGroundColor
         }
-        onDraw {
+        draw {
             drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         }
     }

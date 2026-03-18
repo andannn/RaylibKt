@@ -4,7 +4,14 @@
  */
 package io.github.andannn.raylib.tiled
 
-import io.github.andannn.raylib.tiled.model.TiledMap
+import io.github.andannn.raylib.tiled.model.GroupLayer
+import io.github.andannn.raylib.tiled.model.ImageLayer
+import io.github.andannn.raylib.tiled.model.Layer
+import io.github.andannn.raylib.tiled.model.ObjectGroupLayer
+import io.github.andannn.raylib.tiled.model.TemplateObject
+import io.github.andannn.raylib.tiled.model.Template
+import io.github.andannn.raylib.tiled.model.TileMap
+import io.github.andannn.raylib.tiled.model.Object
 import io.github.andannn.raylib.tiled.model.Tileset
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -12,78 +19,117 @@ import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
 import kotlinx.serialization.json.Json
 
-interface TiledMapFiles {
-    fun tmJsonFile(): String
-    fun txJsonFiles(): List<String>
-}
-
 interface TiledMapProvider {
-    fun getMap(): TiledMap
+    fun getMap(): TileMap
+
+    companion object Factory {
+        fun json(file: String): TiledMapProvider = JsonTiledMapProvider(file)
+    }
 }
 
-fun TiledMapProvider(
-    tmJsonFile: String,
-    txJsonFileDictionary: String = Path(tmJsonFile).parent.toString()
-): TiledMapProvider = TiledMapProviderImpl(
-    object : TiledMapFiles {
-        override fun tmJsonFile(): String {
-            return tmJsonFile
-        }
-
-        override fun txJsonFiles(): List<String> {
-            return SystemFileSystem.list(Path(txJsonFileDictionary))
-                .filter { it.name.endsWith("tsj") }
-                .map { it.toString() }
-        }
-    }
-)
-
-fun TiledMapProvider(files: TiledMapFiles): TiledMapProvider = TiledMapProviderImpl(files)
-
-private class TiledMapProviderImpl(
-    private val files: TiledMapFiles,
+private class JsonTiledMapProvider(
+    private val file: String,
 ) : TiledMapProvider {
     private val json = Json {
         ignoreUnknownKeys = true
     }
 
-    override fun getMap(): TiledMap {
-        val tmJson = SystemFileSystem.source(Path(files.tmJsonFile())).buffered().readString()
-        val map = json.decodeFromString<TiledMap>(tmJson)
-        val txJsonFiles = files.txJsonFiles()
+    override fun getMap(): TileMap {
+        val tmJsonFile = Path(file)
+        val tmJsonFileParent = tmJsonFile.parent ?: Path(".")
 
-        val tilesets = map.tilesets.map { tileset ->
-            txJsonFiles.firstOrNull { path ->
-                Path(path).name == tileset.source
-            }?.let { matchedFile ->
-                val tsXJson = SystemFileSystem.source(Path(matchedFile)).buffered().readString()
-                val matchedExternalTileset = json.decodeFromString<Tileset>(tsXJson)
-                val imagePath = Path(tileset.image ?: matchedExternalTileset.image ?: error("Image must be set."))
-                val parentPath = Path(matchedFile).parent!!
-                val absoluteImagePath = imagePath.takeIf { it.isAbsolute } ?: Path(parentPath, imagePath.toString())
-                tileset.copy(
-                    backgroundColor = tileset.backgroundColor ?: matchedExternalTileset.backgroundColor,
-                    className = tileset.className ?: matchedExternalTileset.className,
-                    columns = tileset.columns ?: matchedExternalTileset.columns,
-                    fillMode = matchedExternalTileset.fillMode,
-                    image = absoluteImagePath.toString(),
-                    imageHeight = tileset.imageHeight ?: matchedExternalTileset.imageHeight,
-                    imageWidth = tileset.imageWidth ?: matchedExternalTileset.imageWidth,
-                    margin = if (tileset.margin != 0) tileset.margin else matchedExternalTileset.margin,
-                    name = tileset.name ?: matchedExternalTileset.name,
-                    objectAlignment = matchedExternalTileset.objectAlignment,
-                    spacing = if (tileset.spacing != 0) tileset.spacing else matchedExternalTileset.spacing,
-                    tileCount = tileset.tileCount ?: matchedExternalTileset.tileCount,
-                    tileHeight = tileset.tileHeight ?: matchedExternalTileset.tileHeight,
-                    tileRenderSize = matchedExternalTileset.tileRenderSize,
-                    tileWidth = tileset.tileWidth ?: matchedExternalTileset.tileWidth,
-                    transparentColor = tileset.transparentColor ?: matchedExternalTileset.transparentColor,
-                )
-            } ?: tileset
+        val tmJson = SystemFileSystem.source(tmJsonFile).buffered().readString()
+        val srcMap = json.decodeFromString<TileMap>(tmJson)
+
+        val resolvedLayers = srcMap.layers.resolvePaths(tmJsonFileParent)
+
+        val resolvedTilesets = srcMap.tilesets.map { tileset ->
+            if (tileset.source != null) {
+                mergeExternalTileset(base = tmJsonFileParent, tileset)
+            } else {
+                tileset
+            }
         }
 
-        return map.copy(
-            tilesets = tilesets
+        return srcMap.copy(
+            layers = resolvedLayers,
+            tilesets = resolvedTilesets
+        )
+    }
+
+    private fun List<Layer>.resolvePaths(basePath: Path): List<Layer> {
+        return this.map { layer ->
+            when (layer) {
+                is ImageLayer -> {
+                    val imagePath = Path(layer.image)
+                    val absolutePath = if (imagePath.isAbsolute) imagePath else Path(basePath, layer.image)
+                    layer.copy(image = absolutePath.toString())
+                }
+
+                is ObjectGroupLayer -> {
+                    val newObjects = layer.objects.map { obj ->
+                        when (obj) {
+                            is TemplateObject -> {
+                                resolveTemplateObj(basePath, obj)
+                            }
+
+                            else -> obj
+                        }
+                    }
+                    layer.copy(objects = newObjects)
+                }
+
+                is GroupLayer -> {
+                    layer.copy(layers = layer.layers.resolvePaths(basePath))
+                }
+
+                else -> layer
+            }
+        }
+    }
+
+    private fun resolveTemplateObj(basePath: Path, obj: TemplateObject): Object {
+        val templatePath = Path(obj.template)
+        val absolutePath = if (templatePath.isAbsolute) templatePath else Path(basePath, obj.template)
+
+        val templateJson = SystemFileSystem.source(absolutePath).buffered().readString()
+        val template = json.decodeFromString<Template>(templateJson)
+        return template.obj.copyWith(obj.x, obj.y, obj.id)
+    }
+
+
+    private fun mergeExternalTileset(
+        base: Path,
+        localTileset: Tileset,
+    ): Tileset {
+        val relativePath = localTileset.source ?: return localTileset
+        val tsjPath = Path(base, relativePath)
+        val tsXJson = SystemFileSystem.source(tsjPath).buffered().readString()
+        val externalTileset = json.decodeFromString<Tileset>(tsXJson)
+
+        val imageStr = localTileset.image ?: externalTileset.image ?: error("Tileset image must be set.")
+        val imagePath = Path(imageStr)
+        val tsjParentPath = tsjPath.parent ?: Path(".")
+        val absoluteImagePath = if (imagePath.isAbsolute) imagePath else Path(tsjParentPath, imageStr)
+
+        return localTileset.copy(
+            backgroundColor = localTileset.backgroundColor ?: externalTileset.backgroundColor,
+            className = localTileset.className ?: externalTileset.className,
+            columns = localTileset.columns ?: externalTileset.columns,
+            fillMode = externalTileset.fillMode,
+            image = absoluteImagePath.toString(),
+            imageHeight = localTileset.imageHeight ?: externalTileset.imageHeight,
+            imageWidth = localTileset.imageWidth ?: externalTileset.imageWidth,
+            margin = if (localTileset.margin != 0) localTileset.margin else externalTileset.margin,
+            name = localTileset.name ?: externalTileset.name,
+            objectAlignment = externalTileset.objectAlignment,
+            spacing = if (localTileset.spacing != 0) localTileset.spacing else externalTileset.spacing,
+            tileCount = localTileset.tileCount ?: externalTileset.tileCount,
+            tileHeight = localTileset.tileHeight ?: externalTileset.tileHeight,
+            tileRenderSize = externalTileset.tileRenderSize,
+            tileWidth = localTileset.tileWidth ?: externalTileset.tileWidth,
+            transparentColor = localTileset.transparentColor ?: externalTileset.transparentColor
         )
     }
 }
+
