@@ -30,19 +30,19 @@ kmpExtension {
         createNativeCompilation("rayLibCompile") {
             configureEachTarget {
                 val externalRaylibPath = project.layout.projectDirectory.dir("external/raylib_c")
-                val externalRResPath = project.layout.projectDirectory.dir("external/rres")
                 val sourceList = buildList {
-                    add("${externalRaylibPath}/src/rcore.c")
-                    add("${externalRaylibPath}/src/rshapes.c")
-                    add("${externalRaylibPath}/src/utils.c")
-                    add("${externalRaylibPath}/src/rtextures.c")
-                    add("${externalRaylibPath}/src/rmodels.c")
-                    add("${externalRaylibPath}/src/raudio.c")
-                    add("${externalRaylibPath}/src/rtext.c")
-                    add("c/include_rres.c")
+                    add("rcore.c")
+                    add("rshapes.c")
+                    add("utils.c")
+                    add("rtextures.c")
+                    add("rmodels.c")
+                    add("raudio.c")
+                    add("rtext.c")
                     if (konanTarget.isDesktop()) {
                         add("rglfw.c")
                     }
+                }.map {
+                    externalRaylibPath.dir("src/$it")
                 }
 
                 if (konanTarget.family == Family.OSX) {
@@ -68,7 +68,6 @@ kmpExtension {
 
                 sources.from(sourceList)
                 includes.from(externalRaylibPath.dir("src"))
-                includes.from(externalRResPath.dir("src"))
             }
             configureTargets(requiredNativeTargets)
         }

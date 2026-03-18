@@ -18,6 +18,7 @@ import raylib.interop.EndScissorMode
 import raylib.interop.EndShaderMode
 import raylib.interop.EndTextureMode
 
+
 inline fun mode2d(camera: Camera2D, crossinline block: () -> Unit) {
     mode2d(camera.readValue(), block)
 }
