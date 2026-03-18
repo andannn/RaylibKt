@@ -62,7 +62,8 @@ internal fun RememberScope(
     disposableRegistry: DisposableRegistry,
     contextRegistry: ContextRegistry,
     windowContext: WindowContext = contextRegistry.find<WindowContext>(),
-): RememberScope = object : RememberScope, DisposableRegistry by disposableRegistry,
+): RememberScope = object : RememberScope,
+    DisposableRegistry by disposableRegistry,
     WindowContext by windowContext {}
 
 internal fun interface UpdateHandler {
