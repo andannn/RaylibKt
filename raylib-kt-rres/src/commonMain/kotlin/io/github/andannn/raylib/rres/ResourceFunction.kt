@@ -8,7 +8,6 @@ import io.github.andannn.raylib.base.Font
 import io.github.andannn.raylib.base.Image
 import io.github.andannn.raylib.base.Mesh
 import io.github.andannn.raylib.base.Wave
-import io.github.andannn.raylib.core.Context
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer
@@ -23,20 +22,20 @@ import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toKString
 
 interface RresFunction {
-    fun loadResourceChunk(fileName: String, rresId: UInt): CValue<RresResourceChunk>
-    fun unloadResourceChunk(chunk: CValue<RresResourceChunk>)
+    fun loadResourceChunk(fileName: String, rresId: UInt): CValue<ResourceChunk>
+    fun unloadResourceChunk(chunk: CValue<ResourceChunk>)
 
-    fun loadResourceMulti(fileName: String, rresId: UInt): CValue<RresResourceMulti>
-    fun unloadResourceMulti(multi: CValue<RresResourceMulti>)
+    fun loadResourceMulti(fileName: String, rresId: UInt): CValue<ResourceMulti>
+    fun unloadResourceMulti(multi: CValue<ResourceMulti>)
 
-    fun loadResourceChunkInfo(fileName: String, rresId: UInt): CValue<RresResourceChunkInfo>
-    fun loadResourceChunkInfoAll(fileName: String, chunkCount: CPointer<UIntVar>): CPointer<RresResourceChunkInfo>?
+    fun loadResourceChunkInfo(fileName: String, rresId: UInt): CValue<ResourceChunkInfo>
+    fun loadResourceChunkInfoAll(fileName: String, chunkCount: CPointer<UIntVar>): CPointer<ResourceChunkInfo>?
 
-    fun loadCentralDirectory(fileName: String): CValue<RresCentralDir>
-    fun unloadCentralDirectory(dir: CValue<RresCentralDir>)
+    fun loadCentralDirectory(fileName: String): CValue<CentralDir>
+    fun unloadCentralDirectory(dir: CValue<CentralDir>)
 
     fun getDataType(fourCC: CPointer<UByteVar>): UInt
-    fun getResourceId(dir: CValue<RresCentralDir>, fileName: String): UInt
+    fun getResourceId(dir: CValue<CentralDir>, fileName: String): UInt
     fun computeCRC32(data: CPointer<UByteVar>, len: Int): UInt
 
     fun setCipherPassword(pass: String?)
@@ -46,38 +45,38 @@ interface RresFunction {
 fun RresFunction(): RresFunction = DefaultRresFunction()
 
 private class DefaultRresFunction : RresFunction {
-    override fun loadResourceChunk(fileName: String, rresId: UInt): CValue<RresResourceChunk> {
+    override fun loadResourceChunk(fileName: String, rresId: UInt): CValue<ResourceChunk> {
         return rres.interop.rresLoadResourceChunk(fileName, rresId)
     }
 
-    override fun unloadResourceChunk(chunk: CValue<RresResourceChunk>) {
+    override fun unloadResourceChunk(chunk: CValue<ResourceChunk>) {
         rres.interop.rresUnloadResourceChunk(chunk)
     }
 
-    override fun loadResourceMulti(fileName: String, rresId: UInt): CValue<RresResourceMulti> {
+    override fun loadResourceMulti(fileName: String, rresId: UInt): CValue<ResourceMulti> {
         return rres.interop.rresLoadResourceMulti(fileName, rresId)
     }
 
-    override fun unloadResourceMulti(multi: CValue<RresResourceMulti>) {
+    override fun unloadResourceMulti(multi: CValue<ResourceMulti>) {
         rres.interop.rresUnloadResourceMulti(multi)
     }
 
-    override fun loadResourceChunkInfo(fileName: String, rresId: UInt): CValue<RresResourceChunkInfo> {
+    override fun loadResourceChunkInfo(fileName: String, rresId: UInt): CValue<ResourceChunkInfo> {
         return rres.interop.rresLoadResourceChunkInfo(fileName, rresId)
     }
 
     override fun loadResourceChunkInfoAll(
         fileName: String,
         chunkCount: CPointer<UIntVar>
-    ): CPointer<RresResourceChunkInfo>? {
+    ): CPointer<ResourceChunkInfo>? {
         return rres.interop.rresLoadResourceChunkInfoAll(fileName, chunkCount)
     }
 
-    override fun loadCentralDirectory(fileName: String): CValue<RresCentralDir> {
+    override fun loadCentralDirectory(fileName: String): CValue<CentralDir> {
         return rres.interop.rresLoadCentralDirectory(fileName)
     }
 
-    override fun unloadCentralDirectory(dir: CValue<RresCentralDir>) {
+    override fun unloadCentralDirectory(dir: CValue<CentralDir>) {
         rres.interop.rresUnloadCentralDirectory(dir)
     }
 
@@ -85,7 +84,7 @@ private class DefaultRresFunction : RresFunction {
         return rres.interop.rresGetDataType(fourCC)
     }
 
-    override fun getResourceId(dir: CValue<RresCentralDir>, fileName: String): UInt {
+    override fun getResourceId(dir: CValue<CentralDir>, fileName: String): UInt {
         return rres.interop.rresGetResourceId(dir, fileName)
     }
 
@@ -103,46 +102,46 @@ private class DefaultRresFunction : RresFunction {
 }
 
 interface RaylibRresFunction {
-    fun loadDataFromResource(chunk: CValue<RresResourceChunk>, size: CPointer<UIntVar>): COpaquePointer?
-    fun loadTextFromResource(chunk: CValue<RresResourceChunk>): CPointer<ByteVar>?
+    fun loadDataFromResource(chunk: CValue<ResourceChunk>, size: CPointer<UIntVar>): COpaquePointer?
+    fun loadTextFromResource(chunk: CValue<ResourceChunk>): CPointer<ByteVar>?
 
-    fun loadImageFromResource(chunk: CValue<RresResourceChunk>): CValue<Image>
-    fun loadWaveFromResource(chunk: CValue<RresResourceChunk>): CValue<Wave>
-    fun loadFontFromResource(multi: CValue<RresResourceMulti>): CValue<Font>
-    fun loadMeshFromResource(multi: CValue<RresResourceMulti>): CValue<Mesh>
+    fun loadImageFromResource(chunk: CValue<ResourceChunk>): CValue<Image>
+    fun loadWaveFromResource(chunk: CValue<ResourceChunk>): CValue<Wave>
+    fun loadFontFromResource(multi: CValue<ResourceMulti>): CValue<Font>
+    fun loadMeshFromResource(multi: CValue<ResourceMulti>): CValue<Mesh>
 
-    fun unpackResourceChunk(chunk: CPointer<RresResourceChunk>): Int
+    fun unpackResourceChunk(chunk: CPointer<ResourceChunk>): Int
 }
 
 fun RaylibRresFunction(): RaylibRresFunction = DefaultRaylibRresFunction()
 
 private class DefaultRaylibRresFunction : RaylibRresFunction {
 
-    override fun loadDataFromResource(chunk: CValue<RresResourceChunk>, size: CPointer<UIntVar>): COpaquePointer? {
+    override fun loadDataFromResource(chunk: CValue<ResourceChunk>, size: CPointer<UIntVar>): COpaquePointer? {
         return rres.interop.LoadDataFromResource(chunk, size)
     }
 
-    override fun loadTextFromResource(chunk: CValue<RresResourceChunk>): CPointer<ByteVar>? {
+    override fun loadTextFromResource(chunk: CValue<ResourceChunk>): CPointer<ByteVar>? {
         return rres.interop.LoadTextFromResource(chunk)
     }
 
-    override fun loadImageFromResource(chunk: CValue<RresResourceChunk>): CValue<Image> {
+    override fun loadImageFromResource(chunk: CValue<ResourceChunk>): CValue<Image> {
         return rres.interop.LoadImageFromResource(chunk).reinterpret()
     }
 
-    override fun loadWaveFromResource(chunk: CValue<RresResourceChunk>): CValue<Wave> {
+    override fun loadWaveFromResource(chunk: CValue<ResourceChunk>): CValue<Wave> {
         return rres.interop.LoadWaveFromResource(chunk).reinterpret()
     }
 
-    override fun loadFontFromResource(multi: CValue<RresResourceMulti>): CValue<Font> {
+    override fun loadFontFromResource(multi: CValue<ResourceMulti>): CValue<Font> {
         return rres.interop.LoadFontFromResource(multi).reinterpret()
     }
 
-    override fun loadMeshFromResource(multi: CValue<RresResourceMulti>): CValue<Mesh> {
+    override fun loadMeshFromResource(multi: CValue<ResourceMulti>): CValue<Mesh> {
         return rres.interop.LoadMeshFromResource(multi).reinterpret()
     }
 
-    override fun unpackResourceChunk(chunk: CPointer<RresResourceChunk>): Int {
+    override fun unpackResourceChunk(chunk: CPointer<ResourceChunk>): Int {
         return rres.interop.UnpackResourceChunk(chunk)
     }
 }

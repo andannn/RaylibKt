@@ -1,14 +1,11 @@
 package io.github.andannn.raylib.rres
 
 import io.github.andannn.raylib.core.Context
-import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.UIntVar
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
-import kotlinx.cinterop.readBytes
-import kotlinx.cinterop.readValue
 import kotlinx.cinterop.value
 import platform.posix.free
 
@@ -24,7 +21,7 @@ fun ResourceContext(
 
 inline fun ResourceContext.traverseResourceChunkInfo(
     fileName: String,
-    block: (RresResourceChunkInfo) -> Unit
+    block: (ResourceChunkInfo) -> Unit
 ) = memScoped {
     val count = alloc<UIntVar>()
     println("count ${count.value}")

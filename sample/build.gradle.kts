@@ -1,7 +1,5 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
-
 plugins {
-    id("kmp.ext")
+    id("io.github.andannn.raylib.ext")
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.task.tree)
@@ -9,27 +7,37 @@ plugins {
 
 kotlin {
     macosArm64 {
-        binaries.executable {
-            entryPoint("me.raylib.sample.main")
-            linkerOpts(
-                "-framework", "CoreVideo",
-                "-framework", "CoreGraphics",
-                "-framework", "AppKit",
-                "-framework", "IOKit",
-                "-framework", "OpenGL",
-                "-framework", "Cocoa"
-            )
+        binaries {
+            executable {
+                entryPoint("me.raylib.sample.main")
+                linkerOpts(
+                    "-framework", "CoreVideo",
+                    "-framework", "CoreGraphics",
+                    "-framework", "AppKit",
+                    "-framework", "IOKit",
+                    "-framework", "OpenGL",
+                    "-framework", "Cocoa"
+                )
+            }
+        }
+        binaries {
+            getTest("debug").apply {
+                linkerOpts(
+                    "-framework", "Foundation",
+                    "-framework", "AppKit",
+                    "-framework", "IOKit",
+                    "-framework", "CoreVideo",
+                    "-framework", "CoreGraphics",
+                    "-framework", "QuartzCore",
+                    "-framework", "OpenGL"
+                )
+            }
         }
     }
 
     android {
         namespace = "me.raylib.sample"
         compileSdk = 36
-
-        addKotlinNativeSharedLibrariesToLibsDir(
-            kotlinTargets = this@kotlin.targets,
-            buildType = NativeBuildType.DEBUG,
-        )
     }
 
     listOf(
@@ -73,5 +81,32 @@ kotlin {
     sourceSets.all {
         languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
     }
+
+// TODO: this is workaround for can not bundle rres to android assets in kmp module.
+    val rresArtifactType = Attribute.of("com.yourgame.artifact.type", String::class.java)
+
+    val rresElements by configurations.creating {
+        isCanBeConsumed = true
+        isCanBeResolved = false
+        attributes.attribute(rresArtifactType, "rres-binary-dir")
+    }
+
+    project.extensions.getByType<GameAssetsExtension>().rresAssets.all {
+        artifacts {
+            add(rresElements.name, packageTaskProvider.flatMap { it.outputDir })
+        }
+    }
 }
 
+gameAssets {
+    rresAssets.create("app") {
+        baseDir = project.layout.projectDirectory.dir("resources")
+        resources {
+            register<TextConfig>("tiled")
+        }
+    }
+
+    rawAssets.create("res") {
+        dir = project.layout.projectDirectory.dir("resources")
+    }
+}

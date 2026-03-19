@@ -23,22 +23,22 @@ import rres.interop.rresTextEncoding
 import rres.interop.rresVertexAttribute
 import rres.interop.rresVertexFormat
 
-typealias RresResourceChunk = rresResourceChunk
-typealias RresFileHeader = rresFileHeader
-typealias RresResourceChunkInfo = rresResourceChunkInfo
-typealias RresResourceChunkData = rresResourceChunkData
-typealias RresResourceMulti = rresResourceMulti
-typealias RresDirEntry = rresDirEntry
-typealias RresCentralDir = rresCentralDir
-typealias RresFontGlyphInfo = rresFontGlyphInfo
+typealias ResourceChunk = rresResourceChunk
+typealias FileHeader = rresFileHeader
+typealias ResourceChunkInfo = rresResourceChunkInfo
+typealias ResourceChunkData = rresResourceChunkData
+typealias ResourceMulti = rresResourceMulti
+typealias DirEntry = rresDirEntry
+typealias CentralDir = rresCentralDir
+typealias FontGlyphInfo = rresFontGlyphInfo
 
-typealias RresResourceDataType = rresResourceDataType
-typealias RresCompressionType = rresCompressionType
-typealias RresEncryptionType = rresEncryptionType
-typealias RresErrorType = rresErrorType
-typealias RresTextEncoding = rresTextEncoding
-typealias RresCodeLang = rresCodeLang
-typealias RresPixelFormat = rresPixelFormat
-typealias RresVertexAttribute = rresVertexAttribute
-typealias RresVertexFormat = rresVertexFormat
-typealias RresFontStyle = rresFontStyle
+typealias ResourceDataType = rresResourceDataType
+typealias CompressionType = rresCompressionType
+typealias EncryptionType = rresEncryptionType
+typealias ErrorType = rresErrorType
+typealias TextEncoding = rresTextEncoding
+typealias CodeLang = rresCodeLang
+typealias PixelFormat = rresPixelFormat
+typealias VertexAttribute = rresVertexAttribute
+typealias VertexFormat = rresVertexFormat
+typealias FontStyle = rresFontStyle

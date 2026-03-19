@@ -80,18 +80,16 @@ class NativeLibraryBundler(
      * @see CombineObjectFilesTask for details.
      */
     fun addNativeLibrariesToAndroidVariantSources(
-        androidTarget: KotlinMultiplatformAndroidLibraryTarget,
+        project: Project,
         nativeCompilation: MultiTargetNativeCompilation,
         forTest: Boolean,
-        provideSourceDirectories: Sources.() -> (SourceDirectories.Layered?),
     ) {
-        androidTarget.addNativeLibrariesToAndroidVariantSources(
+        project.addNativeLibrariesToAndroidVariantSources(
             prefix = nativeCompilation.archiveName,
             forTest = forTest,
             configureCombineTaskAction = {
                 this.configureFrom(nativeCompilation) { it.family == Family.ANDROID }
             },
-            provideSourceDirectories = provideSourceDirectories,
         )
     }
 }
