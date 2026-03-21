@@ -4,7 +4,7 @@
  */
 package io.github.andannn.raylib.tiled.util
 
-import io.github.andannn.raylib.base.blendMode
+import io.github.andannn.raylib.foundation.blendMode
 import io.github.andannn.raylib.tiled.model.BlendMode
 
 @PublishedApi
@@ -13,8 +13,8 @@ internal inline fun BlendMode.blend(
 ) {
     when (this) {
         BlendMode.NORMAL -> block()
-        BlendMode.ADD -> blendMode(io.github.andannn.raylib.base.BlendMode.BLEND_ADDITIVE, block)
-        BlendMode.MULTIPLY -> blendMode(io.github.andannn.raylib.base.BlendMode.BLEND_MULTIPLIED, block)
+        BlendMode.ADD -> blendMode(io.github.andannn.raylib.foundation.BlendMode.BLEND_ADDITIVE, block)
+        BlendMode.MULTIPLY -> blendMode(io.github.andannn.raylib.foundation.BlendMode.BLEND_MULTIPLIED, block)
         BlendMode.SCREEN -> TODO()
         BlendMode.OVERLAY -> TODO()
         BlendMode.DARKEN -> TODO()

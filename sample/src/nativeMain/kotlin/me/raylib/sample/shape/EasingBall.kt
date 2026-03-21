@@ -1,20 +1,23 @@
 package me.raylib.sample.shape
 
-import io.github.andannn.raylib.base.Colors.BLACK
-import io.github.andannn.raylib.base.Colors.GREEN
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.core.await
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.rememberSuspendingTask
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.foundation.Colors.BLACK
+import io.github.andannn.raylib.foundation.Colors.GREEN
+import io.github.andannn.raylib.foundation.Colors.RED
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.foundation.rememberSuspendingTask
+import io.github.andannn.raylib.runtime.setValue
 import io.github.andannn.easings.Ease
 import io.github.andannn.easings.awaitEasingAnimation
+import io.github.andannn.raylib.foundation.GameContext
+import io.github.andannn.raylib.foundation.screenWidth
+import io.github.andannn.raylib.runtime.await
+import io.github.andannn.raylib.runtime.find
 import raylib.interop.Fade
 import kotlin.time.Duration.Companion.seconds
 
@@ -34,6 +37,9 @@ fun ComponentRegistry.easingBall() {
             mutableStateOf(0)
         }
 
+        val gameContext = remember {
+            find<GameContext>()
+        }
         rememberSuspendingTask {
             while (true) {
                 awaitEasingAnimation(
@@ -60,8 +66,11 @@ fun ComponentRegistry.easingBall() {
                     onUpdate = { ballAlpha = it }
                 )
                 state = 3
-
-                await { KeyboardKey.KEY_ENTER.isPressed() }
+                await {
+                    with(gameContext) {
+                        KeyboardKey.KEY_ENTER.isPressed()
+                    }
+                }
 
                 ballPositionX = -100
                 ballRadius = 20

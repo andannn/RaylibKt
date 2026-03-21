@@ -1,23 +1,22 @@
 package me.raylib.sample.textures
 
 import kotlinx.cinterop.useContents
-import io.github.andannn.raylib.base.Colors.DARKGRAY
-import io.github.andannn.raylib.base.Colors.GRAY
-import io.github.andannn.raylib.base.Colors.LIME
-import io.github.andannn.raylib.base.Colors.MAROON
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.base.Colors.WHITE
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.components.fileTextAsset
+import io.github.andannn.raylib.foundation.Colors.DARKGRAY
+import io.github.andannn.raylib.foundation.Colors.GRAY
+import io.github.andannn.raylib.foundation.Colors.LIME
+import io.github.andannn.raylib.foundation.Colors.MAROON
+import io.github.andannn.raylib.foundation.Colors.RED
+import io.github.andannn.raylib.foundation.Colors.WHITE
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.foundation.Rectangle
 import io.github.andannn.raylib.components.fileTextureAsset
-import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.components.spriteAnimationComponent
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
 
 private const val MAX_FRAME_SPEED = 15
 private const val MIN_FRAME_SPEED = 1

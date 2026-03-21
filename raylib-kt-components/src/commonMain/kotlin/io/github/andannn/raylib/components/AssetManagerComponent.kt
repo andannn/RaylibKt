@@ -4,18 +4,18 @@
  */
 package io.github.andannn.raylib.components
 
-import io.github.andannn.raylib.base.Texture
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.Context
-import io.github.andannn.raylib.core.ContextProvider
-import io.github.andannn.raylib.core.DisposableRegistry
-import io.github.andannn.raylib.core.RememberScope
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.loadTextureFromImage
-import io.github.andannn.raylib.core.provide
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Texture
+import io.github.andannn.raylib.foundation.loadTextureFromImage
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.runtime.Context
+import io.github.andannn.raylib.runtime.ContextProvider
+import io.github.andannn.raylib.runtime.DisposableRegistry
+import io.github.andannn.raylib.runtime.RememberScope
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.provide
+import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.rres.ResourceContext
 import io.github.andannn.raylib.rres.useImageResource
 import io.github.andannn.raylib.rres.useTextResource

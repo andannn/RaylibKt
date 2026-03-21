@@ -1,19 +1,19 @@
 package me.raylib.sample.textures
 
-import io.github.andannn.raylib.base.MouseButton
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.foundation.MouseButton
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.foundation.Vector2
 import io.github.andannn.raylib.components.fileTextureAsset
 import io.github.andannn.raylib.components.spriteAnimationComponent
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.components
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateListOf
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.components
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateListOf
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.runtime.setValue
 import kotlinx.cinterop.CValue
 
 fun ComponentRegistry.spriteExplosion() = component("explosion") {

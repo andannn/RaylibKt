@@ -4,15 +4,18 @@
  */
 package io.github.andannn.raylib.components
 
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.matrixIdentity
-import io.github.andannn.raylib.base.matrixRotateZ
-import io.github.andannn.raylib.base.matrixScale
-import io.github.andannn.raylib.base.matrixTranslate
-import io.github.andannn.raylib.base.multiply
-import io.github.andannn.raylib.core.internal.buildComponents
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.foundation.WindowContext
+import io.github.andannn.raylib.foundation.matrixIdentity
+import io.github.andannn.raylib.foundation.matrixRotateZ
+import io.github.andannn.raylib.foundation.matrixScale
+import io.github.andannn.raylib.foundation.matrixTranslate
+import io.github.andannn.raylib.foundation.multiply
+import io.github.andannn.raylib.runtime.Rebuildable
+import io.github.andannn.raylib.runtime.doOnce
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.runtime.provideStaticDependency
+import io.github.andannn.raylib.runtime.remember
 import reasings.interop.PI
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +23,11 @@ import kotlin.test.assertEquals
 class Transform2DComponentTest {
     @Test
     fun transform2D_get_worldMatrix_Test() {
-        val control = buildComponents {
+        val control = Rebuildable {
+            doOnce {
+                provideStaticDependency(WindowContext(DummyWindowFunction()))
+            }
+
             val transform = remember {
                 Transform2DAlloc(
                     position = Vector2(100f, 100f), scale = Vector2(2f, 3f), offset = Vector2(120f, 240f),
@@ -48,7 +55,11 @@ class Transform2DComponentTest {
 
     @Test
     fun transform2D_get_worldMatrix_in_grand_child_Test() {
-        val control = buildComponents {
+        val control = Rebuildable {
+            doOnce {
+                provideStaticDependency(WindowContext(DummyWindowFunction()))
+            }
+
             val transform = remember {
                 Transform2DAlloc(
                     position = Vector2(100f, 100f), scale = Vector2(2f, 3f), offset = Vector2(120f, 240f),

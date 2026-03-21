@@ -1,23 +1,23 @@
 package me.raylib.sample.core
 
-import io.github.andannn.raylib.base.Colors.BLUE
-import io.github.andannn.raylib.base.Colors.DARKBLUE
-import io.github.andannn.raylib.base.Colors.DARKGREEN
-import io.github.andannn.raylib.base.Colors.GRAY
-import io.github.andannn.raylib.base.Colors.GREEN
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
-import io.github.andannn.raylib.base.Colors.MAROON
-import io.github.andannn.raylib.base.Colors.PURPLE
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.Gesture
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.foundation.Colors.BLUE
+import io.github.andannn.raylib.foundation.Colors.DARKBLUE
+import io.github.andannn.raylib.foundation.Colors.DARKGREEN
+import io.github.andannn.raylib.foundation.Colors.GRAY
+import io.github.andannn.raylib.foundation.Colors.GREEN
+import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
+import io.github.andannn.raylib.foundation.Colors.MAROON
+import io.github.andannn.raylib.foundation.Colors.PURPLE
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.Gesture
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.runtime.setValue
 
 fun ComponentRegistry.basicScreenManager() {
     var currentScreen by remember {

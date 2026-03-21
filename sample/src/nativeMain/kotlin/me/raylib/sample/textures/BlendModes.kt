@@ -1,11 +1,15 @@
 package me.raylib.sample.textures
 
-import io.github.andannn.raylib.base.BlendMode
-import io.github.andannn.raylib.base.Colors.GRAY
-import io.github.andannn.raylib.base.Colors.WHITE
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.blendMode
-import io.github.andannn.raylib.core.*
+import io.github.andannn.raylib.foundation.BlendMode
+import io.github.andannn.raylib.foundation.Colors.GRAY
+import io.github.andannn.raylib.foundation.Colors.WHITE
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.foundation.blendMode
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.loadTextureFromImage
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.foundation.useImage
+import io.github.andannn.raylib.runtime.*
 import kotlinx.cinterop.useContents
 
 fun ComponentRegistry.blendModes() = component("blend modes") {
@@ -35,7 +39,7 @@ fun ComponentRegistry.blendModes() = component("blend modes") {
 
     draw {
         bgTexture.useContents {
-            drawTexture(bgTexture, screenWidth/2 - width/2, screenHeight/2 - height/2, WHITE);
+            drawTexture(bgTexture, screenWidth/2 - width/2, screenHeight/2 - height/2, WHITE)
         }
 
         blendMode(blendMode) {

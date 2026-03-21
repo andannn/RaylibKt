@@ -14,7 +14,7 @@ kmpExtension {
 
         it.commonMain.dependencies {
             api(project(":raylib-gui"))
-            api(project(":raylib-kt-core"))
+            api(project(":raylib-kt-foundation"))
         }
     }
 }

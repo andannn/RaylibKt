@@ -4,8 +4,8 @@
  */
 package io.github.andannn.raylib.tiled.model
 
-import io.github.andannn.raylib.base.Color
-import io.github.andannn.raylib.base.Colors.WHITE
+import io.github.andannn.raylib.foundation.Color
+import io.github.andannn.raylib.foundation.Colors.WHITE
 import io.github.andannn.raylib.tiled.util.toRaylibColor
 import kotlinx.cinterop.CValue
 import kotlinx.serialization.SerialName

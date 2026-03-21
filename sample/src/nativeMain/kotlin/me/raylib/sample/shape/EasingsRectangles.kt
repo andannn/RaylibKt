@@ -2,21 +2,25 @@ package me.raylib.sample.shape
 
 import io.github.andannn.easings.Ease
 import io.github.andannn.easings.animateTo
-import io.github.andannn.easings.awaitDuration
-import io.github.andannn.raylib.base.Colors.GRAY
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.RectangleAlloc
-import io.github.andannn.raylib.core.await
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.rememberSuspendingTask
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.foundation.Colors.GRAY
+import io.github.andannn.raylib.foundation.Colors.RED
+import io.github.andannn.raylib.foundation.GameContext
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.foundation.RectangleAlloc
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.rememberSuspendingTask
+import io.github.andannn.raylib.foundation.screenHeight
+import io.github.andannn.raylib.foundation.screenWidth
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.await
+import io.github.andannn.raylib.runtime.awaitDuration
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.runtime.setValue
 import kotlinx.cinterop.readValue
 import raylib.interop.Rectangle
 import kotlin.time.Duration.Companion.seconds
@@ -53,6 +57,10 @@ fun ComponentRegistry.easingsRectangles() {
             mutableStateOf(false)
         }
 
+        val gameContext = remember {
+            find<GameContext>()
+        }
+
         rememberSuspendingTask {
             while (true) {
                 awaitDuration(4.seconds) { fraction ->
@@ -64,7 +72,11 @@ fun ComponentRegistry.easingsRectangles() {
                 }
 
                 isWaitingKey = true
-                await { KeyboardKey.KEY_SPACE.isPressed() }
+                await {
+                    with(gameContext) {
+                        KeyboardKey.KEY_SPACE.isPressed()
+                    }
+                }
                 isWaitingKey = false
 
                 recs.forEach { rec ->

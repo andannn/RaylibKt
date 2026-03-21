@@ -4,7 +4,7 @@
  */
 package io.github.andannn.raylib.tiled.util
 
-import io.github.andannn.raylib.base.Color
+import io.github.andannn.raylib.foundation.Color
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.readValue

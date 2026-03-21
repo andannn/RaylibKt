@@ -1,23 +1,24 @@
 package me.raylib.sample.core
 
-import io.github.andannn.raylib.base.Colors.BLACK
-import io.github.andannn.raylib.base.Colors.WHITE
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.foundation.Colors.BLACK
+import io.github.andannn.raylib.foundation.Colors.WHITE
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.runtime.setValue
+import io.github.andannn.raylib.foundation.windowContext
 import raylib.interop.WindowShouldClose
 
 fun ComponentRegistry.windowShouldClose(
     exitKey: KeyboardKey = KeyboardKey.KEY_ESCAPE,
 ) = component("key") {
-    setExitKey(exitKey)
-    interceptExitKey(true)
+    windowContext.setExitKey(exitKey)
+    windowContext.interceptExitKey(true)
     var exitWindowRequested by remember {
         mutableStateOf(false)
     }

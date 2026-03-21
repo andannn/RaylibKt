@@ -4,12 +4,12 @@
  */
 package io.github.andannn.raylib.tiled
 
-import io.github.andannn.raylib.base.Texture
+import io.github.andannn.raylib.foundation.Texture
 import io.github.andannn.raylib.components.fileTextAsset
 import io.github.andannn.raylib.components.fileTextureAsset
 import io.github.andannn.raylib.components.rresTextAsset
 import io.github.andannn.raylib.components.rresTextureAsset
-import io.github.andannn.raylib.core.ContextProvider
+import io.github.andannn.raylib.runtime.ContextProvider
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.Layer

@@ -5,22 +5,24 @@ import kotlinx.cinterop.plus
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.useContents
 import kotlinx.cinterop.value
-import io.github.andannn.raylib.base.Color
-import io.github.andannn.raylib.base.Colors.BLACK
-import io.github.andannn.raylib.base.Colors.MAROON
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.WindowFunction
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.base.randomColor
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.foundation.Color
+import io.github.andannn.raylib.foundation.Colors.BLACK
+import io.github.andannn.raylib.foundation.Colors.MAROON
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.foundation.WindowFunction
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.foundation.randomColor
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.foundation.screenWidth
+import io.github.andannn.raylib.runtime.setValue
+import io.github.andannn.raylib.foundation.windowContext
 import raylib.interop.LoadRandomSequence
 import raylib.interop.Remap
 import raylib.interop.UnloadRandomSequence
@@ -34,7 +36,7 @@ fun ComponentRegistry.randomSequence() {
             mutableStateOf(screenWidth.toFloat() / rectCount)
         }
         var rects by remember {
-            mutableStateOf(generateRandomColorRectSequence(rectCount, rectSize))
+            mutableStateOf(windowContext.generateRandomColorRectSequence(rectCount, rectSize))
         }
         update {
             if (KeyboardKey.KEY_SPACE.isPressed()) {

@@ -4,18 +4,18 @@
  */
 package io.github.andannn.raylib.components
 
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.isCollisionWith
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.Context
-import io.github.andannn.raylib.core.ContextProvider
-import io.github.andannn.raylib.core.GameContext
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.doOnce
-import io.github.andannn.raylib.core.findOrNull
-import io.github.andannn.raylib.core.provide
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.foundation.isCollisionWith
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.runtime.Context
+import io.github.andannn.raylib.runtime.ContextProvider
+import io.github.andannn.raylib.foundation.GameContext
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.doOnce
+import io.github.andannn.raylib.runtime.findOrNull
+import io.github.andannn.raylib.runtime.provide
+import io.github.andannn.raylib.runtime.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import kotlin.math.floor

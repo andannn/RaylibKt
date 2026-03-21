@@ -4,26 +4,26 @@
  */
 package io.github.andannn.raylib.components
 
-import io.github.andannn.raylib.base.Matrix
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.randomColor
-import io.github.andannn.raylib.base.withWorldSpace
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.Context
-import io.github.andannn.raylib.core.ContextRegistry
-import io.github.andannn.raylib.core.RememberScope
-import io.github.andannn.raylib.core.RenderPhase
-import io.github.andannn.raylib.core.State
-import io.github.andannn.raylib.core.Vector2Alloc
-import io.github.andannn.raylib.core.WindowContext
-import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.findOrNull
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.provide
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Matrix
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.foundation.RenderPhase
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.foundation.Vector2Alloc
+import io.github.andannn.raylib.foundation.WindowContext
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.randomColor
+import io.github.andannn.raylib.foundation.withWorldSpace
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.runtime.Context
+import io.github.andannn.raylib.runtime.ContextRegistry
+import io.github.andannn.raylib.runtime.RememberScope
+import io.github.andannn.raylib.runtime.State
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.findOrNull
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.runtime.provide
+import io.github.andannn.raylib.runtime.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import kotlin.math.abs
@@ -132,6 +132,9 @@ inline fun ComponentRegistry.spatial2DComponent(
     val context = remember {
         Spatial2DContext()
     }
+
+    val isDebug = remember { find<WindowContext>().isDebug }
+
     if (isDebug) {
         val debugRectColor = remember {
             randomColor()

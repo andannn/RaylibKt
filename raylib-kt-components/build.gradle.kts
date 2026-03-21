@@ -26,14 +26,14 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
-            implementation(project(":raylib-kt-core"))
+            implementation(project(":raylib-kt-runtime"))
             implementation(project(":raylib-kt-rres"))
             implementation(project(":raylib-kt-easings"))
             implementation(libs.kotlinx.io)
         }
 
         it.commonTest.dependencies {
-            implementation(project(":raylib-kt-core"))
+            implementation(project(":raylib-kt-runtime"))
         }
     }
 }
