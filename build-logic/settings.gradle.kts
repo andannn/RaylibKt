@@ -18,4 +18,3 @@ dependencyResolutionManagement {
 rootProject.name = "build-logic"
 include(":kmp-native-compile")
 include(":raylib-ext")
-include(":common")

@@ -24,9 +24,32 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
-import platform.posix.err
 import raylib.interop.LoadTexture
 import raylib.interop.UnloadTexture
+
+fun ContextProvider.rresTextureAsset(rres: String, resourceId: UInt): CValue<Texture> {
+    return find<GameAssetsManager>().getOrCachedTextureFromRres(rres, resourceId)
+}
+
+fun ContextProvider.rresTextureAsset(path: String): CValue<Texture> {
+    return find<GameAssetsManager>().getOrCachedTextureFromRres(path)
+}
+
+fun ContextProvider.fileTextureAsset(path: String): CValue<Texture> {
+    return find<GameAssetsManager>().getOrCachedTextureFromFile(path)
+}
+
+fun ContextProvider.rresTextAsset(rres: String, resourceId: UInt): String {
+    return find<GameAssetsManager>().getTextFromRres(rres, resourceId)
+}
+
+fun ContextProvider.rresTextAsset(path: String): String {
+    return find<GameAssetsManager>().getTextFromRres(path)
+}
+
+fun ContextProvider.fileTextAsset(path: String): String {
+    return find<GameAssetsManager>().getTextFromFile(path)
+}
 
 class GameAssetsManager(
     private val contextProvider: ContextProvider,
@@ -41,7 +64,7 @@ class GameAssetsManager(
     }
 
     fun getOrCachedTextureFromRres(rres: String, resourceId: UInt): CValue<Texture> {
-        return textureMap.getOrPut("${rres}_$resourceId") {
+        return textureMap.getOrPut("$resourceId") {
             contextProvider.useImageResource(rres, resourceId) { img ->
                 rememberScope.loadTextureFromImage(img)
             }

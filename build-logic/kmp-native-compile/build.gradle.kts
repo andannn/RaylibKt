@@ -3,7 +3,8 @@ plugins {
 }
 
 dependencies {
-    api(project(":common"))
+    implementation(libs.android.tool.common)
+    implementation(libs.spotless.gradlePlugin)
     compileOnly(libs.kotlin.gradle.plugin)
     compileOnly(libs.maven.publish.gradle.plugin)
     implementation(libs.android.kmp.library.gradlePlugin)

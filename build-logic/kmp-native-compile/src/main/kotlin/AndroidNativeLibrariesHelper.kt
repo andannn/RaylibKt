@@ -1,5 +1,3 @@
-import com.android.build.api.artifact.SingleArtifact
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.android.build.api.variant.HasDeviceTests
 import com.android.build.api.variant.SourceDirectories
 import com.android.build.api.variant.Sources

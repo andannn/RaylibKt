@@ -349,10 +349,6 @@ private sealed interface Chunk {
         override fun propertyCount() = 4
 
         override fun properties(): ByteArray {
-            println("width $width")
-            println("rresPixelFormat $rresPixelFormat")
-            println("height $height")
-            println("data.size1 ${data.size}")
             return Buffer().apply {
                 writeUIntLe(width.toUInt())
                 writeUIntLe(height.toUInt())

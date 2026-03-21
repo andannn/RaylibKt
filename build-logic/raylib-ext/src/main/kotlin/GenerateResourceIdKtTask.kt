@@ -17,6 +17,8 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
     @get:Input
     abstract val targetPackage: Property<String>
     @get:Input
+    abstract val rresFileName: Property<String>
+    @get:Input
     abstract val className: Property<String>
     @get:InputFile
     abstract val mappingFile: RegularFileProperty
@@ -32,6 +34,7 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
         val pkgName = targetPackage.get()
         val clsName = className.get()
         val outDir = outputDir.get().asFile
+        val rresFileName = rresFileName.get()
 
         val rawObj = TypeSpec.objectBuilder("raw")
         val textObj = TypeSpec.objectBuilder("text")
@@ -61,14 +64,19 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
             }
         }
 
+        val fileNameProperty = PropertySpec.builder("rresFile", String::class)
+            .addModifiers(KModifier.CONST)
+            .initializer("%S", rresFileName)
+            .build()
+
         val resObject = TypeSpec.objectBuilder(clsName)
             .addKdoc("Auto-generated Raylib Resource IDs.\nDO NOT MODIFY MANUALLY.")
+            .addProperty(fileNameProperty)
             .addType(rawObj.build())
             .addType(textObj.build())
             .addType(imageObj.build())
             .build()
 
-        // 4. 生成文件
         FileSpec.builder(pkgName, clsName)
             .addType(resObject)
             .build()
@@ -78,9 +86,10 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
     }
 
     private fun sanitizeVarName(path: String): String {
-        return path.substringAfterLast("/") // 只取文件名部分
-            .replace(".", "_")
-            .replace("-", "_")
+        return path
+            .replace("[^a-zA-Z0-9]".toRegex(), "_")
+            .replace("_+".toRegex(), "_")
+            .trim('_')
             .lowercase()
     }
 }

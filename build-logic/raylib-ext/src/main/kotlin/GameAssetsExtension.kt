@@ -45,6 +45,7 @@ abstract class GameAssetsExtension @Inject constructor(private val project: Proj
             val generateSourceTaskName = "generate".appendCapitalized(name, "ResourceIds")
             val genTask = project.tasks.register(generateSourceTaskName, GenerateResourceIdKtTask::class.java) {
                 targetPackage.set("rres.resources.$name")
+                rresFileName.set("$name.rres")
                 className.set("${name.replaceFirstChar { it.uppercase() }}Res")
                 mappingFile.set(packTask.flatMap { it.mappingFile })
                 outputDir.set(project.layout.buildDirectory.dir("generated/source/rres/$name"))
