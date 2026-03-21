@@ -14,7 +14,7 @@ dependencies {
 gradlePlugin {
     plugins {
         register("RaylibExtPlugin") {
-            id = "raylibkt.ext"
+            id = "io.github.andannn.raylibkt.ext"
             implementationClass = "RaylibExtPlugin"
         }
     }
