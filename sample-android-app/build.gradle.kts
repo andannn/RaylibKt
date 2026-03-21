@@ -1,6 +1,20 @@
 plugins {
     alias(libs.plugins.android.application)
 }
+
+val rresArtifactType = Attribute.of("com.yourgame.artifact.type", String::class.java)
+
+val rresFiles by project.configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    attributes.attribute(rresArtifactType, "rres-binary-dir") // 凭标签取货
+}
+
+dependencies {
+    rresFiles(project(":sample"))
+    implementation(project(":sample"))
+}
+
 android {
     namespace = "me.sample.native_activity"
 
@@ -11,8 +25,15 @@ android {
         minSdk = 24
         compileSdk = 36
     }
+    sourceSets {
+        getByName("main") {
+            assets.srcDir(rresFiles)
+        }
+    }
 }
 
-dependencies {
-    implementation(project(":sample"))
+tasks.configureEach {
+    if (name.startsWith("merge") && name.endsWith("Assets")) {
+        dependsOn(rresFiles)
+    }
 }

@@ -8,22 +8,82 @@ import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.Context
+import io.github.andannn.raylib.core.ContextProvider
 import io.github.andannn.raylib.core.DisposableRegistry
 import io.github.andannn.raylib.core.RememberScope
 import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.core.find
+import io.github.andannn.raylib.core.loadTextureFromImage
 import io.github.andannn.raylib.core.provide
 import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.rres.ResourceContext
+import io.github.andannn.raylib.rres.useImageResource
+import io.github.andannn.raylib.rres.useTextResource
 import kotlinx.cinterop.CValue
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readString
+import platform.posix.err
 import raylib.interop.LoadTexture
 import raylib.interop.UnloadTexture
 
-class AssetManager(
-    private val rememberScope: RememberScope
+class GameAssetsManager(
+    private val contextProvider: ContextProvider,
+    private val rememberScope: RememberScope,
+    private val rresFiles: List<String> = emptyList(),
 ) : Context {
+    private val resourceContext = contextProvider.find<ResourceContext>()
     private val textureMap = mutableMapOf<String, CValue<Texture>>()
 
-    fun getTexture(path: String): CValue<Texture> {
+    fun getOrCachedTextureFromFile(path: String): CValue<Texture> {
         return textureMap.getOrPut(path) { rememberScope.loadTexture(path) }
+    }
+
+    fun getOrCachedTextureFromRres(rres: String, resourceId: UInt): CValue<Texture> {
+        return textureMap.getOrPut("${rres}_$resourceId") {
+            contextProvider.useImageResource(rres, resourceId) { img ->
+                rememberScope.loadTextureFromImage(img)
+            }
+        }
+    }
+
+    fun getOrCachedTextureFromRres(path: String): CValue<Texture> {
+        val (id, rresFile) = resolveResourceId(path)
+        return textureMap.getOrPut("${rresFile}_$id") {
+            contextProvider.useImageResource(rresFile, id) { img ->
+                rememberScope.loadTextureFromImage(img)
+            }
+        }
+    }
+
+    fun getTextFromFile(file: String): String {
+        return SystemFileSystem.source(Path(file)).use {
+            it.buffered().readString()
+        }
+    }
+
+    fun getTextFromRres(rres: String, resourceId: UInt): String {
+        return contextProvider.useTextResource(rres, resourceId)
+    }
+
+    fun getTextFromRres(path: String): String {
+        val (id, rresFile) = resolveResourceId(path)
+        return getTextFromRres(rresFile, id)
+    }
+
+    private fun resolveResourceId(path: String): Pair<UInt, String> {
+        var rresFile: String? = null
+        var id: UInt? = null
+        for (rres in rresFiles) {
+            val centralDir = resourceContext.loadCentralDirectory(rres)
+            val resourceId = resourceContext.getResourceId(centralDir, path)
+            resourceContext.unloadCentralDirectory(centralDir)
+            if (resourceId == 0u) continue
+            id = resourceId
+            rresFile = rres
+        }
+        return (id ?: error("id not found at path $path")) to rresFile!!
     }
 
 // TODO: add fonts
@@ -39,11 +99,12 @@ class AssetManager(
     }
 }
 
-inline fun ComponentRegistry.assetManagerComponent(
+inline fun ComponentRegistry.gameAssetsComponent(
+    rresFiles: List<String> = emptyList(),
     crossinline block: ComponentScope.() -> Unit
 ) = component("assetManager") {
-    val context: AssetManager = remember {
-        AssetManager(this)
+    val context: GameAssetsManager = remember {
+        GameAssetsManager(this@gameAssetsComponent, this, rresFiles)
     }
 
     provide(context) {

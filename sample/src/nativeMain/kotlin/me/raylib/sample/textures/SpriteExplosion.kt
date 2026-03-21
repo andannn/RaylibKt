@@ -3,7 +3,7 @@ package me.raylib.sample.textures
 import io.github.andannn.raylib.base.MouseButton
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.components.AssetManager
+import io.github.andannn.raylib.components.GameAssetsManager
 import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
@@ -19,7 +19,7 @@ import kotlinx.cinterop.CValue
 
 fun ComponentRegistry.spriteExplosion() = component("explosion") {
     val explosion = remember {
-        find<AssetManager>().getTexture("resources/explosion.png")
+        find<GameAssetsManager>().getOrCachedTextureFromFile("resources/explosion.png")
     }
     val explosionContainer = remember {
         mutableStateListOf<ExplosionState>()

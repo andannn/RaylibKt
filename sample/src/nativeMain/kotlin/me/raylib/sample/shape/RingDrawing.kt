@@ -15,7 +15,7 @@ import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.gui.onDrawGui
+import io.github.andannn.raylib.gui.drawGui
 import raylib.interop.Fade
 
 fun ComponentRegistry.ringDrawing() {
@@ -44,7 +44,7 @@ fun ComponentRegistry.ringDrawing() {
         val segments by remember { nativeStateOf { alloc<FloatVar> {} } }
         val center = Vector2((screenWidth - 300) / 2.0f, screenHeight / 2.0f)
 
-        onDrawGui {
+        drawGui {
             drawLine(500, 0, 500, screenHeight, Fade(LIGHTGRAY, 0.6f))
             drawRectangle(500, 0, screenHeight - 500, screenHeight, Fade(LIGHTGRAY, 0.3f))
 

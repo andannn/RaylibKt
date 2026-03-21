@@ -166,14 +166,13 @@ abstract class KMPExtension(
      */
     @JvmOverloads
     fun addNativeLibrariesToJniLibs(
-        androidTarget: KotlinMultiplatformAndroidLibraryTarget,
+        project: Project,
         nativeCompilation: MultiTargetNativeCompilation,
         forTest: Boolean = false,
     ) = nativeLibraryBundler.addNativeLibrariesToAndroidVariantSources(
-        androidTarget = androidTarget,
+        project = project,
         nativeCompilation = nativeCompilation,
         forTest = forTest,
-        provideSourceDirectories = { jniLibs },
     )
 
     fun withSourceSets(block: KotlinMultiplatformSourceSetConventions.(NamedDomainObjectContainer<KotlinSourceSet>) -> Unit) {

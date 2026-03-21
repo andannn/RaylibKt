@@ -10,13 +10,19 @@ import io.github.andannn.raylib.components.spatial2DComponent
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.tiled.TiledMapProvider
+import io.github.andannn.raylib.tiled.TiledMapProvider.Factory.file
+import io.github.andannn.raylib.tiled.TiledMapProvider.Factory.rres
 import io.github.andannn.raylib.tiled.tiledComponent
 
 fun ComponentRegistry.tileMapTest() = component("tile-mapTest") {
     backGroundColor = BLACK
 
-    tiledComponent("", TiledMapProvider.json("resources/tiled/test.tmj")) { obj ->
+    val provider = remember {
+        rres("tiled/test.tmj")
+    }
+    tiledComponent("", provider) { obj ->
         when (obj.name) {
             "Arrrr" -> {
                 val parent2D = requireParentSpatial2D()

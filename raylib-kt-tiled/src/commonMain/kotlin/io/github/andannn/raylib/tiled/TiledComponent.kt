@@ -7,14 +7,12 @@ package io.github.andannn.raylib.tiled
 import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.components.AssetManager
 import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.components.transform2DComponent
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
@@ -37,7 +35,7 @@ inline fun ComponentRegistry.tiledComponent(
 ): TileMap = component(key) {
     val tiledMap = remember { tiledMapProvider.getMap() }
     val tiledSetManager = remember {
-        TiledSetManager(find<AssetManager>(), tiledMap)
+        TiledSetManager(tiledMapProvider.resourceResolver, tiledMap)
     }
 
     val flattenedLayers = remember {

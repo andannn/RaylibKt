@@ -7,3 +7,6 @@
 [submodule "raylib-gui/external/raygui"]
 	path = raylib-gui/external/raygui
 	url = https://github.com/raysan5/raygui.git
+[submodule "raylib-rres/external/rres"]
+	path = raylib-rres/external/rres
+	url = https://github.com/raysan5/rres.git

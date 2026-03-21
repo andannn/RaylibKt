@@ -15,7 +15,7 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
-import io.github.andannn.raylib.components.assetManagerComponent
+import io.github.andannn.raylib.components.gameAssetsComponent
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.draw
@@ -24,9 +24,12 @@ import io.github.andannn.raylib.core.provideStaticDependency
 import io.github.andannn.raylib.core.remember
 import io.github.andannn.raylib.core.window
 import io.github.andannn.raylib.gui.GuiContext
-import io.github.andannn.raylib.gui.onDrawGui
+import io.github.andannn.raylib.gui.drawGui
+import io.github.andannn.raylib.rres.ResourceContext
 import me.raylib.sample.audio.modulePlaying
 import me.raylib.sample.audio.soundLoading
+import me.raylib.sample.rres.readChunkData
+import platform.posix.listen
 import raylib.interop.rlDisableBackfaceCulling
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -72,6 +75,7 @@ enum class Example(val title: String) {
     SOUND_LOADING("Sound Loading"),
     TILE_MAP_TEST("Tile map test"),
     BLEND_MODES("Blend Modes"),
+    READ_CHUNK_DATA("Read chunk data"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -86,10 +90,11 @@ fun main() = window(
     init = {
         rlDisableBackfaceCulling()
         provideStaticDependency(GuiContext())
+        provideStaticDependency(ResourceContext())
     }
 ) {
     val active = remember {
-        nativeStateOf { alloc<IntVar> { value = Example.entries.lastIndex -1 } }
+        nativeStateOf { alloc<IntVar> { value = Example.entries.indexOf(Example.TILE_MAP_TEST) } }
     }
 
     val currentExample = remember {
@@ -106,7 +111,7 @@ fun main() = window(
         }
     }
 
-    assetManagerComponent {
+    gameAssetsComponent(listOf("app.rres")) {
         when (currentExample.value) {
             null -> {
                 component("menu") {
@@ -116,7 +121,7 @@ fun main() = window(
                     val scrollIndex by remember {
                         nativeStateOf { alloc<IntVar> {} }
                     }
-                    onDrawGui {
+                    drawGui {
                         guiListView(
                             bounds = bounds,
                             text = Example.entries.joinToString(";") { it.title },
@@ -168,6 +173,7 @@ fun main() = window(
             Example.SOUND_LOADING -> soundLoading()
             Example.TILE_MAP_TEST -> tileMapTest()
             Example.BLEND_MODES -> blendModes()
+            Example.READ_CHUNK_DATA -> readChunkData()
         }
     }
 

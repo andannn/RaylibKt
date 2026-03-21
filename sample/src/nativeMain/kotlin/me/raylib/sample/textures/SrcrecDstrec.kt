@@ -6,7 +6,7 @@ import io.github.andannn.raylib.base.Colors.WHITE
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.components.AssetManager
+import io.github.andannn.raylib.components.GameAssetsManager
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.core.mutableStateOf
@@ -19,7 +19,7 @@ import io.github.andannn.raylib.core.setValue
 fun ComponentRegistry.srcrecDstrec() {
     component("srcrec_dstrec") {
         val scarfy = remember {
-            find<AssetManager>().getTexture("resources/scarfy.png")
+            find<GameAssetsManager>().getOrCachedTextureFromFile("resources/scarfy.png")
         }
         val (frameWidth, frameHeight) = scarfy.useContents { width.div(6f) to height }
         val sourceRec = Rectangle(0.0f, 0.0f, frameWidth, frameHeight.toFloat())

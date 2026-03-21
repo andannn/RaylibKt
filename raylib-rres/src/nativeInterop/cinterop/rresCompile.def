@@ -1,0 +1,4 @@
+package = rres.interop
+headers = rres.h raylib.h rres-raylib.h
+
+strictEnums = rresResourceDataType rresCompressionType rresEncryptionType rresErrorType rresTextEncoding rresCodeLang rresPixelFormat rresVertexAttribute rresVertexFormat rresFontStyle

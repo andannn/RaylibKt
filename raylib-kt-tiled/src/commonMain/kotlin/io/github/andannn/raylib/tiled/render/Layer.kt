@@ -9,12 +9,13 @@ import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.components.AssetManager
+import io.github.andannn.raylib.components.GameAssetsManager
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.DrawContext
 import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.tiled.ResourceResolver
 import io.github.andannn.raylib.tiled.model.GID
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.TileLayer
@@ -29,7 +30,7 @@ internal fun ComponentScope.drawImageLayer(layer: ImageLayer, tint: CValue<Color
 
 // TODO: handle repeatx, repeaty
     val imageTexture = remember {
-        find<AssetManager>().getTexture(layer.image)
+        find<GameAssetsManager>().getOrCachedTextureFromFile(layer.image)
     }
 
     draw {
@@ -138,17 +139,17 @@ internal fun DrawContext.drawTile(
 
 @PublishedApi
 internal fun TiledSetManager(
-    assetManager: AssetManager,
+    resourceResolver: ResourceResolver,
     tileMap: TileMap,
-): TiledSetManager = TiledSetTextureManager(assetManager, tileMap)
+): TiledSetManager = TiledSetTextureManager(resourceResolver, tileMap)
 
 private class TiledSetTextureManager(
-    val assetManager: AssetManager,
+    val resourceResolver: ResourceResolver,
     val tileMap: TileMap,
 ) : TiledSetManager {
     override val textureMap: Map<TiledSetKey, TiledSetWithTexture> = buildMap {
         tileMap.tilesets.forEach {
-            put(it.key(), TiledSetWithTexture(it, assetManager.getTexture(it.requireImage())))
+            put(it.key(), TiledSetWithTexture(it, resourceResolver.resolveImageTexture(it.requireImage())))
         }
     }
 
