@@ -29,6 +29,7 @@ import io.github.andannn.raylib.rres.ResourceContext
 import me.raylib.sample.audio.modulePlaying
 import me.raylib.sample.audio.soundLoading
 import me.raylib.sample.rres.readChunkData
+import platform.posix.listen
 import raylib.interop.rlDisableBackfaceCulling
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -110,7 +111,7 @@ fun main() = window(
         }
     }
 
-    gameAssetsComponent {
+    gameAssetsComponent(listOf("app.rres")) {
         when (currentExample.value) {
             null -> {
                 component("menu") {

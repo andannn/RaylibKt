@@ -15,6 +15,7 @@ import io.github.andannn.raylib.core.DrawContext
 import io.github.andannn.raylib.core.draw
 import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.tiled.ResourceResolver
 import io.github.andannn.raylib.tiled.model.GID
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.TileLayer
@@ -138,17 +139,17 @@ internal fun DrawContext.drawTile(
 
 @PublishedApi
 internal fun TiledSetManager(
-    gameAssetsManager: GameAssetsManager,
+    resourceResolver: ResourceResolver,
     tileMap: TileMap,
-): TiledSetManager = TiledSetTextureManager(gameAssetsManager, tileMap)
+): TiledSetManager = TiledSetTextureManager(resourceResolver, tileMap)
 
 private class TiledSetTextureManager(
-    val gameAssetsManager: GameAssetsManager,
+    val resourceResolver: ResourceResolver,
     val tileMap: TileMap,
 ) : TiledSetManager {
     override val textureMap: Map<TiledSetKey, TiledSetWithTexture> = buildMap {
         tileMap.tilesets.forEach {
-            put(it.key(), TiledSetWithTexture(it, gameAssetsManager.getOrCachedTextureFromFile(it.requireImage())))
+            put(it.key(), TiledSetWithTexture(it, resourceResolver.resolveImageTexture(it.requireImage())))
         }
     }
 

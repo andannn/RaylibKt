@@ -4,6 +4,10 @@
  */
 package io.github.andannn.raylib.tiled
 
+import io.github.andannn.raylib.base.Texture
+import io.github.andannn.raylib.components.GameAssetsManager
+import io.github.andannn.raylib.core.ContextProvider
+import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.Layer
@@ -13,21 +17,78 @@ import io.github.andannn.raylib.tiled.model.Template
 import io.github.andannn.raylib.tiled.model.TileMap
 import io.github.andannn.raylib.tiled.model.Object
 import io.github.andannn.raylib.tiled.model.Tileset
-import kotlinx.io.buffered
+import kotlinx.cinterop.CValue
 import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
-import kotlinx.io.readString
 import kotlinx.serialization.json.Json
 
+interface ResourceResolver {
+    fun resolveText(path: String): String
+    fun resolveImageTexture(path: String): CValue<Texture>
+}
+
 interface TiledMapProvider {
+    val resourceResolver: ResourceResolver
+
     fun getMap(): TileMap
 
     companion object Factory {
-        fun json(file: String): TiledMapProvider = JsonTiledMapProvider(file)
+        fun ContextProvider.file(file: String): TiledMapProvider =
+            JsonTiledMapProvider(FileBasedResourceResolver(find<GameAssetsManager>()), file)
+
+        fun ContextProvider.rres(file: String): TiledMapProvider =
+            JsonTiledMapProvider(RresBasedResourceResolver(find<GameAssetsManager>()), file)
+    }
+}
+
+private class RresBasedResourceResolver(
+    private val gameAssetsManager: GameAssetsManager,
+) : ResourceResolver {
+    override fun resolveText(path: String): String {
+        return gameAssetsManager.getTextFromRres(path.normalizePath())
+    }
+
+    override fun resolveImageTexture(path: String): CValue<Texture> {
+        return gameAssetsManager.getOrCachedTextureFromRres(path.normalizePath())
+    }
+
+    private fun String.normalizePath(): String {
+        val isAbsolute = this.startsWith("/") || this.startsWith("\\")
+        val segments = this.split('/', '\\')
+        val resolved = mutableListOf<String>()
+
+        for (segment in segments) {
+            if (segment.isEmpty() || segment == ".") continue
+
+            if (segment == "..") {
+                if (resolved.isNotEmpty() && resolved.last() != "..") {
+                    resolved.removeLast()
+                } else if (!isAbsolute) {
+                    resolved.add(segment)
+                }
+            } else {
+                resolved.add(segment)
+            }
+        }
+
+        val joined = resolved.joinToString("/")
+        return if (isAbsolute) "/$joined" else joined
+    }
+}
+
+private class FileBasedResourceResolver(
+    private val gameAssetsManager: GameAssetsManager,
+) : ResourceResolver {
+    override fun resolveText(path: String): String {
+        return gameAssetsManager.getTextFromFile(path)
+    }
+
+    override fun resolveImageTexture(path: String): CValue<Texture> {
+        return gameAssetsManager.getOrCachedTextureFromFile(path)
     }
 }
 
 private class JsonTiledMapProvider(
+    override val resourceResolver: ResourceResolver,
     private val file: String,
 ) : TiledMapProvider {
     private val json = Json {
@@ -38,7 +99,7 @@ private class JsonTiledMapProvider(
         val tmJsonFile = Path(file)
         val tmJsonFileParent = tmJsonFile.parent ?: Path(".")
 
-        val tmJson = SystemFileSystem.source(tmJsonFile).buffered().readString()
+        val tmJson = resourceResolver.resolveText(file)
         val srcMap = json.decodeFromString<TileMap>(tmJson)
 
         val resolvedLayers = srcMap.layers.resolvePaths(tmJsonFileParent)
@@ -92,11 +153,10 @@ private class JsonTiledMapProvider(
         val templatePath = Path(obj.template)
         val absolutePath = if (templatePath.isAbsolute) templatePath else Path(basePath, obj.template)
 
-        val templateJson = SystemFileSystem.source(absolutePath).buffered().readString()
+        val templateJson = resourceResolver.resolveText(absolutePath.toString())
         val template = json.decodeFromString<Template>(templateJson)
         return template.obj.copyWith(obj.x, obj.y, obj.id)
     }
-
 
     private fun mergeExternalTileset(
         base: Path,
@@ -104,7 +164,7 @@ private class JsonTiledMapProvider(
     ): Tileset {
         val relativePath = localTileset.source ?: return localTileset
         val tsjPath = Path(base, relativePath)
-        val tsXJson = SystemFileSystem.source(tsjPath).buffered().readString()
+        val tsXJson = resourceResolver.resolveText(tsjPath.toString())
         val externalTileset = json.decodeFromString<Tileset>(tsXJson)
 
         val imageStr = localTileset.image ?: externalTileset.image ?: error("Tileset image must be set.")

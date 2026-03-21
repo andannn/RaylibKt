@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.test.report.Image
-
 plugins {
     id("io.github.andannn.raylib.ext")
     alias(libs.plugins.kotlinMultiplatform)
@@ -19,19 +17,6 @@ kotlin {
                     "-framework", "IOKit",
                     "-framework", "OpenGL",
                     "-framework", "Cocoa"
-                )
-            }
-        }
-        binaries {
-            getTest("debug").apply {
-                linkerOpts(
-                    "-framework", "Foundation",
-                    "-framework", "AppKit",
-                    "-framework", "IOKit",
-                    "-framework", "CoreVideo",
-                    "-framework", "CoreGraphics",
-                    "-framework", "QuartzCore",
-                    "-framework", "OpenGL"
                 )
             }
         }
