@@ -1,5 +1,5 @@
 plugins {
-    id("io.github.andannn.raylib.ext")
+    id("raylibkt.ext")
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.task.tree)
