@@ -15,7 +15,7 @@ import io.github.andannn.raylib.base.Vector2
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.core.getValue
 import io.github.andannn.raylib.base.isCollisionWith
-import io.github.andannn.raylib.components.assetManagerComponent
+import io.github.andannn.raylib.components.gameAssetsComponent
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.nativeStateOf
 import io.github.andannn.raylib.core.draw
@@ -93,7 +93,7 @@ fun main() = window(
     }
 ) {
     val active = remember {
-        nativeStateOf { alloc<IntVar> { value = Example.entries.lastIndex } }
+        nativeStateOf { alloc<IntVar> { value = Example.entries.indexOf(Example.TILE_MAP_TEST) } }
     }
 
     val currentExample = remember {
@@ -110,7 +110,7 @@ fun main() = window(
         }
     }
 
-    assetManagerComponent {
+    gameAssetsComponent {
         when (currentExample.value) {
             null -> {
                 component("menu") {

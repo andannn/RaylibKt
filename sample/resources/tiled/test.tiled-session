@@ -1,17 +1,17 @@
 {
-    "activeFile": "test.tmj",
+    "activeFile": "tilesets/Confetti.tsj",
     "expandedProjectPaths": [
         "tilesets",
-        "template",
-        "."
+        ".",
+        "template"
     ],
     "fileStates": {
         "test.tmj": {
-            "scale": 2.12,
+            "scale": 4.9251,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 61.32075471698113,
-                "y": 38.20754716981132
+                "x": 21.725447199041646,
+                "y": 29.644068140748416
             }
         },
         "tilesets/Confetti.tsj": {
@@ -28,7 +28,6 @@
     "map.tileWidth": 16,
     "map.width": 60,
     "openFiles": [
-        "test.tmj",
         "tilesets/Confetti.tsj"
     ],
     "project": "test.tiled-project",

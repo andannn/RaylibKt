@@ -14,9 +14,11 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
+import java.awt.image.BufferedImage
 import java.io.File
 import java.io.RandomAccessFile
 import java.util.zip.CRC32
+import javax.imageio.ImageIO
 
 abstract class RresPackTask : DefaultTask() {
     @get:InputDirectory
@@ -88,8 +90,13 @@ abstract class RresPackTask : DefaultTask() {
 
             offset += sink.writeChunk(chunk, resourceId)
             sink.flush()
-
-            mappingFileSink.writeString("$relativePath,$resourceId\n")
+            val type = when (config) {
+                is ImageConfig -> "image"
+                is TextConfig -> "text"
+                is RawConfig -> "raw"
+                else -> "raw"
+            }
+            mappingFileSink.writeString("$relativePath,$resourceId,$type\n")
         }
         // flush and close mapping file.
         mappingFileSink.flush()
@@ -112,35 +119,46 @@ abstract class RresPackTask : DefaultTask() {
     }
 
     private fun buildChunk(file: File, config: RresResourceConfig): Chunk {
-        val source = file.inputStream().asSource()
-        val rawData = source.buffered().readByteArray()
-        source.close()
 
         return when (config) {
             is RawConfig -> {
-                Chunk.RawChunk(
-                    size = rawData.size,
-                    data = rawData
-                )
+                file.inputStream().asSource().use {
+                    val rawData = it.buffered().readByteArray()
+                    Chunk.RawChunk(
+                        size = rawData.size,
+                        data = rawData
+                    )
+                }
             }
 
             is TextConfig -> {
-                Chunk.TextChunk(
-                    size = rawData.size,
-                    data = rawData,
-                    rresTextEncoding = config.textEncoding.getOrElse(TextEncoding.RRES_TEXT_ENCODING_UTF8),
+                file.inputStream().asSource().use {
+                    val rawData = it.buffered().readByteArray()
+                    Chunk.TextChunk(
+                        size = rawData.size,
+                        data = rawData,
+                        rresTextEncoding = config.textEncoding.getOrElse(TextEncoding.RRES_TEXT_ENCODING_UTF8),
 // TODO:
-                    rresCodeLang = config.codeLang.getOrElse(0),
+                        rresCodeLang = config.codeLang.getOrElse(0),
 // TODO:
-                    cultureCode = config.cultureCode.getOrElse(0),
-                )
+                        cultureCode = config.cultureCode.getOrElse(0),
+                    )
+                }
             }
 
             is ImageConfig -> {
 // TODO:
-                Chunk.RawChunk(
-                    size = rawData.size,
-                    data = rawData
+                val img: BufferedImage = ImageIO.read(file) ?: error("Failed to read image: ${file.path}")
+                val width = img.width
+                val height = img.height
+                val pixelFormat = config.pixelFormat.orNull ?: detectPixelFormat(img.type)
+                val raw = img.convertToRawPixels(pixelFormat)
+                Chunk.ImageChunk(
+                    width = config.width.orNull ?: width,
+                    height = config.height.orNull ?: height,
+                    rresPixelFormat = pixelFormat,
+                    mipmaps = config.mipmaps.orNull ?: 1,
+                    data = raw
                 )
             }
 
@@ -323,7 +341,7 @@ private sealed interface Chunk {
     class ImageChunk(
         val width: Int,
         val height: Int,
-        val rresPixelFormat: Int,
+        val rresPixelFormat: PixelFormat,
         val mipmaps: Int,
         override val data: ByteArray
     ) : Chunk {
@@ -331,10 +349,14 @@ private sealed interface Chunk {
         override fun propertyCount() = 4
 
         override fun properties(): ByteArray {
+            println("width $width")
+            println("rresPixelFormat $rresPixelFormat")
+            println("height $height")
+            println("data.size1 ${data.size}")
             return Buffer().apply {
                 writeUIntLe(width.toUInt())
                 writeUIntLe(height.toUInt())
-                writeUIntLe(rresPixelFormat.toUInt())
+                writeUIntLe(rresPixelFormat.value)
                 writeUIntLe(mipmaps.toUInt())
             }.readByteArray()
         }

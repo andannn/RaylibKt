@@ -7,7 +7,7 @@ package io.github.andannn.raylib.tiled
 import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.components.AssetManager
+import io.github.andannn.raylib.components.GameAssetsManager
 import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.components.transform2DComponent
 import io.github.andannn.raylib.core.ComponentRegistry
@@ -37,7 +37,7 @@ inline fun ComponentRegistry.tiledComponent(
 ): TileMap = component(key) {
     val tiledMap = remember { tiledMapProvider.getMap() }
     val tiledSetManager = remember {
-        TiledSetManager(find<AssetManager>(), tiledMap)
+        TiledSetManager(find<GameAssetsManager>(), tiledMap)
     }
 
     val flattenedLayers = remember {

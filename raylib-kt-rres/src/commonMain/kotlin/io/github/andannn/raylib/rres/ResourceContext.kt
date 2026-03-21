@@ -1,11 +1,18 @@
 package io.github.andannn.raylib.rres
 
+import io.github.andannn.raylib.base.Image
 import io.github.andannn.raylib.core.Context
+import io.github.andannn.raylib.core.ContextProvider
+import io.github.andannn.raylib.core.DisposableRegistry
+import io.github.andannn.raylib.core.RememberScope
+import io.github.andannn.raylib.core.find
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.UIntVar
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
+import kotlinx.cinterop.toKString
 import kotlinx.cinterop.value
 import platform.posix.free
 
@@ -19,15 +26,29 @@ fun ResourceContext(
     RresFunction by rresFunction,
     RaylibRresFunction by raylibRresFunction {}
 
-inline fun ResourceContext.traverseResourceChunkInfo(
-    fileName: String,
-    block: (ResourceChunkInfo) -> Unit
-) = memScoped {
-    val count = alloc<UIntVar>()
-    println("count ${count.value}")
-    val infos = loadResourceChunkInfoAll(fileName, count.ptr)?: return@memScoped
-    for (i in 0 until count.value.toInt()) {
-        block(infos[i])
-    }
-    free(infos)
+inline fun <reified T> ContextProvider.useResource(
+    rresFile: String,
+    resourceId: UInt,
+    block: ResourceContext.(CValue<ResourceChunk>) -> T
+) = with(find<ResourceContext>()) {
+    val chunk = loadResourceChunk(rresFile, resourceId)
+    val ret = block(chunk)
+    unloadResourceChunk(chunk)
+    ret
+}
+
+inline fun <reified T> ContextProvider.useImageResource(
+    rresFile: String,
+    resourceId: UInt,
+    block: (CValue<Image>) -> T
+) = useResource(rresFile, resourceId) { chunk ->
+    block(loadImageFromResource(chunk))
+}
+
+inline fun ContextProvider.useTextResource(
+    rresFile: String,
+    resourceId: UInt,
+    block: (String) -> String = { it }
+) = useResource(rresFile, resourceId) { chunk ->
+    block(loadTextFromResource(chunk)?.toKString() ?: error("No string found"))
 }

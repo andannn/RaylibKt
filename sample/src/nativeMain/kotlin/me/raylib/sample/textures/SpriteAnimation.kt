@@ -10,7 +10,7 @@ import io.github.andannn.raylib.base.Colors.WHITE
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.components.AssetManager
+import io.github.andannn.raylib.components.GameAssetsManager
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.core.mutableStateOf
@@ -24,7 +24,7 @@ private const val MIN_FRAME_SPEED = 1
 
 fun ComponentRegistry.spriteAnimationSample() {
     val scarfy = remember {
-        find<AssetManager>().getTexture("resources/scarfy.png")
+        find<GameAssetsManager>().getOrCachedTextureFromFile("resources/scarfy.png")
     }
 
     val framesSpeed = remember {

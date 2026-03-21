@@ -48,7 +48,7 @@ abstract class ImageConfig @Inject constructor(
 
     @get:Optional
     @get:Input
-    abstract val pixelFormat: Property<Int>
+    abstract val pixelFormat: Property<PixelFormat>
 
     @get:Optional
     @get:Input

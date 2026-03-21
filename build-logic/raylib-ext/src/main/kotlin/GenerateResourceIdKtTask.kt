@@ -13,7 +13,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-
 abstract class GenerateResourceIdKtTask : DefaultTask() {
     @get:Input
     abstract val targetPackage: Property<String>
@@ -25,45 +24,63 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
 
-    init {
-        description = "Generate ResourceId constants source file"
-        group = "Build"
-    }
-
     @TaskAction
     fun generate() {
-        val mappingTextSource = mappingFile.get().asFile.inputStream().asSource().buffered()
+        val mappingFileRef = mappingFile.get().asFile
+        if (!mappingFileRef.exists()) return
+
         val pkgName = targetPackage.get()
         val clsName = className.get()
         val outDir = outputDir.get().asFile
 
-        val objectBuilder = TypeSpec.objectBuilder(clsName)
-            .addKdoc("Auto-generated Raylib Resource IDs.\nDO NOT MODIFY MANUALLY.")
+        val rawObj = TypeSpec.objectBuilder("raw")
+        val textObj = TypeSpec.objectBuilder("text")
+        val imageObj = TypeSpec.objectBuilder("image")
 
-        while (!mappingTextSource.exhausted()) {
-            val line = mappingTextSource.readLine() ?: break
+        mappingFileRef.forEachLine { line ->
+            if (line.isBlank()) return@forEachLine
+
             val parts = line.split(",")
+            if (parts.size < 3) return@forEachLine
+
             val relativePath = parts[0]
             val resourceId = parts[1]
-            val varName = relativePath
-                .replace("/", "_")
-                .replace(".", "_")
-                .replace("-", "_")
-                .lowercase()
+            val type = parts[2].lowercase()
 
-            val propertySpec = PropertySpec.builder(varName, UInt::class)
+            val varName = sanitizeVarName(relativePath)
+
+            val property = PropertySpec.builder(varName, UInt::class)
                 .addModifiers(KModifier.CONST)
                 .initializer("%Lu", resourceId)
                 .build()
-            objectBuilder.addProperty(propertySpec)
+
+            when (type) {
+                "raw" -> rawObj.addProperty(property)
+                "text" -> textObj.addProperty(property)
+                "image" -> imageObj.addProperty(property)
+            }
         }
 
-        val fileSpec = FileSpec.builder(pkgName, clsName)
-            .addType(objectBuilder.build())
+        val resObject = TypeSpec.objectBuilder(clsName)
+            .addKdoc("Auto-generated Raylib Resource IDs.\nDO NOT MODIFY MANUALLY.")
+            .addType(rawObj.build())
+            .addType(textObj.build())
+            .addType(imageObj.build())
             .build()
 
-        fileSpec.writeTo(outDir)
+        // 4. 生成文件
+        FileSpec.builder(pkgName, clsName)
+            .addType(resObject)
+            .build()
+            .writeTo(outDir)
 
-        println("[RresCodeGen] Successfully generated $pkgName.$clsName using KotlinPoet at: ${outDir.absolutePath}")
+        println("[RresCodeGen] Successfully generated $pkgName.$clsName with nested types.")
+    }
+
+    private fun sanitizeVarName(path: String): String {
+        return path.substringAfterLast("/") // 只取文件名部分
+            .replace(".", "_")
+            .replace("-", "_")
+            .lowercase()
     }
 }

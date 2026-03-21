@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.test.report.Image
+
 plugins {
     id("io.github.andannn.raylib.ext")
     alias(libs.plugins.kotlinMultiplatform)
@@ -102,7 +104,13 @@ gameAssets {
     rresAssets.create("app") {
         baseDir = project.layout.projectDirectory.dir("resources")
         resources {
-            register<TextConfig>("tiled")
+            register<TextConfig>("tiled/test.tmj")
+            register<TextConfig>("tiled/tilesets")
+            register<TextConfig>("tiled/template")
+            register<ImageConfig>("tiled/img")
+            register<ImageConfig>("cat.png")
+            register<ImageConfig>("explosion.png")
+            register<ImageConfig>("scarfy.png")
         }
     }
 
