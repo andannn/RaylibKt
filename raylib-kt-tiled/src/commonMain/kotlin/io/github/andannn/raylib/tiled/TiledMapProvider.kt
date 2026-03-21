@@ -5,9 +5,11 @@
 package io.github.andannn.raylib.tiled
 
 import io.github.andannn.raylib.base.Texture
-import io.github.andannn.raylib.components.GameAssetsManager
+import io.github.andannn.raylib.components.fileTextAsset
+import io.github.andannn.raylib.components.fileTextureAsset
+import io.github.andannn.raylib.components.rresTextAsset
+import io.github.andannn.raylib.components.rresTextureAsset
 import io.github.andannn.raylib.core.ContextProvider
-import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.Layer
@@ -33,22 +35,22 @@ interface TiledMapProvider {
 
     companion object Factory {
         fun ContextProvider.file(file: String): TiledMapProvider =
-            JsonTiledMapProvider(FileBasedResourceResolver(find<GameAssetsManager>()), file)
+            JsonTiledMapProvider(FileBasedResourceResolver(this), file)
 
         fun ContextProvider.rres(file: String): TiledMapProvider =
-            JsonTiledMapProvider(RresBasedResourceResolver(find<GameAssetsManager>()), file)
+            JsonTiledMapProvider(RresBasedResourceResolver(this), file)
     }
 }
 
 private class RresBasedResourceResolver(
-    private val gameAssetsManager: GameAssetsManager,
+    private val contextProvider: ContextProvider,
 ) : ResourceResolver {
     override fun resolveText(path: String): String {
-        return gameAssetsManager.getTextFromRres(path.normalizePath())
+        return contextProvider.rresTextAsset(path.normalizePath())
     }
 
     override fun resolveImageTexture(path: String): CValue<Texture> {
-        return gameAssetsManager.getOrCachedTextureFromRres(path.normalizePath())
+        return contextProvider.rresTextureAsset(path.normalizePath())
     }
 
     private fun String.normalizePath(): String {
@@ -76,14 +78,14 @@ private class RresBasedResourceResolver(
 }
 
 private class FileBasedResourceResolver(
-    private val gameAssetsManager: GameAssetsManager,
+    private val contextProvider: ContextProvider,
 ) : ResourceResolver {
     override fun resolveText(path: String): String {
-        return gameAssetsManager.getTextFromFile(path)
+        return contextProvider.fileTextAsset(path)
     }
 
     override fun resolveImageTexture(path: String): CValue<Texture> {
-        return gameAssetsManager.getOrCachedTextureFromFile(path)
+        return contextProvider.fileTextureAsset(path)
     }
 }
 

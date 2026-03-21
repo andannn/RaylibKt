@@ -9,7 +9,6 @@ import io.github.andannn.raylib.base.Colors.LIGHTGRAY
 import io.github.andannn.raylib.base.Rectangle
 import io.github.andannn.raylib.base.Texture
 import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.components.GameAssetsManager
 import io.github.andannn.raylib.core.ComponentScope
 import io.github.andannn.raylib.core.DrawContext
 import io.github.andannn.raylib.core.draw
@@ -24,13 +23,14 @@ import io.github.andannn.raylib.tiled.model.Tileset
 import kotlinx.cinterop.CValue
 
 @PublishedApi
+context(resourceResolver: ResourceResolver)
 internal fun ComponentScope.drawImageLayer(layer: ImageLayer, tint: CValue<Color>) {
 // TODO: handle image transparent color.
 // Raylib C API: RLAPI void ImageColorReplace(Image *image, Color color, Color replace);
 
 // TODO: handle repeatx, repeaty
     val imageTexture = remember {
-        find<GameAssetsManager>().getOrCachedTextureFromFile(layer.image)
+        resourceResolver.resolveImageTexture(layer.image)
     }
 
     draw {

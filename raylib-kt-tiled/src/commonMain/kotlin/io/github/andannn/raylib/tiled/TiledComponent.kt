@@ -42,7 +42,7 @@ inline fun ComponentRegistry.tiledComponent(
         tiledMap.flattenTileLayers()
     }
 
-    context(tiledSetManager) {
+    context(tiledSetManager, tiledMapProvider.resourceResolver) {
         flattenedLayers.forEach { flatTileLayer ->
             val globalOpacity: Float = flatTileLayer.globalOpacity
             val globalOffsetX: Float = flatTileLayer.globalOffsetX

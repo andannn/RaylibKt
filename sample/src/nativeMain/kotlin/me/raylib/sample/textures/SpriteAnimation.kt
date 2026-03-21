@@ -10,12 +10,12 @@ import io.github.andannn.raylib.base.Colors.WHITE
 import io.github.andannn.raylib.core.ComponentRegistry
 import io.github.andannn.raylib.base.KeyboardKey
 import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.components.GameAssetsManager
+import io.github.andannn.raylib.components.fileTextAsset
+import io.github.andannn.raylib.components.fileTextureAsset
 import io.github.andannn.raylib.core.component
 import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.core.mutableStateOf
 import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.find
 import io.github.andannn.raylib.core.update
 import io.github.andannn.raylib.core.remember
 
@@ -24,7 +24,7 @@ private const val MIN_FRAME_SPEED = 1
 
 fun ComponentRegistry.spriteAnimationSample() {
     val scarfy = remember {
-        find<GameAssetsManager>().getOrCachedTextureFromFile("resources/scarfy.png")
+        fileTextureAsset("resources/scarfy.png")
     }
 
     val framesSpeed = remember {

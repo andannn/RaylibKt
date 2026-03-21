@@ -51,7 +51,8 @@ fun ContextProvider.fileTextAsset(path: String): String {
     return find<GameAssetsManager>().getTextFromFile(path)
 }
 
-class GameAssetsManager(
+@PublishedApi
+internal class GameAssetsManager(
     private val contextProvider: ContextProvider,
     private val rememberScope: RememberScope,
     private val rresFiles: List<String> = emptyList(),
