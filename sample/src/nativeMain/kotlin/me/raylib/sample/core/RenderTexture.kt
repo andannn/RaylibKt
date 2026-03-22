@@ -3,21 +3,23 @@ package me.raylib.sample.core
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
-import io.github.andannn.raylib.base.Colors.BLACK
-import io.github.andannn.raylib.base.Colors.MAROON
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.base.Colors.SKYBLUE
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.RectangleAlloc
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.foundation.Colors.BLACK
+import io.github.andannn.raylib.foundation.Colors.MAROON
+import io.github.andannn.raylib.foundation.Colors.RED
+import io.github.andannn.raylib.foundation.Colors.SKYBLUE
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.RectangleAlloc
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.components.fixSizedTextureComponent
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.runtime.nativeStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.foundation.screenHeight
+import io.github.andannn.raylib.foundation.screenWidth
 
 private const val renderTextureWidth = 300
 private const val renderTextureHeight = 300

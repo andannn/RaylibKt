@@ -1,13 +1,13 @@
 package me.raylib.sample.audio
 
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.sound
+import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.foundation.sound
 
 fun ComponentRegistry.soundLoading() = component("sound loading") {
     val fxWav = remember {

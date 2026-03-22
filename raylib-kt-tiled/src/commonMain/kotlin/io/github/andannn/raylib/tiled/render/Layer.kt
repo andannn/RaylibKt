@@ -4,17 +4,17 @@
  */
 package io.github.andannn.raylib.tiled.render
 
-import io.github.andannn.raylib.base.Color
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.Texture
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.components.GameAssetsManager
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.DrawContext
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Color
+import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.foundation.DrawContext
+import io.github.andannn.raylib.foundation.Texture
+import io.github.andannn.raylib.foundation.WindowContext
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.tiled.ResourceResolver
 import io.github.andannn.raylib.tiled.model.GID
 import io.github.andannn.raylib.tiled.model.ImageLayer
@@ -24,13 +24,14 @@ import io.github.andannn.raylib.tiled.model.Tileset
 import kotlinx.cinterop.CValue
 
 @PublishedApi
+context(resourceResolver: ResourceResolver)
 internal fun ComponentScope.drawImageLayer(layer: ImageLayer, tint: CValue<Color>) {
 // TODO: handle image transparent color.
 // Raylib C API: RLAPI void ImageColorReplace(Image *image, Color color, Color replace);
 
 // TODO: handle repeatx, repeaty
     val imageTexture = remember {
-        find<GameAssetsManager>().getOrCachedTextureFromFile(layer.image)
+        resourceResolver.resolveImageTexture(layer.image)
     }
 
     draw {
@@ -52,6 +53,7 @@ internal fun ComponentScope.drawTileLayer(tileLayer: TileLayer, tint: CValue<Col
             }
         }
 
+        val isDebug = remember { find<WindowContext>().isDebug }
         if (isDebug) {
             val height = tileLayer.height
             val width = tileLayer.width

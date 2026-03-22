@@ -14,8 +14,8 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.reinterpret
-import io.github.andannn.raylib.base.Font
-import io.github.andannn.raylib.base.Rectangle
+import io.github.andannn.raylib.foundation.Font
+import io.github.andannn.raylib.foundation.Rectangle
 import raygui.interop.GuiCheckBox
 import raygui.interop.GuiDisable
 import raygui.interop.GuiEnable

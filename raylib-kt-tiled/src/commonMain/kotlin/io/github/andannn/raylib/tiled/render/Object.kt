@@ -4,17 +4,19 @@
  */
 package io.github.andannn.raylib.tiled.render
 
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.base.Colors.WHITE
-import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.foundation.Colors.RED
+import io.github.andannn.raylib.foundation.Colors.WHITE
+import io.github.andannn.raylib.foundation.Vector2
 import io.github.andannn.raylib.components.Spatial2DAlloc
 import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.components.spatial2DComponent
 import io.github.andannn.raylib.components.transform2DComponent
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.foundation.WindowContext
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.tiled.model.*
 import io.github.andannn.raylib.tiled.util.toRayAnchor
 
@@ -55,6 +57,7 @@ inline fun ComponentScope.bindRect(
     spatial2DComponent(obj.id, state = spatial2D) {
         onBindObject(obj)
 
+        val isDebug = remember { find<WindowContext>().isDebug }
         if (isDebug) {
             draw {
                 drawText(obj.name, 0, -12, 10, RED)
@@ -76,6 +79,7 @@ inline fun ComponentScope.bindPoint(
     transform2DComponent(obj.id, transform) {
         onBindObject(obj)
 
+        val isDebug = remember { find<WindowContext>().isDebug }
         if (isDebug) {
             draw {
                 drawText(obj.name, 0, -10, 10, RED)
@@ -112,6 +116,7 @@ internal inline fun ComponentScope.bindTile(
             drawTile(0f, 0f, obj.gidObj, tileSet, WHITE)
         }
 
+        val isDebug = remember { find<WindowContext>().isDebug }
         if (isDebug) {
             draw {
                 drawText(obj.name, 0, -10, 10, RED)

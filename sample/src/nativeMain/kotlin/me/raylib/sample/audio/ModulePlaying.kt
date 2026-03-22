@@ -1,24 +1,25 @@
 package me.raylib.sample.audio
 
-import io.github.andannn.raylib.base.Colors.GRAY
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
-import io.github.andannn.raylib.base.Colors.MAROON
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.musicStream
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.foundation.Colors.GRAY
+import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
+import io.github.andannn.raylib.foundation.Colors.MAROON
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.foundation.musicStream
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.runtime.setValue
+import io.github.andannn.raylib.foundation.windowContext
 import kotlinx.cinterop.copy
 
 fun ComponentRegistry.modulePlaying() = component("module playing") {
     val music = remember {
         musicStream("resources/mini1111.xm").also {
-            playMusicStream(it.copy { looping = false })
+            windowContext.playMusicStream(it.copy { looping = false })
         }
     }
     var pause by remember {

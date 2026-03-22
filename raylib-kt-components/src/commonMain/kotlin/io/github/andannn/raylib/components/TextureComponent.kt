@@ -7,25 +7,25 @@ package io.github.andannn.raylib.components
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
-import io.github.andannn.raylib.base.Color
-import io.github.andannn.raylib.base.Colors.WHITE
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.DrawContext
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.core.RenderPhase
-import io.github.andannn.raylib.base.RenderTexture
-import io.github.andannn.raylib.base.RenderTexture2D
-import io.github.andannn.raylib.core.State
-import io.github.andannn.raylib.base.Texture
-import io.github.andannn.raylib.base.TextureDrawFunction
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.textureDrawScope
-import io.github.andannn.raylib.core.WindowContext
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.loadRenderTexture
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Color
+import io.github.andannn.raylib.foundation.Colors.WHITE
+import io.github.andannn.raylib.foundation.DrawContext
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.foundation.RenderPhase
+import io.github.andannn.raylib.foundation.RenderTexture
+import io.github.andannn.raylib.foundation.RenderTexture2D
+import io.github.andannn.raylib.runtime.State
+import io.github.andannn.raylib.foundation.Texture
+import io.github.andannn.raylib.foundation.TextureDrawFunction
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.foundation.WindowContext
+import io.github.andannn.raylib.foundation.loadRenderTexture
+import io.github.andannn.raylib.foundation.textureDrawScope
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.runtime.remember
 
 /**
  * Creates a component that renders its children into an off-screen [RenderTexture2D].

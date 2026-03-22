@@ -4,11 +4,11 @@
  */
 package io.github.andannn.raylib.components
 
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.internal.buildComponents
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.runtime.Rebuildable
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.remember
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -21,7 +21,7 @@ class WorldGrid2DComponentTest {
         var state: Any? = null
         var context: WorldGrid2DContext? = null
         var isDisposed = false
-        val control = buildComponents(
+        val control = Rebuildable(
             block = {
                 world2DGridComponent("", 30) {
                     context = find<WorldGrid2DContext>()

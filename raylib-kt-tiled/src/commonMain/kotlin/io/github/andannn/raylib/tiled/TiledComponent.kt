@@ -4,16 +4,18 @@
  */
 package io.github.andannn.raylib.tiled
 
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.base.Vector2
+import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.foundation.Vector2
 import io.github.andannn.raylib.components.Transform2DAlloc
 import io.github.andannn.raylib.components.transform2DComponent
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.foundation.WindowContext
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.Layer
@@ -42,7 +44,7 @@ inline fun ComponentRegistry.tiledComponent(
         tiledMap.flattenTileLayers()
     }
 
-    context(tiledSetManager) {
+    context(tiledSetManager, tiledMapProvider.resourceResolver) {
         flattenedLayers.forEach { flatTileLayer ->
             val globalOpacity: Float = flatTileLayer.globalOpacity
             val globalOffsetX: Float = flatTileLayer.globalOffsetX
@@ -69,8 +71,9 @@ inline fun ComponentRegistry.tiledComponent(
         }
     }
 
-    draw {
-        if (isDebug) {
+    val isDebug = remember { find<WindowContext>().isDebug }
+    if (isDebug) {
+        draw {
             val totalHeight = tiledMap.height * tiledMap.tileHeight.toFloat()
             val totalWidth = tiledMap.width * tiledMap.tileWidth.toFloat()
 

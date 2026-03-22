@@ -2,21 +2,21 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import io.github.andannn.raylib.base.Colors
-import io.github.andannn.raylib.base.Colors.BLACK
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.base.scissorMode
-import io.github.andannn.raylib.core.nativeStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.foundation.Colors
+import io.github.andannn.raylib.foundation.Colors.BLACK
+import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.scissorMode
+import io.github.andannn.raylib.runtime.nativeStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.runtime.setValue
 
 fun ComponentRegistry.scissorTest() {
     component("key") {

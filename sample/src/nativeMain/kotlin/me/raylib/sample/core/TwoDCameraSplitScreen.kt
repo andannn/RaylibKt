@@ -2,25 +2,27 @@ package me.raylib.sample.core
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.readValue
-import io.github.andannn.raylib.base.Camera2D
-import io.github.andannn.raylib.base.Colors.BLUE
-import io.github.andannn.raylib.base.Colors.LIGHTGRAY
-import io.github.andannn.raylib.base.Colors.RAYWHITE
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.base.KeyboardKey
-import io.github.andannn.raylib.base.Rectangle
-import io.github.andannn.raylib.core.component
+import io.github.andannn.raylib.foundation.Camera2D
+import io.github.andannn.raylib.foundation.Colors.BLUE
+import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
+import io.github.andannn.raylib.foundation.Colors.RAYWHITE
+import io.github.andannn.raylib.foundation.Colors.RED
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.foundation.KeyboardKey
+import io.github.andannn.raylib.foundation.Rectangle
+import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.components.fixSizedTextureComponent
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.base.mode2d
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.base.setOffset
-import io.github.andannn.raylib.base.setTarget
-import io.github.andannn.raylib.core.RectangleAlloc
-import io.github.andannn.raylib.core.nativeStateOf
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.foundation.mode2d
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.foundation.setOffset
+import io.github.andannn.raylib.foundation.setTarget
+import io.github.andannn.raylib.foundation.RectangleAlloc
+import io.github.andannn.raylib.runtime.nativeStateOf
+import io.github.andannn.raylib.foundation.screenHeight
+import io.github.andannn.raylib.foundation.screenWidth
 
 private const val PLAYER_SIZE = 40
 

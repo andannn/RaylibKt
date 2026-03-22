@@ -4,12 +4,12 @@
  */
 package io.github.andannn.raylib.gui
 
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.Context
-import io.github.andannn.raylib.core.ContextRegistry
-import io.github.andannn.raylib.core.DrawContext
-import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.draw
+import io.github.andannn.raylib.foundation.DrawContext
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.runtime.Context
+import io.github.andannn.raylib.runtime.ContextRegistry
+import io.github.andannn.raylib.runtime.find
 
 fun ComponentScope.drawGui(block: GuiContext.() -> Unit) {
     draw {

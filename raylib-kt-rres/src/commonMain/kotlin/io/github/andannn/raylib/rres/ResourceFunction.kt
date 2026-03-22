@@ -4,10 +4,10 @@
  */
 package io.github.andannn.raylib.rres
 
-import io.github.andannn.raylib.base.Font
-import io.github.andannn.raylib.base.Image
-import io.github.andannn.raylib.base.Mesh
-import io.github.andannn.raylib.base.Wave
+import io.github.andannn.raylib.foundation.Font
+import io.github.andannn.raylib.foundation.Image
+import io.github.andannn.raylib.foundation.Mesh
+import io.github.andannn.raylib.foundation.Wave
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer

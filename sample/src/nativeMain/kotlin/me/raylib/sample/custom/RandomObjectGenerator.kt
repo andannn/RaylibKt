@@ -1,21 +1,23 @@
 package me.raylib.sample.custom
 
 import kotlinx.cinterop.readValue
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.NativeState
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.getValue
-import io.github.andannn.raylib.base.randomColor
-import io.github.andannn.raylib.base.randomValue
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.Vector2Alloc
-import io.github.andannn.raylib.core.components
-import io.github.andannn.raylib.core.mutableStateListOf
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.update
-import io.github.andannn.raylib.core.remember
-import io.github.andannn.raylib.core.setValue
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.NativeState
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.getValue
+import io.github.andannn.raylib.foundation.randomColor
+import io.github.andannn.raylib.foundation.randomValue
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.foundation.Vector2Alloc
+import io.github.andannn.raylib.runtime.components
+import io.github.andannn.raylib.runtime.mutableStateListOf
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.runtime.remember
+import io.github.andannn.raylib.foundation.screenHeight
+import io.github.andannn.raylib.foundation.screenWidth
+import io.github.andannn.raylib.runtime.setValue
 
 fun ComponentRegistry.randomObjectGenerator() {
     val stateList = remember {

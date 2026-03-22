@@ -4,30 +4,30 @@
  */
 package io.github.andannn.raylib.components
 
-import io.github.andannn.raylib.base.Colors.DARKGREEN
-import io.github.andannn.raylib.base.Colors.RED
-import io.github.andannn.raylib.base.Matrix
-import io.github.andannn.raylib.base.Vector2
-import io.github.andannn.raylib.base.matrixIdentity
-import io.github.andannn.raylib.base.multiply
-import io.github.andannn.raylib.base.rlMatrix
-import io.github.andannn.raylib.core.ComponentRegistry
-import io.github.andannn.raylib.core.ComponentScope
-import io.github.andannn.raylib.core.Context
-import io.github.andannn.raylib.core.ContextProvider
-import io.github.andannn.raylib.core.MutableState
-import io.github.andannn.raylib.core.RememberScope
-import io.github.andannn.raylib.core.RenderPhase
-import io.github.andannn.raylib.core.State
-import io.github.andannn.raylib.core.Vector2Alloc
-import io.github.andannn.raylib.core.WindowContext
-import io.github.andannn.raylib.core.component
-import io.github.andannn.raylib.core.find
-import io.github.andannn.raylib.core.findOrNull
-import io.github.andannn.raylib.core.mutableStateOf
-import io.github.andannn.raylib.core.draw
-import io.github.andannn.raylib.core.provide
-import io.github.andannn.raylib.core.remember
+import io.github.andannn.raylib.foundation.Colors.DARKGREEN
+import io.github.andannn.raylib.foundation.Colors.RED
+import io.github.andannn.raylib.foundation.Matrix
+import io.github.andannn.raylib.foundation.Vector2
+import io.github.andannn.raylib.foundation.matrixIdentity
+import io.github.andannn.raylib.foundation.multiply
+import io.github.andannn.raylib.foundation.rlMatrix
+import io.github.andannn.raylib.runtime.ComponentRegistry
+import io.github.andannn.raylib.runtime.ComponentScope
+import io.github.andannn.raylib.runtime.Context
+import io.github.andannn.raylib.runtime.ContextProvider
+import io.github.andannn.raylib.runtime.MutableState
+import io.github.andannn.raylib.runtime.RememberScope
+import io.github.andannn.raylib.foundation.RenderPhase
+import io.github.andannn.raylib.runtime.State
+import io.github.andannn.raylib.foundation.Vector2Alloc
+import io.github.andannn.raylib.foundation.WindowContext
+import io.github.andannn.raylib.runtime.component
+import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.findOrNull
+import io.github.andannn.raylib.runtime.mutableStateOf
+import io.github.andannn.raylib.foundation.draw
+import io.github.andannn.raylib.runtime.provide
+import io.github.andannn.raylib.runtime.remember
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.readValue
@@ -105,6 +105,7 @@ inline fun ComponentRegistry.transform2DComponent(
         RenderPhase.DRAW -> transform2DDrawInterceptor(transform) {
             children(transform)
 
+            val isDebug = remember { find<WindowContext>().isDebug }
             if (isDebug) {
                 val offsetX = transform.offset.x.toInt()
                 val offsetY = transform.offset.y.toInt()
