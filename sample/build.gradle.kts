@@ -1,5 +1,5 @@
 plugins {
-    id("io.github.andannn.raylibkt.ext")
+    id("io.github.andannn.raylibkt")
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.task.tree)
@@ -51,11 +51,11 @@ kotlin {
     }
     sourceSets {
         nativeMain.dependencies {
-            implementation(project(":raylib-kt-gui"))
-            implementation(project(":raylib-kt-rres"))
-            implementation(project(":raylib-kt-easings"))
-            implementation(project(":raylib-kt-tiled"))
-            implementation(project(":raylib-kt-components"))
+            implementation(project(":raylibkt-gui"))
+            implementation(project(":raylibkt-rres"))
+            implementation(project(":raylibkt-easings"))
+            implementation(project(":raylibkt-tiled"))
+            implementation(project(":raylibkt-components"))
             implementation(libs.kotlinx.io)
         }
     }

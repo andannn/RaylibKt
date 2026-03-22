@@ -50,9 +50,9 @@ abstract class RresPackTask : DefaultTask() {
         val outFile = File(outDirectory, "${fileName.get()}.rres")
         val mappingFileSink = mappingFile.outputStream().asSink().buffered()
 
-        println("[RresPacker] packing...")
-        println("base dir: ${baseDir.absolutePath}")
-        println("output: ${outFile.absolutePath}")
+        logger.info("[RresPacker] packing...")
+        logger.info("base dir: ${baseDir.absolutePath}")
+        logger.info("output: ${outFile.absolutePath}")
 
         val fileWithConfig = mutableMapOf<File, RresResourceConfig>()
         val configs = resourceConfigs.get()
@@ -62,12 +62,12 @@ abstract class RresPackTask : DefaultTask() {
                 actualFile.walkTopDown()
                     .filter { it.isFile }
                     .forEach { file ->
-                        println("[$relativePath]: $file")
+                        logger.info("[$relativePath]: $file")
                         fileWithConfig[file] = config
                     }
 
             } else {
-                println("[$relativePath]: $actualFile")
+                logger.info("[$relativePath]: $actualFile")
                 fileWithConfig[actualFile] = config
             }
         }
@@ -101,7 +101,7 @@ abstract class RresPackTask : DefaultTask() {
         // flush and close mapping file.
         mappingFileSink.flush()
         mappingFileSink.close()
-        println("resourceID mapping file is written to $mappingFile")
+        logger.info("resourceID mapping file is written to $mappingFile")
 
         // write central dir
         val centralDictOffset = offset - 16
@@ -115,7 +115,7 @@ abstract class RresPackTask : DefaultTask() {
             raf.writeInt(littleEndianOffset)
         }
 
-        println("[RresPacker] end")
+        logger.info("[RresPacker] end")
     }
 
     private fun buildChunk(file: File, config: RresResourceConfig): Chunk {

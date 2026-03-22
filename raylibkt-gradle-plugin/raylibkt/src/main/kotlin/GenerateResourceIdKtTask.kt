@@ -82,7 +82,7 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
             .build()
             .writeTo(outDir)
 
-        println("[RresCodeGen] Successfully generated $pkgName.$clsName with nested types.")
+        logger.info("[RresCodeGen] Successfully generated $pkgName.$clsName with nested types.")
     }
 
     private fun sanitizeVarName(path: String): String {
