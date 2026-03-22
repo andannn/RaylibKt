@@ -26,9 +26,7 @@ kmpExtension {
         }
         it.commonMain.dependencies {
             implementation(project(":raylibkt-runtime"))
-            implementation(project(":raylibkt-rres"))
             implementation(project(":raylibkt-easings"))
-            implementation(libs.kotlinx.io)
         }
     }
 }

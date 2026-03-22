@@ -52,7 +52,7 @@ kotlin {
     sourceSets {
         nativeMain.dependencies {
             implementation(project(":raylibkt-gui"))
-            implementation(project(":raylibkt-rres"))
+            implementation(project(":raylibkt-assets"))
             implementation(project(":raylibkt-easings"))
             implementation(project(":raylibkt-tiled"))
             implementation(project(":raylibkt-components"))

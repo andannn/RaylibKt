@@ -15,7 +15,6 @@ import io.github.andannn.raylib.foundation.Vector2
 import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.runtime.getValue
 import io.github.andannn.raylib.foundation.isCollisionWith
-import io.github.andannn.raylib.components.gameAssetsComponent
 import io.github.andannn.raylib.runtime.mutableStateOf
 import io.github.andannn.raylib.runtime.nativeStateOf
 import io.github.andannn.raylib.foundation.draw
@@ -27,11 +26,11 @@ import io.github.andannn.raylib.foundation.screenWidth
 import io.github.andannn.raylib.foundation.window
 import io.github.andannn.raylib.gui.GuiContext
 import io.github.andannn.raylib.gui.drawGui
-import io.github.andannn.raylib.rres.ResourceContext
+import io.github.andannn.raylib.assets.ResourceContext
+import io.github.andannn.raylib.assets.gameAssetsComponent
 import me.raylib.sample.audio.modulePlaying
 import me.raylib.sample.audio.soundLoading
 import me.raylib.sample.rres.readChunkData
-import platform.posix.listen
 import raylib.interop.rlDisableBackfaceCulling
 import kotlin.experimental.ExperimentalNativeApi
 
