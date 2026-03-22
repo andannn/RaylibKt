@@ -1,6 +1,6 @@
 plugins {
     id("kmp.library")
-    alias(libs.plugins.serialization)
+    id("com.dorongold.task-tree")
 }
 
 kmpExtension {
@@ -13,9 +13,8 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
-            api(project(":raylib-kt-foundation"))
-            api(project(":raylib-kt-components"))
-            implementation(libs.kotlinx.serialization.json)
+            api(project(":raylibkt-foundation"))
+            api(project(":raylib-easings"))
         }
     }
 }

@@ -15,5 +15,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "build-logic"
-include(":kmp-native-compile")
+rootProject.name = "raylibkt-gradle-plugin"
+include(":raylibkt")
+

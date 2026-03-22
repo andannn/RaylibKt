@@ -17,7 +17,7 @@ version = "1.0.0-SNAPSHOT"
 gradlePlugin {
     plugins {
         register("RaylibExtPlugin") {
-            id = "io.github.andannn.raylibkt.ext"
+            id = "io.github.andannn.raylibkt"
             implementationClass = "RaylibExtPlugin"
         }
     }

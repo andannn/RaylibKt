@@ -3,6 +3,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     includeBuild("build-logic")
+    includeBuild("raylibkt-gradle-plugin")
     repositories {
         google {
             mavenContent {
@@ -32,13 +33,13 @@ dependencyResolutionManagement {
 include(":raylib-base")
 include(":raylib-rres")
 include(":raylib-easings")
-include(":raylib-kt-easings")
 include(":raylib-gui")
-include(":raylib-kt-rres")
-include(":raylib-kt-gui")
-include(":raylib-kt-tiled")
-include(":raylib-kt-runtime")
-include(":raylib-kt-foundation")
-include(":raylib-kt-components")
+include(":raylibkt-easings")
+include(":raylibkt-rres")
+include(":raylibkt-gui")
+include(":raylibkt-tiled")
+include(":raylibkt-runtime")
+include(":raylibkt-foundation")
+include(":raylibkt-components")
 include(":sample")
 include(":sample-android-app")

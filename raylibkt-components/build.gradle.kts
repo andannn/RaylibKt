@@ -24,16 +24,11 @@ kmpExtension {
         it.all {
             languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
-
         it.commonMain.dependencies {
-            implementation(project(":raylib-kt-runtime"))
-            implementation(project(":raylib-kt-rres"))
-            implementation(project(":raylib-kt-easings"))
+            implementation(project(":raylibkt-runtime"))
+            implementation(project(":raylibkt-rres"))
+            implementation(project(":raylibkt-easings"))
             implementation(libs.kotlinx.io)
-        }
-
-        it.commonTest.dependencies {
-            implementation(project(":raylib-kt-runtime"))
         }
     }
 }
