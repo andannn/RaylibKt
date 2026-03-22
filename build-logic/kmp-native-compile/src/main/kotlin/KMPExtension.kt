@@ -40,9 +40,6 @@ abstract class KMPExtension(
 ) {
     private val clang = AndroidXClang(project)
 
-    /** Helper class to bundle outputs of clang compilation into an AAR / JAR. */
-    private val nativeLibraryBundler = NativeLibraryBundler(project)
-
     private val kotlinExtensionDelegate =
         lazy {
             project.afterEvaluate {
@@ -143,35 +140,6 @@ abstract class KMPExtension(
             cinteropName = cinteropName,
         )
     }
-
-    /** @see NativeLibraryBundler.addNativeLibrariesToResources */
-    @JvmOverloads
-    fun addNativeLibrariesToResources(
-        jvmTarget: KotlinJvmTarget,
-        nativeCompilation: MultiTargetNativeCompilation,
-        compilationName: String = KotlinCompilation.MAIN_COMPILATION_NAME,
-    ) = nativeLibraryBundler.addNativeLibrariesToResources(
-        jvmTarget = jvmTarget,
-        nativeCompilation = nativeCompilation,
-        compilationName = compilationName,
-    )
-
-    /**
-     * Adds the native outputs from [nativeCompilation] to the jni libs dependency of the
-     * [androidTarget].
-     *
-     * @see CombineObjectFilesTask for details.
-     */
-    @JvmOverloads
-    fun addNativeLibrariesToJniLibs(
-        project: Project,
-        nativeCompilation: MultiTargetNativeCompilation,
-        forTest: Boolean = false,
-    ) = nativeLibraryBundler.addNativeLibrariesToAndroidVariantSources(
-        project = project,
-        nativeCompilation = nativeCompilation,
-        forTest = forTest,
-    )
 
     fun withSourceSets(block: KotlinMultiplatformSourceSetConventions.(NamedDomainObjectContainer<KotlinSourceSet>) -> Unit) {
         with(kotlinExtension) {
