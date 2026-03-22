@@ -92,10 +92,13 @@ gameAssets {
             register<TextConfig>("tiled/test.tmj")
             register<TextConfig>("tiled/tilesets")
             register<TextConfig>("tiled/template")
+
             register<ImageConfig>("tiled/img")
             register<ImageConfig>("cat.png")
             register<ImageConfig>("explosion.png")
             register<ImageConfig>("scarfy.png")
+
+            register<WaveConfig>("sound.wav")
         }
     }
 

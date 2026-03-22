@@ -1,13 +1,5 @@
 import com.android.utils.appendCapitalized
-import kotlinx.io.Buffer
-import kotlinx.io.Sink
-import kotlinx.io.asSink
-import kotlinx.io.asSource
-import kotlinx.io.buffered
-import kotlinx.io.readByteArray
-import kotlinx.io.writeShortLe
-import kotlinx.io.writeString
-import kotlinx.io.writeUIntLe
+import kotlinx.io.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -19,6 +11,10 @@ import java.io.File
 import java.io.RandomAccessFile
 import java.util.zip.CRC32
 import javax.imageio.ImageIO
+import javax.sound.sampled.AudioFormat
+import javax.sound.sampled.AudioInputStream
+import javax.sound.sampled.AudioSystem
+
 
 abstract class RresPackTask : DefaultTask() {
     @get:InputDirectory
@@ -94,6 +90,7 @@ abstract class RresPackTask : DefaultTask() {
                 is ImageConfig -> "image"
                 is TextConfig -> "text"
                 is RawConfig -> "raw"
+                is WaveConfig -> "wave"
                 else -> "raw"
             }
             mappingFileSink.writeString("$relativePath,$resourceId,$type\n")
@@ -147,7 +144,6 @@ abstract class RresPackTask : DefaultTask() {
             }
 
             is ImageConfig -> {
-// TODO:
                 val img: BufferedImage = ImageIO.read(file) ?: error("Failed to read image: ${file.path}")
                 val width = img.width
                 val height = img.height
@@ -159,6 +155,29 @@ abstract class RresPackTask : DefaultTask() {
                     rresPixelFormat = pixelFormat,
                     mipmaps = config.mipmaps.orNull ?: 1,
                     data = raw
+                )
+            }
+
+            is WaveConfig -> {
+                val audioStream: AudioInputStream = AudioSystem.getAudioInputStream(file)
+                val format: AudioFormat? = audioStream.getFormat()
+                val sampleRate = format!!.getSampleRate()
+                val sampleSizeInBits = format.getSampleSizeInBits()
+                val channels = format.getChannels()
+                val frameCount = audioStream.getFrameLength()
+
+                val frameSize = format.getFrameSize()
+                val totalDataSize: Long = frameCount * frameSize
+                val rawWaveData = ByteArray(totalDataSize.toInt())
+                audioStream.read(rawWaveData)
+                audioStream.close()
+
+                Chunk.WaveChunk(
+                    frameCount = config.frameCount.orNull ?: frameCount.toInt(),
+                    sampleRate = config.sampleRate.orNull ?: sampleRate.toInt(),
+                    sampleSize = config.sampleSize.orNull ?: sampleSizeInBits,
+                    channels = config.channels.orNull ?: channels,
+                    data = rawWaveData
                 )
             }
 
@@ -276,6 +295,13 @@ private fun Sink.writeChunkType(type: Chunk) {
             writeByte('I'.code.toByte())
             writeByte('R'.code.toByte())
         }
+
+        is Chunk.WaveChunk -> {
+            writeByte('W'.code.toByte())
+            writeByte('A'.code.toByte())
+            writeByte('V'.code.toByte())
+            writeByte('E'.code.toByte())
+        }
     }
 }
 
@@ -354,6 +380,30 @@ private sealed interface Chunk {
                 writeUIntLe(height.toUInt())
                 writeUIntLe(rresPixelFormat.value)
                 writeUIntLe(mipmaps.toUInt())
+            }.readByteArray()
+        }
+    }
+
+//    wave.frameCount = chunk.data.props[0];
+//    wave.sampleRate = chunk.data.props[1];
+//    wave.sampleSize = chunk.data.props[2];
+//    wave.channels = chunk.data.props[3];
+
+    class WaveChunk(
+        val frameCount: Int,
+        val sampleRate: Int,
+        val sampleSize: Int,
+        val channels: Int,
+        override val data: ByteArray
+    ) : Chunk {
+        override fun propertyCount(): Int = 4
+
+        override fun properties(): ByteArray {
+            return Buffer().apply {
+                writeUIntLe(frameCount.toUInt())
+                writeUIntLe(sampleRate.toUInt())
+                writeUIntLe(sampleSize.toUInt())
+                writeUIntLe(channels.toUInt())
             }.readByteArray()
         }
     }

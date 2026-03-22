@@ -2,9 +2,6 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import kotlinx.io.asSource
-import kotlinx.io.buffered
-import kotlinx.io.readLine
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -13,7 +10,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-abstract class GenerateResourceIdKtTask : DefaultTask() {
+abstract class GenerateResourceSourceTask : DefaultTask() {
     @get:Input
     abstract val targetPackage: Property<String>
     @get:Input
@@ -39,6 +36,7 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
         val rawObj = TypeSpec.objectBuilder("raw")
         val textObj = TypeSpec.objectBuilder("text")
         val imageObj = TypeSpec.objectBuilder("image")
+        val waveObj = TypeSpec.objectBuilder("wave")
 
         mappingFileRef.forEachLine { line ->
             if (line.isBlank()) return@forEachLine
@@ -61,6 +59,7 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
                 "raw" -> rawObj.addProperty(property)
                 "text" -> textObj.addProperty(property)
                 "image" -> imageObj.addProperty(property)
+                "wave" -> waveObj.addProperty(property)
             }
         }
 
@@ -75,6 +74,7 @@ abstract class GenerateResourceIdKtTask : DefaultTask() {
             .addType(rawObj.build())
             .addType(textObj.build())
             .addType(imageObj.build())
+            .addType(waveObj.build())
             .build()
 
         FileSpec.builder(pkgName, clsName)
