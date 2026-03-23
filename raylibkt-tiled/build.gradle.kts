@@ -15,6 +15,7 @@ kmpExtension {
         it.commonMain.dependencies {
             api(project(":raylibkt-foundation"))
             api(project(":raylibkt-components"))
+            api(project(":raylibkt-assets"))
             implementation(libs.kotlinx.serialization.json)
         }
     }

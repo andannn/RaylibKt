@@ -53,7 +53,6 @@ interface WaveSoundFunction {
     fun loadWaveFromMemory(fileType: String, fileData: CPointer<UByteVar>?, dataSize: Int): CValue<Wave>
     fun isWaveValid(wave: CValue<Wave>): Boolean
 
-    fun loadSoundFromWave(wave: CValue<Wave>): CValue<Sound>
     fun loadSoundAlias(source: CValue<Sound>): CValue<Sound>
     fun isSoundValid(sound: CValue<Sound>): Boolean
 
@@ -87,10 +86,6 @@ private class DefaultWaveSoundFunction : WaveSoundFunction {
 
     override fun isWaveValid(wave: CValue<Wave>): Boolean {
         return raylib.interop.IsWaveValid(wave)
-    }
-
-    override fun loadSoundFromWave(wave: CValue<Wave>): CValue<Sound> {
-        return raylib.interop.LoadSoundFromWave(wave)
     }
 
     override fun loadSoundAlias(source: CValue<Sound>): CValue<Sound> {

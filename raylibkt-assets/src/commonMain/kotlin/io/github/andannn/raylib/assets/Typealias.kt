@@ -2,7 +2,7 @@
  * Copyright 2026, the RaylibKt project contributors
  * SPDX-License-Identifier: Zlib
  */
-package io.github.andannn.raylib.rres
+package io.github.andannn.raylib.assets
 
 import rres.interop.rresCentralDir
 import rres.interop.rresCodeLang

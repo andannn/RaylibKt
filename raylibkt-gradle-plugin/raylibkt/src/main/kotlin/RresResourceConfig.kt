@@ -13,6 +13,14 @@ abstract class RawConfig @Inject constructor(
     override fun getName(): String = relativePath
 }
 
+enum class TextEncoding(val value: UInt) {
+    RRES_TEXT_ENCODING_UNDEFINED(0u),
+    RRES_TEXT_ENCODING_UTF8(1u),
+    RRES_TEXT_ENCODING_UTF8_BOM(2u),
+    RRES_TEXT_ENCODING_UTF16_LE(10u),
+    RRES_TEXT_ENCODING_UTF16_BE(11u),
+}
+
 abstract class TextConfig @Inject constructor(
     @get:Internal val relativePath: String
 ) : RresResourceConfig {
@@ -55,10 +63,25 @@ abstract class ImageConfig @Inject constructor(
     abstract val mipmaps: Property<Int>
 }
 
-enum class TextEncoding(val value: UInt) {
-    RRES_TEXT_ENCODING_UNDEFINED(0u),
-    RRES_TEXT_ENCODING_UTF8(1u),
-    RRES_TEXT_ENCODING_UTF8_BOM(2u),
-    RRES_TEXT_ENCODING_UTF16_LE(10u),
-    RRES_TEXT_ENCODING_UTF16_BE(11u),
+abstract class WaveConfig @Inject constructor(
+    @get:Internal val relativePath: String
+) : RresResourceConfig {
+    @Internal
+    override fun getName(): String = relativePath
+
+    @get:Optional
+    @get:Input
+    abstract val frameCount: Property<Int>
+
+    @get:Optional
+    @get:Input
+    abstract val sampleRate: Property<Int>
+
+    @get:Optional
+    @get:Input
+    abstract val sampleSize: Property<Int>
+
+    @get:Optional
+    @get:Input
+    abstract val channels: Property<Int>
 }

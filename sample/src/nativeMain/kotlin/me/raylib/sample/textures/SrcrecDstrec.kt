@@ -6,7 +6,6 @@ import io.github.andannn.raylib.foundation.Colors.WHITE
 import io.github.andannn.raylib.runtime.ComponentRegistry
 import io.github.andannn.raylib.foundation.Rectangle
 import io.github.andannn.raylib.foundation.Vector2
-import io.github.andannn.raylib.components.fileTextureAsset
 import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.runtime.getValue
 import io.github.andannn.raylib.runtime.mutableStateOf
@@ -15,6 +14,7 @@ import io.github.andannn.raylib.foundation.update
 import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.foundation.screenHeight
 import io.github.andannn.raylib.foundation.screenWidth
+import io.github.andannn.raylib.assets.fileTextureAsset
 import io.github.andannn.raylib.runtime.setValue
 
 fun ComponentRegistry.srcrecDstrec() {

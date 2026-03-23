@@ -2,10 +2,14 @@
  * Copyright 2026, the RaylibKt project contributors
  * SPDX-License-Identifier: Zlib
  */
-package io.github.andannn.raylib.components
+package io.github.andannn.raylib.assets
 
+import io.github.andannn.raylib.foundation.Sound
 import io.github.andannn.raylib.foundation.Texture
+import io.github.andannn.raylib.foundation.WindowContext
 import io.github.andannn.raylib.foundation.loadTextureFromImage
+import io.github.andannn.raylib.foundation.sound
+import io.github.andannn.raylib.foundation.soundFromWave
 import io.github.andannn.raylib.runtime.ComponentRegistry
 import io.github.andannn.raylib.runtime.ComponentScope
 import io.github.andannn.raylib.runtime.Context
@@ -16,9 +20,6 @@ import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.runtime.find
 import io.github.andannn.raylib.runtime.provide
 import io.github.andannn.raylib.runtime.remember
-import io.github.andannn.raylib.rres.ResourceContext
-import io.github.andannn.raylib.rres.useImageResource
-import io.github.andannn.raylib.rres.useTextResource
 import kotlinx.cinterop.CValue
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -26,6 +27,19 @@ import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
 import raylib.interop.LoadTexture
 import raylib.interop.UnloadTexture
+
+inline fun ComponentRegistry.gameAssetsComponent(
+    rresFiles: List<String> = emptyList(),
+    crossinline block: ComponentScope.() -> Unit
+) = component("assetManager") {
+    val context: GameAssetsManager = remember {
+        GameAssetsManager(this@gameAssetsComponent, this, rresFiles)
+    }
+
+    provide(context) {
+        block()
+    }
+}
 
 fun ContextProvider.rresTextureAsset(rres: String, resourceId: UInt): CValue<Texture> {
     return find<GameAssetsManager>().getOrCachedTextureFromRres(rres, resourceId)
@@ -51,6 +65,14 @@ fun ContextProvider.fileTextAsset(path: String): String {
     return find<GameAssetsManager>().getTextFromFile(path)
 }
 
+fun ContextProvider.rresSoundAsset(rres: String, resourceId: UInt): CValue<Sound> {
+    return find<GameAssetsManager>().getOrCachedSoundFromRres(rres, resourceId)
+}
+
+fun ContextProvider.fileSoundAsset(fileName: String): CValue<Sound> {
+    return find<GameAssetsManager>().getOrCachedSoundFromFile(fileName)
+}
+
 @PublishedApi
 internal class GameAssetsManager(
     private val contextProvider: ContextProvider,
@@ -59,13 +81,14 @@ internal class GameAssetsManager(
 ) : Context {
     private val resourceContext = contextProvider.find<ResourceContext>()
     private val textureMap = mutableMapOf<String, CValue<Texture>>()
+    private val soundMap = mutableMapOf<String, CValue<Sound>>()
 
     fun getOrCachedTextureFromFile(path: String): CValue<Texture> {
         return textureMap.getOrPut(path) { rememberScope.loadTexture(path) }
     }
 
     fun getOrCachedTextureFromRres(rres: String, resourceId: UInt): CValue<Texture> {
-        return textureMap.getOrPut("$resourceId") {
+        return textureMap.getOrPut("${rres}_$resourceId") {
             contextProvider.useImageResource(rres, resourceId) { img ->
                 rememberScope.loadTextureFromImage(img)
             }
@@ -96,6 +119,18 @@ internal class GameAssetsManager(
         return getTextFromRres(rresFile, id)
     }
 
+    fun getOrCachedSoundFromFile(fileName: String): CValue<Sound> {
+        return soundMap.getOrPut(fileName) { rememberScope.sound(fileName) }
+    }
+
+    fun getOrCachedSoundFromRres(rres: String, resourceId: UInt): CValue<Sound> {
+        return soundMap.getOrPut("${rres}_$resourceId") {
+            contextProvider.useWaveResource(rres, resourceId) { wave ->
+                rememberScope.soundFromWave(wave)
+            }
+        }
+    }
+
     private fun resolveResourceId(path: String): Pair<UInt, String> {
         var rresFile: String? = null
         var id: UInt? = null
@@ -120,18 +155,5 @@ internal class GameAssetsManager(
             UnloadTexture(texture)
         }
         return texture
-    }
-}
-
-inline fun ComponentRegistry.gameAssetsComponent(
-    rresFiles: List<String> = emptyList(),
-    crossinline block: ComponentScope.() -> Unit
-) = component("assetManager") {
-    val context: GameAssetsManager = remember {
-        GameAssetsManager(this@gameAssetsComponent, this, rresFiles)
-    }
-
-    provide(context) {
-        block()
     }
 }

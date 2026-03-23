@@ -2,9 +2,11 @@
  * Copyright 2026, the RaylibKt project contributors
  * SPDX-License-Identifier: Zlib
  */
-package io.github.andannn.raylib.rres
+package io.github.andannn.raylib.assets
 
 import io.github.andannn.raylib.foundation.Image
+import io.github.andannn.raylib.foundation.Wave
+import io.github.andannn.raylib.foundation.windowContext
 import io.github.andannn.raylib.runtime.Context
 import io.github.andannn.raylib.runtime.ContextProvider
 import io.github.andannn.raylib.runtime.find
@@ -34,9 +36,12 @@ inline fun <reified T> ContextProvider.useResource(
 inline fun <reified T> ContextProvider.useImageResource(
     rresFile: String,
     resourceId: UInt,
-    block: (CValue<Image>) -> T
+    crossinline block: (CValue<Image>) -> T
 ) = useResource(rresFile, resourceId) { chunk ->
-    block(loadImageFromResource(chunk))
+    val img = loadImageFromResource(chunk)
+    val ret = block(img)
+    windowContext.unLoadImage(img)
+    ret
 }
 
 inline fun ContextProvider.useTextResource(
@@ -45,4 +50,15 @@ inline fun ContextProvider.useTextResource(
     block: (String) -> String = { it }
 ) = useResource(rresFile, resourceId) { chunk ->
     block(loadTextFromResource(chunk)?.toKString() ?: error("No string found"))
+}
+
+inline fun <reified T> ContextProvider.useWaveResource(
+    rresFile: String,
+    resourceId: UInt,
+    block: (CValue<Wave>) -> T
+) = useResource(rresFile, resourceId) { chunk ->
+    val wave = loadWaveFromResource(chunk)
+    val ret = block(wave)
+    windowContext.unloadWave(wave)
+    ret
 }

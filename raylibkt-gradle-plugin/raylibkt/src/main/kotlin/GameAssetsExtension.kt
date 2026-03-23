@@ -42,7 +42,7 @@ abstract class GameAssetsExtension @Inject constructor(private val project: Proj
             }
 
             val generateSourceTaskName = "generate".appendCapitalized(name, "ResourceIds")
-            val genTask = project.tasks.register(generateSourceTaskName, GenerateResourceIdKtTask::class.java) {
+            val genTask = project.tasks.register(generateSourceTaskName, GenerateResourceSourceTask::class.java) {
                 targetPackage.set("rres.resources.$name")
                 rresFileName.set("$name.rres")
                 className.set("${name.replaceFirstChar { it.uppercase() }}Res")
@@ -77,6 +77,7 @@ abstract class RresPackageConfig @Inject internal constructor (
             registerFactory(RawConfig::class.java) { name -> project.objects.newInstance(RawConfig::class.java, name) }
             registerFactory(TextConfig::class.java) { name -> project.objects.newInstance(TextConfig::class.java, name) }
             registerFactory(ImageConfig::class.java) { name -> project.objects.newInstance(ImageConfig::class.java, name) }
+            registerFactory(WaveConfig::class.java) { name -> project.objects.newInstance(WaveConfig::class.java, name) }
         }
 
     fun resources(action: Action<ExtensiblePolymorphicDomainObjectContainer<RresResourceConfig>>) {

@@ -15,6 +15,7 @@ kmpExtension {
         it.commonMain.dependencies {
             api(project(":raylib-rres"))
             api(project(":raylibkt-foundation"))
+            implementation(libs.kotlinx.io)
         }
     }
 }

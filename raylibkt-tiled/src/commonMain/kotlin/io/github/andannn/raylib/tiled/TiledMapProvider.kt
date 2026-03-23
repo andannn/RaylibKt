@@ -5,10 +5,10 @@
 package io.github.andannn.raylib.tiled
 
 import io.github.andannn.raylib.foundation.Texture
-import io.github.andannn.raylib.components.fileTextAsset
-import io.github.andannn.raylib.components.fileTextureAsset
-import io.github.andannn.raylib.components.rresTextAsset
-import io.github.andannn.raylib.components.rresTextureAsset
+import io.github.andannn.raylib.assets.fileTextAsset
+import io.github.andannn.raylib.assets.fileTextureAsset
+import io.github.andannn.raylib.assets.rresTextAsset
+import io.github.andannn.raylib.assets.rresTextureAsset
 import io.github.andannn.raylib.runtime.ContextProvider
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer

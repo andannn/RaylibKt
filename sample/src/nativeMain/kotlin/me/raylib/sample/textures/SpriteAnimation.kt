@@ -10,12 +10,12 @@ import io.github.andannn.raylib.foundation.Colors.WHITE
 import io.github.andannn.raylib.runtime.ComponentRegistry
 import io.github.andannn.raylib.foundation.KeyboardKey
 import io.github.andannn.raylib.foundation.Rectangle
-import io.github.andannn.raylib.components.fileTextureAsset
 import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.components.spriteAnimationComponent
 import io.github.andannn.raylib.runtime.mutableStateOf
 import io.github.andannn.raylib.foundation.draw
 import io.github.andannn.raylib.foundation.update
+import io.github.andannn.raylib.assets.fileTextureAsset
 import io.github.andannn.raylib.runtime.remember
 
 private const val MAX_FRAME_SPEED = 15

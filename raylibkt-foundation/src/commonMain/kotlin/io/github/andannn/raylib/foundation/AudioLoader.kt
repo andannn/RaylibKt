@@ -8,6 +8,7 @@ import io.github.andannn.raylib.runtime.RememberScope
 import kotlinx.cinterop.CValue
 import raylib.interop.LoadMusicStream
 import raylib.interop.LoadSound
+import raylib.interop.LoadSoundFromWave
 import raylib.interop.UnloadMusicStream
 import raylib.interop.UnloadSound
 
@@ -28,5 +29,14 @@ fun RememberScope.sound(fileName: String): CValue<Sound> {
         UnloadSound(sound)
     }
 
+    return sound
+}
+
+fun RememberScope.soundFromWave(wave: CValue<Wave>): CValue<Sound> {
+    val sound = LoadSoundFromWave(wave)
+
+    disposeOnClose {
+        UnloadSound(sound)
+    }
     return sound
 }
