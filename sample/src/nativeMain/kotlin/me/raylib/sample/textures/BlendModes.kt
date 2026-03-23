@@ -48,15 +48,15 @@ fun ComponentRegistry.blendModes() = component("blend modes") {
             }
         }
 
-        drawText("Press SPACE to change blend modes.", 310, 350, 10, GRAY)
+        drawText("Press SPACE to change blend modes.", 310, 350, 10f, GRAY)
 
-        drawText("Current: $blendMode", (screenWidth / 2) - 60, 370, 10, GRAY)
+        drawText("Current: $blendMode", (screenWidth / 2) - 60, 370, 10f, GRAY)
 
         drawText(
             "(c) Cyberpunk Street Environment by Luis Zuno (@ansimuz)",
             screenWidth - 330,
             screenHeight - 20,
-            10,
+            10f,
             GRAY
         )
     }

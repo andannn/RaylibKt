@@ -83,7 +83,7 @@ fun ComponentRegistry.easingBox() {
                 rotation = rotation,
                 Fade(BLACK, alpha)
             )
-            drawText("PRESS [SPACE] TO RESET BOX ANIMATION!", 10, screenHeight - 25, 20, LIGHTGRAY)
+            drawText("PRESS [SPACE] TO RESET BOX ANIMATION!", 10, screenHeight - 25, 20f, LIGHTGRAY)
         }
     }
 }

@@ -25,8 +25,8 @@ fun ComponentRegistry.inputMouseWheel() {
 
         draw {
             drawRectangle(screenWidth / 2 - 40, boxPositionY.toInt(), 80, 80, MAROON)
-            drawText("Use mouse wheel to move the cube up and down!", 10, 10, 20, GRAY)
-            drawText("Box position Y: $boxPositionY", 10, 40, 20, LIGHTGRAY)
+            drawText("Use mouse wheel to move the cube up and down!", 10, 10, 20f, GRAY)
+            drawText("Box position Y: $boxPositionY", 10, 40, 20f, LIGHTGRAY)
         }
     }
 }

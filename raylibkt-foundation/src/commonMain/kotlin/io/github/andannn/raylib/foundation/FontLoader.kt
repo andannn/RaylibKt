@@ -4,20 +4,28 @@
  */
 package io.github.andannn.raylib.foundation
 
-import io.github.andannn.raylib.runtime.ContextProvider
-import io.github.andannn.raylib.runtime.find
+import io.github.andannn.raylib.runtime.DisposableRegistry
 import kotlinx.cinterop.CValue
 
-inline fun ContextProvider.useFont(
+inline fun useFont(
     fileName: String,
     crossinline block: (CValue<Font>) -> Unit
 ) {
-    val windowContext = find<WindowContext>()
-    val font = windowContext.loadFont(fileName)
-
+    val font = raylib.interop.LoadFont(fileName)
     try {
         block(font)
     } finally {
-        windowContext.unloadFont(font)
+        raylib.interop.UnloadFont(font)
     }
+}
+
+fun DisposableRegistry.loadFont(
+    fileName: String,
+): CValue<Font> {
+    val font = raylib.interop.LoadFont(fileName)
+    disposeOnClose {
+        raylib.interop.UnloadFont(font)
+    }
+
+    return font
 }

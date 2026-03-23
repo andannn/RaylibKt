@@ -39,11 +39,11 @@ fun ComponentRegistry.scissorTest() {
                 // Draw full screen rectangle and some text
                 // NOTE: Only part defined by scissor area will be rendered
                 drawRectangle(0, 0, screenWidth, screenHeight, Colors.BROWN)
-                drawText("Move the mouse around to reveal this text!", 190, 200, 20, LIGHTGRAY)
+                drawText("Move the mouse around to reveal this text!", 190, 200, 20f, LIGHTGRAY)
             }
 
             drawRectangleLines(scissorArea.readValue(), 1f, BLACK)
-            drawText("Press S to toggle scissor test", 10, 10, 20, BLACK)
+            drawText("Press S to toggle scissor test", 10, 10, 20f, BLACK)
         }
     }
 }

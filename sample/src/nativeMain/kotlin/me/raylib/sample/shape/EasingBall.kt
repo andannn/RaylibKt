@@ -82,7 +82,7 @@ fun ComponentRegistry.easingBall() {
         draw {
             if (state >= 2) drawRectangle(0, 0, screenWidth, screenHeight, GREEN)
             drawCircle(ballPositionX, 200, ballRadius.toFloat(), Fade(RED, 1.0f - ballAlpha))
-            if (state == 3) drawText("PRESS [ENTER] TO PLAY AGAIN!", 240, 200, 20, BLACK)
+            if (state == 3) drawText("PRESS [ENTER] TO PLAY AGAIN!", 240, 200, 20f, BLACK)
         }
     }
 }

@@ -34,7 +34,7 @@ internal fun ComponentRegistry.inputKeys() {
             if (KeyboardKey.KEY_DOWN.isDown()) ballPosition.y += 2f
         }
         draw {
-            drawText("move the ball with arrow keys", 10, 10, 20, Colors.DARKGRAY)
+            drawText("move the ball with arrow keys", 10, 10, 20f, Colors.DARKGRAY)
             drawCircle(ballPosition.readValue(), 50f, MAROON)
         }
     }

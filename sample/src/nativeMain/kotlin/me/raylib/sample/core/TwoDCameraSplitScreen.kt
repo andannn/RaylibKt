@@ -140,7 +140,7 @@ private fun ComponentRegistry.playerAndWorldComponent(
                         "[$i, $j]",
                         10 + PLAYER_SIZE * i,
                         15 + PLAYER_SIZE * j,
-                        10,
+                        10f,
                         LIGHTGRAY
                     )
                 }

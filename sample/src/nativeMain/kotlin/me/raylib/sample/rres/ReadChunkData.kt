@@ -38,6 +38,6 @@ fun ComponentRegistry.readChunkData() = component("blend modes") {
             drawTexture(catImageTexture, screenWidth / 2 - width / 2, screenHeight / 2 - height / 2, WHITE)
         }
 
-        drawText(text, 0, 0, 10, color = BLUE)
+        drawText(text, 0, 0, 10f, color = BLUE)
     }
 }

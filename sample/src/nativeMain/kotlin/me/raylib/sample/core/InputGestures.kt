@@ -61,7 +61,7 @@ fun ComponentRegistry.inputGestures() {
                 "GESTURES TEST AREA",
                 screenWidth - 270,
                 screenHeight - 40,
-                20,
+                20f,
                 Fade(GRAY, 0.5f)
             )
             val gesturesCount = gestureStrings.size
@@ -70,9 +70,9 @@ fun ComponentRegistry.inputGestures() {
                 else drawRectangle(10, 30 + 20 * i, 200, 20, Fade(LIGHTGRAY, 0.3f));
 
                 if (i < gesturesCount - 1) {
-                    drawText(gestureStrings[i], 35, 36 + 20 * i, 10, DARKGRAY)
+                    drawText(gestureStrings[i], 35, 36 + 20 * i, 10f, DARKGRAY)
                 } else {
-                    drawText(gestureStrings[i], 35, 36 + 20 * i, 10, MAROON)
+                    drawText(gestureStrings[i], 35, 36 + 20 * i, 10f, MAROON)
                 }
             }
         }

@@ -28,7 +28,7 @@ fun ComponentRegistry.inputMultitouch() {
                             index.toString(),
                             (x - 10).toInt(),
                             (y - 70).toInt(),
-                            40,
+                            40f,
                             BLACK
                         )
                     }

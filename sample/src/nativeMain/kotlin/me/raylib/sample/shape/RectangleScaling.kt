@@ -75,7 +75,7 @@ fun ComponentRegistry.rectangleScaling() {
             }
         }
         draw {
-            drawText("Scale rectangle dragging from bottom-right corner!", 10, 10, 20, GRAY)
+            drawText("Scale rectangle dragging from bottom-right corner!", 10, 10, 20f, GRAY)
             drawRectangle(rec.readValue(), Fade(GREEN, 0.5f))
             if (mouseScaleReady) {
                 drawRectangleLines(rec.readValue(), 1f, RED)

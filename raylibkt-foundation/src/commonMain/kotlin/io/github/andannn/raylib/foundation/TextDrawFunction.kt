@@ -17,7 +17,7 @@ interface TextDrawFunction {
     fun drawText(
         text: String,
         position: CValue<Vector2>,
-        fontSize: Int,
+        fontSize: Float,
         color: CValue<Color>,
         spacing: Float = 2f,
         font: CValue<Font> = defaultFont
@@ -27,7 +27,7 @@ interface TextDrawFunction {
         text: String,
         x: Int,
         y: Int,
-        fontSize: Int,
+        fontSize: Float,
         color: CValue<Color>,
         spacing: Float = 2f,
         font: CValue<Font> = defaultFont
@@ -56,7 +56,7 @@ class DefaultDrawTextFunction : TextDrawFunction {
     override fun drawText(
         text: String,
         position: CValue<Vector2>,
-        fontSize: Int,
+        fontSize: Float,
         color: CValue<Color>,
         spacing: Float,
         font: CValue<Font>
@@ -65,7 +65,7 @@ class DefaultDrawTextFunction : TextDrawFunction {
             font = font,
             text = text,
             position = position,
-            fontSize = fontSize.toFloat(),
+            fontSize = fontSize,
             spacing = spacing,
             tint = color
         )

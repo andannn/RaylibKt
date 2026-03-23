@@ -63,10 +63,10 @@ fun ComponentRegistry.spriteAnimationSample() {
 
             drawTexture(scarfy, 15, 40, WHITE)
             drawRectangleLines(15, 40, scarfy.useContents { width }, scarfy.useContents { height }, LIME)
-            drawText("FRAME SPEED: ", 165, 210, 10, DARKGRAY)
-            drawText("${framesSpeed.value} FPS", 575, 210, 10, DARKGRAY)
-            drawText("PRESS RIGHT/LEFT KEYS to CHANGE SPEED!", 290, 240, 10, DARKGRAY)
-            drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, GRAY);
+            drawText("FRAME SPEED: ", 165, 210, 10f, DARKGRAY)
+            drawText("${framesSpeed.value} FPS", 575, 210, 10f, DARKGRAY)
+            drawText("PRESS RIGHT/LEFT KEYS to CHANGE SPEED!", 290, 240, 10f, DARKGRAY)
+            drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10f, GRAY);
         }
     }
 }

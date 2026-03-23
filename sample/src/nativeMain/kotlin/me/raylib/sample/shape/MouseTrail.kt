@@ -37,7 +37,7 @@ fun ComponentRegistry.mouseTrail() {
             }
 
             drawCircle(trailPositions[0], 15.0f, WHITE)
-            drawText("Move the mouse to see the trail effect!", 10, screenHeight - 30, 20, LIGHTGRAY)
+            drawText("Move the mouse to see the trail effect!", 10, screenHeight - 30, 20f, LIGHTGRAY)
         }
     }
 }

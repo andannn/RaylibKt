@@ -97,7 +97,7 @@ fun ComponentRegistry.easingsRectangles() {
                 )
             }
             if (isWaitingKey) {
-                drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20, GRAY)
+                drawText("PRESS [SPACE] TO PLAY AGAIN!", 240, 200, 20f, GRAY)
             }
         }
     }

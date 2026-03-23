@@ -72,7 +72,7 @@ fun ComponentRegistry.linesBezier() {
         }
 
         draw {
-            drawText("MOVE START-END POINTS WITH MOUSE", 15, 20, 20, GRAY)
+            drawText("MOVE START-END POINTS WITH MOUSE", 15, 20, 20f, GRAY)
             // Draw line Cubic Bezier, in-out interpolation (easing), no control points
             drawLineBezier(startPoint.readValue(), endPoint.readValue(), 4.0f, BLUE)
 

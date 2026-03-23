@@ -33,7 +33,7 @@ fun ComponentRegistry.basicShapes() {
             rotation += 0.2f;
         }
         draw {
-            drawText("some basic shapes available on raylib", 20, 20, 20, DARKGRAY);
+            drawText("some basic shapes available on raylib", 20, 20, 20f, DARKGRAY);
             drawCircle(screenWidth / 5, 120, 35f, DARKBLUE);
             drawCircleGradient(screenWidth / 5, 220, 60f, GREEN, SKYBLUE);
             drawCircleLines(screenWidth / 5, 340, 80f, DARKBLUE)

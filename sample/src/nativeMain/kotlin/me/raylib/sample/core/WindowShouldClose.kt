@@ -35,7 +35,7 @@ fun ComponentRegistry.windowShouldClose(
     draw {
         if (exitWindowRequested) {
             drawRectangle(0, 100, screenWidth, 200, BLACK)
-            drawText("Are you sure you want to exit program? [Y/N]", 40, 180, 30, WHITE)
+            drawText("Are you sure you want to exit program? [Y/N]", 40, 180, 30f, WHITE)
         }
     }
 }
