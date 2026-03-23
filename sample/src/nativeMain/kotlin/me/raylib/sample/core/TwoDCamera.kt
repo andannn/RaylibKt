@@ -118,7 +118,7 @@ fun ComponentRegistry.twoDCamera() {
             }
         }
         draw {
-            drawText("SCREEN AREA", 640, 10, 20, RED);
+            drawText("SCREEN AREA", 640, 10, 20f, RED);
 
             drawRectangle(0, 0, screenWidth, 5, RED);
             drawRectangle(0, 5, 5, screenHeight - 10, RED);
@@ -128,11 +128,11 @@ fun ComponentRegistry.twoDCamera() {
             drawRectangle(10, 10, 250, 113, Fade(SKYBLUE, 0.5f));
             drawRectangleLines(10, 10, 250, 113, BLUE);
 
-            drawText("Free 2D camera controls:", 20, 20, 10, BLACK);
-            drawText("- Right/Left to move player", 40, 40, 10, DARKGRAY);
-            drawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, DARKGRAY);
-            drawText("- A / S to Rotate", 40, 80, 10, DARKGRAY);
-            drawText("- R to reset Zoom and Rotation", 40, 100, 10, DARKGRAY);
+            drawText("Free 2D camera controls:", 20, 20, 10f, BLACK);
+            drawText("- Right/Left to move player", 40, 40, 10f, DARKGRAY);
+            drawText("- Mouse Wheel to Zoom in-out", 40, 60, 10f, DARKGRAY);
+            drawText("- A / S to Rotate", 40, 80, 10f, DARKGRAY);
+            drawText("- R to reset Zoom and Rotation", 40, 100, 10f, DARKGRAY);
         }
 
     }

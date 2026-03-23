@@ -77,22 +77,22 @@ fun ComponentRegistry.randomSequence() {
                     ), rectWithPos.colorRect.color
                 )
             }
-            drawText("Press SPACE to shuffle the current sequence", 10, screenHeight - 96, 20, BLACK);
+            drawText("Press SPACE to shuffle the current sequence", 10, screenHeight - 96, 20f, BLACK);
             drawText(
                 "Press UP to add a rectangle and generate a new sequence",
                 10,
                 screenHeight - 64,
-                20,
+                20f,
                 BLACK
             );
             drawText(
                 "Press DOWN to remove a rectangle and generate a new sequence",
                 10,
                 screenHeight - 32,
-                20,
+                20f,
                 BLACK
             )
-            drawText("Count: $rectCount rectangles", 10, 10, 20, MAROON)
+            drawText("Count: $rectCount rectangles", 10, 10, 20f, MAROON)
             drawFPS(screenWidth - 80, 10);
         }
     }

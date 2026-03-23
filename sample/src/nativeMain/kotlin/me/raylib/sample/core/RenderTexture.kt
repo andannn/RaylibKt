@@ -58,7 +58,7 @@ fun ComponentRegistry.renderTexture() {
         }
 
         draw {
-            drawText("DRAWING BOUNCING BALL INSIDE RENDER TEXTURE!", 10, screenHeight - 40, 20, BLACK)
+            drawText("DRAWING BOUNCING BALL INSIDE RENDER TEXTURE!", 10, screenHeight - 40, 20f, BLACK)
             drawFPS(10, 10)
         }
     }

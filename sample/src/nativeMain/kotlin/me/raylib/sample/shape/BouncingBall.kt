@@ -61,9 +61,9 @@ fun ComponentRegistry.bouncingBall() {
 
         draw {
             drawCircle(ballPosition.readValue(), ballRadius.toFloat(), MAROON)
-            drawText("PRESS SPACE to PAUSE BALL MOVEMENT", 10, screenHeight - 25, 20, LIGHTGRAY)
-            if (useGravity) drawText("GRAVITY: ON (Press G to disable)", 10, screenHeight - 50, 20, DARKGREEN)
-            else drawText("GRAVITY: OFF (Press G to enable)", 10, screenHeight - 50, 20, RED)
+            drawText("PRESS SPACE to PAUSE BALL MOVEMENT", 10, screenHeight - 25, 20f, LIGHTGRAY)
+            if (useGravity) drawText("GRAVITY: ON (Press G to disable)", 10, screenHeight - 50, 20f, DARKGREEN)
+            else drawText("GRAVITY: OFF (Press G to enable)", 10, screenHeight - 50, 20f, RED)
 
             drawFPS(10, 10)
         }
@@ -83,7 +83,7 @@ fun ComponentRegistry.bouncingBall() {
                 }
             }
             draw {
-                if (showPaused) drawText("PAUSED", 350, 200, 30, GRAY)
+                if (showPaused) drawText("PAUSED", 350, 200, 30f, GRAY)
             }
         }
     }

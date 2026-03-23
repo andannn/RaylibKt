@@ -54,16 +54,16 @@ internal fun ComponentRegistry.deltaTime() {
                 color = Colors.BLUE
             )
 
-            drawText("FPS: ${windowContext.currentFps}", 10, 10, 20, Colors.DARKGRAY)
+            drawText("FPS: ${windowContext.currentFps}", 10, 10, 20f, Colors.DARKGRAY)
             drawText(
                 "Frame time: ${windowContext.frameTimeSeconds.times(1000)} ms",
                 10,
                 30,
-                20,
+                20f,
                 Colors.DARKGRAY
             )
-            drawText("FUNC: x += GetFrameTime()*speed", 10, 90, 20, Colors.RED);
-            drawText("FUNC: x += speed", 10, 240, 20, Colors.BLUE)
+            drawText("FUNC: x += GetFrameTime()*speed", 10, 90, 20f, Colors.RED);
+            drawText("FUNC: x += speed", 10, 240, 20f, Colors.BLUE)
         }
     }
 }

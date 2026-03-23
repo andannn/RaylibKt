@@ -18,7 +18,7 @@ internal fun ComponentRegistry.firstWindow(
             windowContext.backGroundColor = initialBackGroundColor
         }
         draw {
-            drawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+            drawText("Congrats! You created your first window!", 190, 200, 20f, LIGHTGRAY);
         }
     }
 }

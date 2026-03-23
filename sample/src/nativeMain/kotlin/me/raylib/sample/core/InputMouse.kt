@@ -61,14 +61,14 @@ fun ComponentRegistry.inputMouse() {
                 "move ball with mouse and click mouse button to change color",
                 10,
                 10,
-                20,
+                20f,
                 Colors.DARKGRAY
             )
-            drawText("Press 'H' to toggle cursor visibility", 10, 30, 20, Colors.DARKGRAY)
+            drawText("Press 'H' to toggle cursor visibility", 10, 30, 20f, Colors.DARKGRAY)
             if (cursorHidden) {
-                drawText("Cursor is hidden", 20, 60, 20, Colors.RED)
+                drawText("Cursor is hidden", 20, 60, 20f, Colors.RED)
             } else {
-                drawText("Cursor is visible", 20, 60, 20, Colors.GREEN)
+                drawText("Cursor is visible", 20, 60, 20f, Colors.GREEN)
             }
         }
     }

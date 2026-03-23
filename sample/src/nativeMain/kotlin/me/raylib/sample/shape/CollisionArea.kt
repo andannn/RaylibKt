@@ -85,7 +85,7 @@ fun ComponentRegistry.collisionArea() {
                     "COLLISION!",
                     screenWidth / 2 - MeasureText("COLLISION!", 20) / 2,
                     screenUpperLimit / 2 - 10,
-                    20,
+                    20f,
                     BLACK
                 )
 
@@ -94,7 +94,7 @@ fun ComponentRegistry.collisionArea() {
                     "Collision Area: ${boxCollision.width * boxCollision.height}",
                     screenWidth / 2 - 100,
                     screenUpperLimit + 10,
-                    20,
+                    20f,
                     BLACK
                 )
                 drawFPS(10, 10);

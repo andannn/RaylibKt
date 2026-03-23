@@ -325,14 +325,14 @@ private fun ComponentRegistry.playerComponent(camera: Camera2D, player: Player, 
 private fun ComponentRegistry.infoComponent(cameraOption: MutableState<CameraOption>) {
     component("info") {
         draw {
-            drawText("Controls:", 20, 20, 10, BLACK);
-            drawText("- Right/Left to move", 40, 40, 10, DARKGRAY);
-            drawText("- Space to jump", 40, 60, 10, DARKGRAY);
-            drawText("- Mouse Wheel to Zoom in-out", 40, 80, 10, DARKGRAY);
-            drawText("- R to reset position + zoom", 40, 100, 10, DARKGRAY);
-            drawText("- C to change camera mode", 40, 120, 10, DARKGRAY);
-            drawText("Current camera mode:", 20, 140, 10, BLACK);
-            drawText(cameraOption.value.description, 40, 160, 10, DARKGRAY)
+            drawText("Controls:", 20, 20, 10f, BLACK);
+            drawText("- Right/Left to move", 40, 40, 10f, DARKGRAY);
+            drawText("- Space to jump", 40, 60, 10f, DARKGRAY);
+            drawText("- Mouse Wheel to Zoom in-out", 40, 80, 10f, DARKGRAY);
+            drawText("- R to reset position + zoom", 40, 100, 10f, DARKGRAY);
+            drawText("- C to change camera mode", 40, 120, 10f, DARKGRAY);
+            drawText("Current camera mode:", 20, 140, 10f, BLACK);
+            drawText(cameraOption.value.description, 40, 160, 10f, DARKGRAY)
         }
     }
 }

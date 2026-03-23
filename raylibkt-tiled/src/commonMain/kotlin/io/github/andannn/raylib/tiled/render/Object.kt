@@ -60,7 +60,7 @@ inline fun ComponentScope.bindRect(
         val isDebug = remember { find<WindowContext>().isDebug }
         if (isDebug) {
             draw {
-                drawText(obj.name, 0, -12, 10, RED)
+                drawText(obj.name, 0, -12, 10f, RED)
             }
         }
 
@@ -82,7 +82,7 @@ inline fun ComponentScope.bindPoint(
         val isDebug = remember { find<WindowContext>().isDebug }
         if (isDebug) {
             draw {
-                drawText(obj.name, 0, -10, 10, RED)
+                drawText(obj.name, 0, -10, 10f, RED)
             }
         }
     }
@@ -119,7 +119,7 @@ internal inline fun ComponentScope.bindTile(
         val isDebug = remember { find<WindowContext>().isDebug }
         if (isDebug) {
             draw {
-                drawText(obj.name, 0, -10, 10, RED)
+                drawText(obj.name, 0, -10, 10f, RED)
             }
         }
     }

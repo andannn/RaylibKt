@@ -19,7 +19,6 @@ import raylib.interop.UnloadFontData
 
 interface FontFunction {
     fun getFontDefault(): CValue<Font>
-    fun loadFont(fileName: String): CValue<Font>
     fun loadFontEx(fileName: String, fontSize: Int, codepoints: CPointer<IntVar>?, codepointCount: Int): CValue<Font>
     fun loadFontFromImage(image: CValue<Image>, key: CValue<Color>, firstChar: Int): CValue<Font>
     fun loadFontFromMemory(fileType: String, fileData: CPointer<UByteVar>, dataSize: Int, fontSize: Int, codepoints: CPointer<IntVar>?, codepointCount: Int): CValue<Font>
@@ -39,8 +38,6 @@ fun FontFunction() : FontFunction = DefaultFontFunction()
 
 private class DefaultFontFunction : FontFunction {
     override fun getFontDefault(): CValue<Font> = GetFontDefault()
-
-    override fun loadFont(fileName: String): CValue<Font> = LoadFont(fileName)
 
     override fun loadFontEx(fileName: String, fontSize: Int, codepoints: CPointer<IntVar>?, codepointCount: Int): CValue<Font> {
         return LoadFontEx(fileName, fontSize, codepoints, codepointCount)

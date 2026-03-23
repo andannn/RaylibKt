@@ -71,29 +71,29 @@ private fun ComponentRegistry.screen(screen: GameScreen) {
             when (screen) {
                 GameScreen.LOGO -> {
                     // TODO: Draw LOGO screen here!
-                    drawText("LOGO SCREEN", 20, 20, 40, LIGHTGRAY)
-                    drawText("WAIT for 2 SECONDS...", 290, 220, 20, GRAY)
+                    drawText("LOGO SCREEN", 20, 20, 40f, LIGHTGRAY)
+                    drawText("WAIT for 2 SECONDS...", 290, 220, 20f, GRAY)
                 }
 
                 GameScreen.TITLE -> {
                     // TODO: draw TITLE screen here!
                     drawRectangle(0, 0, screenWidth, screenHeight, GREEN)
-                    drawText("TITLE SCREEN", 20, 20, 40, DARKGREEN)
-                    drawText("PRESS ENTER or TAP to JUMP to GAMEPLAY SCREEN", 120, 220, 20, DARKGREEN)
+                    drawText("TITLE SCREEN", 20, 20, 40f, DARKGREEN)
+                    drawText("PRESS ENTER or TAP to JUMP to GAMEPLAY SCREEN", 120, 220, 20f, DARKGREEN)
                 }
 
                 GameScreen.GAMEPLAY -> {
                     // TODO: draw GAMEPLAY screen here!
                     drawRectangle(0, 0, screenWidth, screenHeight, PURPLE)
-                    drawText("GAMEPLAY SCREEN", 20, 20, 40, MAROON)
-                    drawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20, MAROON)
+                    drawText("GAMEPLAY SCREEN", 20, 20, 40f, MAROON)
+                    drawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20f, MAROON)
                 }
 
                 GameScreen.ENDING -> {
                     // TODO: draw ENDING screen here!
                     drawRectangle(0, 0, screenWidth, screenHeight, BLUE)
-                    drawText("ENDING SCREEN", 20, 20, 40, DARKBLUE)
-                    drawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20, DARKBLUE)
+                    drawText("ENDING SCREEN", 20, 20, 40f, DARKBLUE)
+                    drawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20f, DARKBLUE)
                 }
             }
         }

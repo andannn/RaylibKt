@@ -38,7 +38,7 @@ fun ComponentRegistry.srcrecDstrec() {
             val (destRecX, destRecY) = destRec.useContents { x.toInt() to y.toInt() }
             drawLine(destRecX, 0, destRecX, screenHeight, GRAY)
             drawLine(0, destRecY, screenWidth, destRecY, GRAY)
-            drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, GRAY)
+            drawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10f, GRAY)
         }
     }
 }

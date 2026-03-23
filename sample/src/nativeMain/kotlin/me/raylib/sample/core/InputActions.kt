@@ -101,10 +101,10 @@ fun ComponentRegistry.inputActions() {
                 if (actionSet) "Current input set: WASD (default)" else "Current input set: Arrow keys",
                 10,
                 10,
-                20,
+                20f,
                 WHITE
             )
-            drawText("Use TAB key to toggles Actions keyset", 10, 50, 20, GREEN)
+            drawText("Use TAB key to toggles Actions keyset", 10, 50, 20f, GREEN)
         }
     }
 }

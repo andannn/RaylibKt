@@ -31,6 +31,7 @@ import io.github.andannn.raylib.assets.gameAssetsComponent
 import me.raylib.sample.audio.modulePlaying
 import me.raylib.sample.audio.soundLoading
 import me.raylib.sample.rres.readChunkData
+import me.raylib.sample.text.spriteFonts
 import raylib.interop.rlDisableBackfaceCulling
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -77,6 +78,7 @@ enum class Example(val title: String) {
     TILE_MAP_TEST("Tile map test"),
     BLEND_MODES("Blend Modes"),
     READ_CHUNK_DATA("Read chunk data"),
+    SPRITE_FONTS("Sprite Fonts"),
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -175,6 +177,7 @@ fun main() = window(
             Example.TILE_MAP_TEST -> tileMapTest()
             Example.BLEND_MODES -> blendModes()
             Example.READ_CHUNK_DATA -> readChunkData()
+            Example.SPRITE_FONTS -> spriteFonts()
         }
     }
 

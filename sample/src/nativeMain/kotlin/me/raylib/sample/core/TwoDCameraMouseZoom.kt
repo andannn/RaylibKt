@@ -101,18 +101,18 @@ fun ComponentRegistry.twoDCameraMouseZoom() {
             drawText(
                 "[$mouseXPos, $mouseYPos]",
                 Vector2(mouseXPos.toFloat(), mouseYPos.toFloat()).add(Vector2(-44f, -24f)),
-                20,
+                20f,
                 BLACK,
                 spacing = 2f
             )
 
-            drawText("[1][2] Select mouse zoom mode (Wheel or Move)", 20, 20, 20, DARKGRAY)
+            drawText("[1][2] Select mouse zoom mode (Wheel or Move)", 20, 20, 20f, DARKGRAY)
             if (zoomMode == 0) {
                 drawText(
                     "Mouse left button drag to move, mouse wheel to zoom",
                     20,
                     50,
-                    20,
+                    20f,
                     DARKGRAY
                 )
             } else {
@@ -120,7 +120,7 @@ fun ComponentRegistry.twoDCameraMouseZoom() {
                     "Mouse left button drag to move, mouse press and move to zoom",
                     20,
                     50,
-                    20,
+                    20f,
                     DARKGRAY
                 )
             }

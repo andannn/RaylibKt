@@ -70,12 +70,12 @@ fun ComponentRegistry.imageDrawing() {
                 textureHeight,
                 DARKGRAY
             )
-            drawText("We are drawing only one texture from various images composed!", 240, 350, 10, DARKGRAY);
+            drawText("We are drawing only one texture from various images composed!", 240, 350, 10f, DARKGRAY);
             drawText(
                 "Source images have been cropped, scaled, flipped and copied one over the other.",
                 190,
                 370,
-                10,
+                10f,
                 DARKGRAY
             );
         }
