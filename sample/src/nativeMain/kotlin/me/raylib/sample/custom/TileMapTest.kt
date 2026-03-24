@@ -37,6 +37,10 @@ fun ComponentRegistry.tileMapTest() = component("tile-mapTest") {
                     }
                 }
             }
+
+            "TileObj" -> {
+                println("obj property ${obj.properties}")
+            }
         }
     }
 }

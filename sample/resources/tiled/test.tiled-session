@@ -1,17 +1,17 @@
 {
     "activeFile": "test.tmj",
     "expandedProjectPaths": [
+        "tilesets",
         ".",
-        "template",
-        "tilesets"
+        "template"
     ],
     "fileStates": {
         "test.tmj": {
-            "scale": 4.9251,
-            "selectedLayer": 1,
+            "scale": 4.4718,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 63.75505065886988,
-                "y": 84.05920691965646
+                "x": 67.08707902857911,
+                "y": 85.64783755981932
             }
         },
         "tilesets/Confetti.tsj": {
@@ -39,6 +39,7 @@
         "Terrain (16x16).tsj",
         "Spike.tsj"
     ],
+    "textEdit.monospace": true,
     "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {
         "height": 16,
