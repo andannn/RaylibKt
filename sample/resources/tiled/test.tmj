@@ -9,6 +9,12 @@
          "objects":[
                 {
                  "id":1,
+                 "properties":[
+                        {
+                         "name":"template prop",
+                         "type":"string",
+                         "value":""
+                        }],
                  "template":"template\/TestTemplate.tj",
                  "x":219.702338766832,
                  "y":136.428065201984
@@ -31,6 +37,12 @@
                  "id":6,
                  "name":"TileObj",
                  "opacity":1,
+                 "properties":[
+                        {
+                         "name":"asd",
+                         "type":"string",
+                         "value":"asssssdfff"
+                        }],
                  "rotation":45,
                  "type":"",
                  "visible":true,

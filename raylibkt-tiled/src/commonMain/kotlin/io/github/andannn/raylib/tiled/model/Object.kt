@@ -40,7 +40,7 @@ sealed interface Object {
     val type: String?
     val visible: Boolean
     val opacity: Double
-    // TODO: val properties: List<Property>?
+    val properties: List<Property>?
 
     fun requireX() = x ?: error("x should be specified.")
     fun requireY() = y ?: error("x should be specified.")
@@ -69,7 +69,8 @@ data class RectObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 @Serializable
@@ -81,7 +82,8 @@ data class PointObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 @Serializable
@@ -96,7 +98,8 @@ data class EllipseObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 @Serializable
@@ -111,7 +114,8 @@ data class CapsuleObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 @Serializable
@@ -124,7 +128,8 @@ data class PolygonObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 @Serializable
@@ -137,7 +142,8 @@ data class PolylineObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 @Serializable
@@ -152,7 +158,8 @@ data class TileObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object {
     val gidObj: GID by lazy {
         GID(gid.toUInt())
@@ -171,7 +178,8 @@ data class TextObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 // TODO: Add unit test
@@ -187,7 +195,8 @@ data class TemplateObject(
     @SerialName("name") override val name: String = "",
     @SerialName("type") override val type: String? = null,
     @SerialName("visible") override val visible: Boolean = true,
-    @SerialName("opacity") override val opacity: Double = 1.0
+    @SerialName("opacity") override val opacity: Double = 1.0,
+    @SerialName("properties") override val properties: List<Property>? = null
 ) : Object
 
 @Serializable

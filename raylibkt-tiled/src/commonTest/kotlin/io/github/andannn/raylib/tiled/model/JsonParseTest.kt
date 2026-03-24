@@ -12,6 +12,7 @@ import kotlin.test.assertTrue
 
 class JsonParseTest {
     private val json = Json { ignoreUnknownKeys = true }
+
     @Test
     fun jsonParseTest_parse_map() {
         val decoded = Json.decodeFromString<TileMap>(
@@ -451,5 +452,60 @@ class JsonParseTest {
         assertEquals(32, tileObj.id)
         assertEquals("TileObj", tileObj.name)
         assertEquals(1, tileObj.gid)
+    }
+
+    @Test
+    fun jsonParseTest_parse_property() {
+        val stringJson = """
+        {
+            "name":"asd",
+            "type":"string",
+            "value":"true"
+        }
+        """.trimIndent()
+        json.decodeFromString<Property>(stringJson).also {
+            val property = assertIs<StringProperty>(it)
+            assertEquals("asd", property.name)
+            assertEquals("true", property.value)
+        }
+
+        val boolJson = """
+        {
+            "name":"asd",
+            "type":"bool",
+            "value":true
+        }
+        """.trimIndent()
+        json.decodeFromString<Property>(boolJson).also {
+            val property = assertIs<BooleanProperty>(it)
+            assertEquals("asd", property.name)
+            assertEquals(true, property.value)
+        }
+
+        val floatJson = """
+        {
+            "name":"asd",
+            "type":"float",
+            "value":0
+        }
+        """.trimIndent()
+        json.decodeFromString<Property>(floatJson).also {
+            val property = assertIs<FloatProperty>(it)
+            assertEquals("asd", property.name)
+            assertEquals(0f, property.value)
+        }
+
+        val intJson = """
+        {
+            "name":"asd",
+            "type":"int",
+            "value":23
+        }
+        """.trimIndent()
+        json.decodeFromString<Property>(intJson).also {
+            val property = assertIs<IntProperty>(it)
+            assertEquals("asd", property.name)
+            assertEquals(23, property.value)
+        }
     }
 }
