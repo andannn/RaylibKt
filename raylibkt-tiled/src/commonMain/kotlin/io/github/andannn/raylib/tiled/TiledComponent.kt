@@ -4,6 +4,7 @@
  */
 package io.github.andannn.raylib.tiled
 
+import io.github.andannn.raylib.assets.ResourceResolver
 import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
 import io.github.andannn.raylib.foundation.Rectangle
 import io.github.andannn.raylib.foundation.Vector2
@@ -32,9 +33,11 @@ import io.github.andannn.raylib.tiled.util.multiplyAlpha
 
 inline fun ComponentRegistry.tiledComponent(
     key: Any,
-    tiledMapProvider: TiledMapProvider,
+    tmjFile: String,
+    resourceResolver: ResourceResolver,
     crossinline onBindObject: ComponentScope.(Object) -> Unit = {}
 ): TileMap = component(key) {
+    val tiledMapProvider = remember { JsonTiledMapProvider(resourceResolver, tmjFile) }
     val tiledMap = remember { tiledMapProvider.getMap() }
     val tiledSetManager = remember {
         TiledSetManager(tiledMapProvider.resourceResolver, tiledMap)

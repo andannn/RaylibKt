@@ -1,5 +1,7 @@
 package me.raylib.sample.custom
 
+import io.github.andannn.raylib.assets.fileResourceResolver
+import io.github.andannn.raylib.assets.rresResourceResolver
 import io.github.andannn.raylib.foundation.Colors.BLACK
 import io.github.andannn.raylib.foundation.Colors.BLUE
 import io.github.andannn.raylib.foundation.Colors.RED
@@ -10,18 +12,13 @@ import io.github.andannn.raylib.components.spatial2DComponent
 import io.github.andannn.raylib.runtime.ComponentRegistry
 import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.foundation.draw
-import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.foundation.windowContext
-import io.github.andannn.raylib.tiled.TiledMapProvider.Factory.rres
 import io.github.andannn.raylib.tiled.tiledComponent
 
 fun ComponentRegistry.tileMapTest() = component("tile-mapTest") {
     windowContext.backGroundColor = BLACK
 
-    val provider = remember {
-        rres("tiled/test.tmj")
-    }
-    tiledComponent("", provider) { obj ->
+    tiledComponent("", "tiled/test.tmj", rresResourceResolver) { obj ->
         when (obj.name) {
             "Arrrr" -> {
                 val parent2D = requireParentSpatial2D()

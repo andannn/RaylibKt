@@ -1,5 +1,6 @@
 package me.raylib.sample.textures
 
+import io.github.andannn.raylib.assets.fileResourceResolver
 import kotlinx.cinterop.useContents
 import io.github.andannn.raylib.foundation.Colors.GRAY
 import io.github.andannn.raylib.foundation.Colors.WHITE
@@ -14,13 +15,12 @@ import io.github.andannn.raylib.foundation.update
 import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.foundation.screenHeight
 import io.github.andannn.raylib.foundation.screenWidth
-import io.github.andannn.raylib.assets.fileTextureAsset
 import io.github.andannn.raylib.runtime.setValue
 
 fun ComponentRegistry.srcrecDstrec() {
     component("srcrec_dstrec") {
         val scarfy = remember {
-            fileTextureAsset("resources/scarfy.png")
+            fileResourceResolver.resolveImageTexture("resources/scarfy.png")
         }
         val (frameWidth, frameHeight) = scarfy.useContents { width.div(6f) to height }
         val sourceRec = Rectangle(0.0f, 0.0f, frameWidth, frameHeight.toFloat())
