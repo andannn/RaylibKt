@@ -4,92 +4,27 @@
  */
 package io.github.andannn.raylib.tiled
 
-import io.github.andannn.raylib.foundation.Texture
-import io.github.andannn.raylib.assets.fileTextAsset
-import io.github.andannn.raylib.assets.fileTextureAsset
-import io.github.andannn.raylib.assets.rresTextAsset
-import io.github.andannn.raylib.assets.rresTextureAsset
-import io.github.andannn.raylib.runtime.ContextProvider
+import io.github.andannn.raylib.assets.ResourceResolver
 import io.github.andannn.raylib.tiled.model.GroupLayer
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.Layer
-import io.github.andannn.raylib.tiled.model.ObjectGroupLayer
-import io.github.andannn.raylib.tiled.model.TemplateObject
-import io.github.andannn.raylib.tiled.model.Template
-import io.github.andannn.raylib.tiled.model.TileMap
 import io.github.andannn.raylib.tiled.model.Object
+import io.github.andannn.raylib.tiled.model.ObjectGroupLayer
+import io.github.andannn.raylib.tiled.model.Template
+import io.github.andannn.raylib.tiled.model.TemplateObject
+import io.github.andannn.raylib.tiled.model.TileMap
 import io.github.andannn.raylib.tiled.model.Tileset
-import kotlinx.cinterop.CValue
 import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 
-interface ResourceResolver {
-    fun resolveText(path: String): String
-    fun resolveImageTexture(path: String): CValue<Texture>
-}
-
-interface TiledMapProvider {
+internal interface TiledMapProvider {
     val resourceResolver: ResourceResolver
 
     fun getMap(): TileMap
-
-    companion object Factory {
-        fun ContextProvider.file(file: String): TiledMapProvider =
-            JsonTiledMapProvider(FileBasedResourceResolver(this), file)
-
-        fun ContextProvider.rres(file: String): TiledMapProvider =
-            JsonTiledMapProvider(RresBasedResourceResolver(this), file)
-    }
 }
 
-private class RresBasedResourceResolver(
-    private val contextProvider: ContextProvider,
-) : ResourceResolver {
-    override fun resolveText(path: String): String {
-        return contextProvider.rresTextAsset(path.normalizePath())
-    }
-
-    override fun resolveImageTexture(path: String): CValue<Texture> {
-        return contextProvider.rresTextureAsset(path.normalizePath())
-    }
-
-    private fun String.normalizePath(): String {
-        val isAbsolute = this.startsWith("/") || this.startsWith("\\")
-        val segments = this.split('/', '\\')
-        val resolved = mutableListOf<String>()
-
-        for (segment in segments) {
-            if (segment.isEmpty() || segment == ".") continue
-
-            if (segment == "..") {
-                if (resolved.isNotEmpty() && resolved.last() != "..") {
-                    resolved.removeLast()
-                } else if (!isAbsolute) {
-                    resolved.add(segment)
-                }
-            } else {
-                resolved.add(segment)
-            }
-        }
-
-        val joined = resolved.joinToString("/")
-        return if (isAbsolute) "/$joined" else joined
-    }
-}
-
-private class FileBasedResourceResolver(
-    private val contextProvider: ContextProvider,
-) : ResourceResolver {
-    override fun resolveText(path: String): String {
-        return contextProvider.fileTextAsset(path)
-    }
-
-    override fun resolveImageTexture(path: String): CValue<Texture> {
-        return contextProvider.fileTextureAsset(path)
-    }
-}
-
-private class JsonTiledMapProvider(
+@PublishedApi
+internal class JsonTiledMapProvider(
     override val resourceResolver: ResourceResolver,
     private val file: String,
 ) : TiledMapProvider {

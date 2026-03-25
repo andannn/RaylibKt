@@ -28,6 +28,14 @@ import kotlinx.io.readString
 import raylib.interop.LoadTexture
 import raylib.interop.UnloadTexture
 
+
+interface ResourceResolver {
+    fun resolveText(path: String): String
+    fun resolveImageTexture(path: String): CValue<Texture>
+
+    fun resolveSound(path: String): CValue<Sound>
+}
+
 inline fun ComponentRegistry.gameAssetsComponent(
     rresFiles: List<String> = emptyList(),
     crossinline block: ComponentScope.() -> Unit
@@ -41,36 +49,23 @@ inline fun ComponentRegistry.gameAssetsComponent(
     }
 }
 
+val ContextProvider.fileResourceResolver : ResourceResolver
+    get() = find<GameAssetsManager>().fileResourceResolver
+
+val ContextProvider.rresResourceResolver : ResourceResolver
+    get() = find<GameAssetsManager>().rresResourceResolver
+
 fun ContextProvider.rresTextureAsset(rres: String, resourceId: UInt): CValue<Texture> {
     return find<GameAssetsManager>().getOrCachedTextureFromRres(rres, resourceId)
 }
 
-fun ContextProvider.rresTextureAsset(path: String): CValue<Texture> {
-    return find<GameAssetsManager>().getOrCachedTextureFromRres(path)
-}
-
-fun ContextProvider.fileTextureAsset(path: String): CValue<Texture> {
-    return find<GameAssetsManager>().getOrCachedTextureFromFile(path)
-}
 
 fun ContextProvider.rresTextAsset(rres: String, resourceId: UInt): String {
     return find<GameAssetsManager>().getTextFromRres(rres, resourceId)
 }
 
-fun ContextProvider.rresTextAsset(path: String): String {
-    return find<GameAssetsManager>().getTextFromRres(path)
-}
-
-fun ContextProvider.fileTextAsset(path: String): String {
-    return find<GameAssetsManager>().getTextFromFile(path)
-}
-
 fun ContextProvider.rresSoundAsset(rres: String, resourceId: UInt): CValue<Sound> {
     return find<GameAssetsManager>().getOrCachedSoundFromRres(rres, resourceId)
-}
-
-fun ContextProvider.fileSoundAsset(fileName: String): CValue<Sound> {
-    return find<GameAssetsManager>().getOrCachedSoundFromFile(fileName)
 }
 
 @PublishedApi
@@ -82,6 +77,34 @@ internal class GameAssetsManager(
     private val resourceContext = contextProvider.find<ResourceContext>()
     private val textureMap = mutableMapOf<String, CValue<Texture>>()
     private val soundMap = mutableMapOf<String, CValue<Sound>>()
+
+    val fileResourceResolver = object : ResourceResolver {
+        override fun resolveText(path: String): String {
+            return getTextFromFile(path)
+        }
+
+        override fun resolveImageTexture(path: String): CValue<Texture> {
+            return getOrCachedTextureFromFile(path)
+        }
+
+        override fun resolveSound(path: String): CValue<Sound> {
+            return getOrCachedSoundFromFile(path)
+        }
+    }
+
+    val rresResourceResolver = object : ResourceResolver {
+        override fun resolveText(path: String): String {
+            return getTextFromRres(path.normalizePath())
+        }
+
+        override fun resolveImageTexture(path: String): CValue<Texture> {
+            return getOrCachedTextureFromRres(path.normalizePath())
+        }
+
+        override fun resolveSound(path: String): CValue<Sound> {
+            return getOrCachedSoundFromRres(path)
+        }
+    }
 
     fun getOrCachedTextureFromFile(path: String): CValue<Texture> {
         return textureMap.getOrPut(path) { rememberScope.loadTexture(path) }
@@ -131,6 +154,15 @@ internal class GameAssetsManager(
         }
     }
 
+    fun getOrCachedSoundFromRres(path: String): CValue<Sound> {
+        val (id, rresFile) = resolveResourceId(path)
+        return soundMap.getOrPut("${rresFile}_$id") {
+            contextProvider.useWaveResource(rresFile, id) { wave ->
+                rememberScope.soundFromWave(wave)
+            }
+        }
+    }
+
     private fun resolveResourceId(path: String): Pair<UInt, String> {
         var rresFile: String? = null
         var id: UInt? = null
@@ -156,4 +188,27 @@ internal class GameAssetsManager(
         }
         return texture
     }
+}
+
+private fun String.normalizePath(): String {
+    val isAbsolute = this.startsWith("/") || this.startsWith("\\")
+    val segments = this.split('/', '\\')
+    val resolved = mutableListOf<String>()
+
+    for (segment in segments) {
+        if (segment.isEmpty() || segment == ".") continue
+
+        if (segment == "..") {
+            if (resolved.isNotEmpty() && resolved.last() != "..") {
+                resolved.removeLast()
+            } else if (!isAbsolute) {
+                resolved.add(segment)
+            }
+        } else {
+            resolved.add(segment)
+        }
+    }
+
+    val joined = resolved.joinToString("/")
+    return if (isAbsolute) "/$joined" else joined
 }

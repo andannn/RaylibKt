@@ -1,10 +1,10 @@
 package me.raylib.sample.textures
 
+import io.github.andannn.raylib.assets.fileResourceResolver
 import kotlinx.cinterop.useContents
 import io.github.andannn.raylib.foundation.Colors.GRAY
 import io.github.andannn.raylib.foundation.Colors.WHITE
 import io.github.andannn.raylib.foundation.draw
-import io.github.andannn.raylib.assets.fileTextureAsset
 import io.github.andannn.raylib.runtime.ComponentRegistry
 import io.github.andannn.raylib.runtime.component
 import io.github.andannn.raylib.runtime.remember
@@ -12,7 +12,7 @@ import io.github.andannn.raylib.runtime.remember
 fun ComponentRegistry.logoRaylib() {
     component("logo") {
         val texture = remember {
-            fileTextureAsset("resources/raylib_logo.png")
+            fileResourceResolver.resolveImageTexture("resources/raylib_logo.png")
         }
         draw {
             val (width, height) = texture.useContents { width to height }

@@ -1,5 +1,6 @@
 package me.raylib.sample.textures
 
+import io.github.andannn.raylib.assets.fileResourceResolver
 import io.github.andannn.raylib.foundation.MouseButton
 import io.github.andannn.raylib.foundation.Rectangle
 import io.github.andannn.raylib.foundation.Vector2
@@ -11,14 +12,13 @@ import io.github.andannn.raylib.runtime.getValue
 import io.github.andannn.raylib.runtime.mutableStateListOf
 import io.github.andannn.raylib.runtime.mutableStateOf
 import io.github.andannn.raylib.foundation.update
-import io.github.andannn.raylib.assets.fileTextureAsset
 import io.github.andannn.raylib.runtime.remember
 import io.github.andannn.raylib.runtime.setValue
 import kotlinx.cinterop.CValue
 
 fun ComponentRegistry.spriteExplosion() = component("explosion") {
     val explosion = remember {
-        fileTextureAsset("resources/explosion.png")
+        fileResourceResolver.resolveImageTexture("resources/explosion.png")
     }
     val explosionContainer = remember {
         mutableStateListOf<ExplosionState>()

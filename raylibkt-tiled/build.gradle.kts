@@ -17,6 +17,7 @@ kmpExtension {
             api(project(":raylibkt-components"))
             api(project(":raylibkt-assets"))
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.io)
         }
     }
 }

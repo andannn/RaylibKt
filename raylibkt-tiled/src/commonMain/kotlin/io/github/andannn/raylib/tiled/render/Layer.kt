@@ -4,6 +4,7 @@
  */
 package io.github.andannn.raylib.tiled.render
 
+import io.github.andannn.raylib.assets.ResourceResolver
 import io.github.andannn.raylib.foundation.Color
 import io.github.andannn.raylib.foundation.Colors.LIGHTGRAY
 import io.github.andannn.raylib.foundation.Rectangle
@@ -15,7 +16,6 @@ import io.github.andannn.raylib.foundation.WindowContext
 import io.github.andannn.raylib.foundation.draw
 import io.github.andannn.raylib.runtime.find
 import io.github.andannn.raylib.runtime.remember
-import io.github.andannn.raylib.tiled.ResourceResolver
 import io.github.andannn.raylib.tiled.model.GID
 import io.github.andannn.raylib.tiled.model.ImageLayer
 import io.github.andannn.raylib.tiled.model.TileLayer
