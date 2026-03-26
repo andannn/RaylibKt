@@ -13,7 +13,7 @@ dependencies {
 gradlePlugin {
     plugins {
         register("KmpNativeCompileLibraryPlugin") {
-            id = "kmp.library"
+            id = "kotlin.native.compile"
             implementationClass = "KmpNativeCompileLibraryPlugin"
         }
     }

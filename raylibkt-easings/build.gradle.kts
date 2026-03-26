@@ -1,5 +1,5 @@
 plugins {
-    id("kmp.library")
+    id("kotlin.native.compile")
     id("com.dorongold.task-tree")
 }
 

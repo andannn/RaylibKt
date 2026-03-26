@@ -1,5 +1,5 @@
 plugins {
-    id("kmp.library")
+    id("kotlin.native.compile")
     alias(libs.plugins.serialization)
 }
 
@@ -13,6 +13,7 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
+            api(project(":io-zip"))
             api(project(":raylibkt-foundation"))
             api(project(":raylibkt-components"))
             api(project(":raylibkt-assets"))
