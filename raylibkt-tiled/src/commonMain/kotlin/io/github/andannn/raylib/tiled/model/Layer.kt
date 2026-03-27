@@ -7,7 +7,12 @@ package io.github.andannn.raylib.tiled.model
 import io.github.andannn.raylib.foundation.Color
 import io.github.andannn.raylib.foundation.Colors.WHITE
 import io.github.andannn.raylib.tiled.util.toRaylibColor
+import io.github.andannn.zip.gzipSource
+import io.github.andannn.zip.zlibSource
 import kotlinx.cinterop.CValue
+import kotlinx.io.Buffer
+import kotlinx.io.buffered
+import kotlinx.io.readByteArray
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -65,7 +70,7 @@ sealed class Layer {
     /** Vertical layer offset in tiles. Always 0. */
     abstract val y: Int
 
-    val raylibTintColor : CValue<Color> by lazy {
+    val raylibTintColor: CValue<Color> by lazy {
         tintColor?.toRaylibColor() ?: WHITE
     }
 }
@@ -139,9 +144,10 @@ data class TileLayer(
 
                 val decompressedBytes = when (compression) {
                     "" -> bytes
+                    "zlib" -> Buffer().apply { write(bytes) }.zlibSource().buffered().use { it.readByteArray() }
+                    "gzip" -> Buffer().apply { write(bytes) }.gzipSource().buffered().use { it.readByteArray() }
 // TODO: decompress data
-//                    "zlib" -> decompressZlib(compressedBytes)
-//                    "gzip" -> decompressGzip(compressedBytes)
+//                    "zstd" -> decompressZstd(compressedBytes)
                     else -> throw SerializationException("Unsupported compression: $compression")
                 }
 

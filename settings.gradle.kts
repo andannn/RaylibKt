@@ -30,6 +30,7 @@ dependencyResolutionManagement {
     }
 }
 
+include(":io-zip")
 include(":raylib-base")
 include(":raylib-rres")
 include(":raylib-easings")
