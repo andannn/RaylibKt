@@ -29,9 +29,10 @@ import platform.zlib.deflateInit2
 import platform.zlib.z_stream_s
 
 internal class DeflaterSink(
+    private val sink: Sink,
     private val level: Int,
     private val windowBits: Int,
-    private val sink: Sink,
+    private val bufferChunkSize: Int = CHUNK_SIZE
 ) : RawSink {
     private var closed: Boolean = false
     private var finished: Boolean = false
@@ -96,8 +97,8 @@ internal class DeflaterSink(
     ) {
         check(!closed) { "closed" }
 
-        val outputChunk = ByteArray(CHUNK_SIZE)
-        val targetByteCount = CHUNK_SIZE
+        val outputChunk = ByteArray(bufferChunkSize)
+        val targetByteCount = bufferChunkSize
         var remaining = sourceExactByteCount
         var sourceRead = 0L
         var targetWrite = 0
@@ -112,7 +113,7 @@ internal class DeflaterSink(
                         zStream.avail_in = sourceByteCount.toUInt()
 
                         zStream.next_out = pinnedOutput.addressOf(0)
-                        zStream.avail_out = CHUNK_SIZE.toUInt()
+                        zStream.avail_out = targetByteCount.toUInt()
 
                         deflateResult = deflate(zStream.ptr, Z_NO_FLUSH)
                         check(deflateResult != Z_STREAM_ERROR)
@@ -140,8 +141,8 @@ internal class DeflaterSink(
     }
 
     private fun doFlush(target: Sink, flushType: Int) {
-        val outputChunk = ByteArray(CHUNK_SIZE)
-        val targetByteCount = CHUNK_SIZE
+        val outputChunk = ByteArray(bufferChunkSize)
+        val targetByteCount = bufferChunkSize
         var targetWrite = 0
         var deflateResult = -1
         while (true) {
@@ -151,7 +152,7 @@ internal class DeflaterSink(
                 zStream.avail_in = 0u
 
                 zStream.next_out = pinnedOutput.addressOf(0)
-                zStream.avail_out = CHUNK_SIZE.toUInt()
+                zStream.avail_out = bufferChunkSize.toUInt()
 
                 deflateResult = deflate(zStream.ptr, flushType)
                 check(deflateResult != Z_STREAM_ERROR)
@@ -159,7 +160,6 @@ internal class DeflaterSink(
                 targetWrite = targetByteCount - zStream.avail_out.toInt()
                 if (zStream.avail_out.toInt() == 0) reachOutputLimit = true
             }
-
             target.write(outputChunk, 0, targetWrite)
 
             when (deflateResult) {

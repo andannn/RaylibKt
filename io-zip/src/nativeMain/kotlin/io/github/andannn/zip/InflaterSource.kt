@@ -30,8 +30,9 @@ import platform.zlib.z_stream_s
 import kotlin.math.min
 
 internal class InflaterSource(
-    private val windowBits: Int,
     private val source: Source,
+    private val windowBits: Int,
+    private val bufferChunkSize: Int = CHUNK_SIZE
 ) : RawSource {
     private var finished: Boolean = false
     private var closed: Boolean = false
@@ -72,8 +73,7 @@ internal class InflaterSource(
         check(!closed) { "closed" }
 
         if (source.exhausted()) return -1L
-
-        val outputChunk = ByteArray(CHUNK_SIZE)
+        val outputChunk = ByteArray(bufferChunkSize)
         var byteCount = 0L
         var sourceRead = 0
         var targetWrite = 0L
@@ -88,7 +88,7 @@ internal class InflaterSource(
                             zStream.next_in = pinnedInput.addressOf(pos)
                             zStream.avail_in = (limit - pos).toUInt()
 
-                            val targetByteCount = min(CHUNK_SIZE.toLong(), (targetMaxByteCount - byteCount))
+                            val targetByteCount = min(bufferChunkSize.toLong(), (targetMaxByteCount - byteCount))
                             zStream.next_out = pinnedOutput.addressOf(0)
                             zStream.avail_out = targetByteCount.toUInt()
 
@@ -96,7 +96,6 @@ internal class InflaterSource(
 
                             sourceRead = sourceByteCount - zStream.avail_in.toInt()
                             targetWrite = targetByteCount - zStream.avail_out.toInt()
-
                             if (zStream.avail_out.toInt() == 0) reachOutputLimit = true
                         }
                     }
