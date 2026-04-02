@@ -26,10 +26,10 @@ actual fun Sink.gzipSink(level: Int): RawSink =
 
 internal actual val DEFAULT_COMPRESSION: Int = Z_DEFAULT_COMPRESSION
 
-internal const val CHUNK_SIZE = 8192
-
 internal object WindowBits {
     const val RAW_DEFLATE = -15
     const val ZLIB = 15
     const val GZIP = 31
 }
+
+internal const val CHUNK_SIZE = 8192

@@ -2,6 +2,7 @@
 
 import com.android.build.api.dsl.KotlinMultiplatformAndroidCompilation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,7 +11,16 @@ plugins {
 }
 
 kotlin {
-    jvm()
+    jvm {
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_11)
+                }
+            }
+        }
+    }
+    linuxX64()
     macosArm64()
     androidNativeArm64()
     androidNativeX64()

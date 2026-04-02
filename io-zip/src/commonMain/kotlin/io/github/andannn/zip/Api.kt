@@ -36,3 +36,4 @@ expect fun Source.gzipSource(): RawSource
 expect fun Sink.gzipSink(level: Int = DEFAULT_COMPRESSION): RawSink
 
 internal expect val DEFAULT_COMPRESSION : Int
+

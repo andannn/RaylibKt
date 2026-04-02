@@ -8,6 +8,7 @@ import kotlinx.io.Buffer
 import kotlinx.io.buffered
 import kotlinx.io.bytestring.decodeToByteString
 import kotlinx.io.readByteString
+import kotlinx.io.readString
 import kotlinx.io.writeString
 import kotlin.io.encoding.Base64
 import kotlin.test.Test
