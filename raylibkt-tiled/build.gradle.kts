@@ -13,12 +13,12 @@ kmpExtension {
         }
 
         it.commonMain.dependencies {
-            api(project(":io-zip"))
             api(project(":raylibkt-foundation"))
             api(project(":raylibkt-components"))
             api(project(":raylibkt-assets"))
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.io)
+            implementation(libs.io.zip)
         }
     }
 }
