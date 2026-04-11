@@ -58,7 +58,7 @@
         }, 
         {
          "compression":"gzip",
-         "data":"H4sIAAAAAAAAE+3RwQkAAAwCMaH779xPv53ABBzgMKHF3Jp6G79t6tYLAAAAAAAAAAAAAAAAvwWbo1BpQDgAAA==",
+         "data":"H4sIAAAAAAAAE+3RwQkAIBADwYD9l2RvPvRrA5cZSAFLkmuH6dZbU2\/jt03degEAAAAAAAAAAAAAAODvAExk3JhAOAAA",
          "encoding":"base64",
          "height":60,
          "id":4,
@@ -94,6 +94,10 @@
         {
          "firstgid":1,
          "source":"tilesets\/Confetti.tsj"
+        }, 
+        {
+         "firstgid":7,
+         "source":"tilesets\/Terrain.tsj"
         }],
  "tilewidth":16,
  "type":"map",
