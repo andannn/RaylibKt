@@ -1,15 +1,14 @@
 [versions]
-releaseVersion = "1.0.0-SNAPSHOT"
-agp = "9.0.0"
-androidTool = "32.0.0"
-kotlin = "2.3.10"
-task-tree = "4.0.0"
+agp = "9.1.0"
+androidTool = "32.1.0"
+kotlin = "2.3.20"
+task-tree = "4.0.1"
 kotlinxCoroutines = "1.10.2"
-spotless = "8.2.1"
+spotless = "8.4.0"
 mavenPublish = "0.36.0"
-kotlinxSerializationJson = "1.10.0"
+kotlinxSerializationJson = "1.11.0"
 kotlinx-io = "0.9.0"
-kotlinPoet = "2.2.0"
+kotlinPoet = "2.3.0"
 ioZip = "1.0.0"
 
 [libraries]

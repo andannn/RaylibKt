@@ -1,26 +1,36 @@
 {
     "activeFile": "test.tmj",
     "expandedProjectPaths": [
-        "tilesets",
+        "template",
         ".",
-        "template"
+        "tilesets"
     ],
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
         "test.tmj": {
-            "scale": 4.4718,
+            "scale": 4.76,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 67.08707902857911,
-                "y": 85.64783755981932
+                "x": 23.84453781512606,
+                "y": 137.07983193277312
             }
+        },
+        "test.tmj#Confetti (16x16)": {
+            "scaleInDock": 1
         },
         "tilesets/Confetti.tsj": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "tilesets/Terrain.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
-    "last.imagePath": "/Users/jhc/source/mine/RaylibKt/sample/resources",
+    "last.imagePath": "/Volumes/SamsungT7/source/RaylibKt/sample/resources/tiled/img",
     "last.objectTemplatePath": "/Users/jhc/source/mine/RaylibKt/sample/resources/tiled/template",
     "map.height": 60,
     "map.lastUsedFormat": "json",
@@ -28,13 +38,14 @@
     "map.tileWidth": 16,
     "map.width": 60,
     "openFiles": [
-        "tilesets/Confetti.tsj",
-        "test.tmj"
+        "test.tmj",
+        "tilesets/Terrain.tsj"
     ],
     "project": "test.tiled-project",
     "recentFiles": [
-        "tilesets/Confetti.tsj",
+        "tilesets/Terrain.tsj",
         "test.tmj",
+        "tilesets/Confetti.tsj",
         "Confetti (16x16).tsj",
         "Terrain (16x16).tsj",
         "Spike.tsj"
