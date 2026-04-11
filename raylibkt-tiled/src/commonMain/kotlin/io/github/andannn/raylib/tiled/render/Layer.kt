@@ -120,13 +120,12 @@ internal fun DrawContext.drawTile(
     val flipHorizontal = gID.flipHorizontal
     val flipVertical = gID.flipVertical
     val flipDiagonal = gID.flipDiagonal
-// TODO: handle flip
-
+// TODO: handle flipDiagonal
     val tileId = gID.tileId
     val (tileSet, texture) = tileSet
 
     val localId = tileId - tileSet.requireFirstGid()
-    val srcRect = calculateSourceRect(localId, tileSet)
+    val srcRect = calculateSourceRect(localId, tileSet, flipHorizontal, flipVertical)
 
     val tileWidth = tileSet.requireTileWidth().toFloat()
     val tileHeight = tileSet.requireTileHeight().toFloat()
@@ -159,16 +158,30 @@ private class TiledSetTextureManager(
     override val tileWidth = tileMap.tileWidth
 }
 
-private fun calculateSourceRect(tileId: Int, tileset: Tileset): CValue<Rectangle> {
+private fun calculateSourceRect(
+    tileId: Int,
+    tileset: Tileset,
+    flipHorizontal: Boolean,
+    flipVertical: Boolean,
+): CValue<Rectangle> {
     val tileWidth = tileset.requireTileWidth().toFloat()
     val tileHeight = tileset.requireTileHeight().toFloat()
     val columns = tileset.requireColumns()
 
+    val col = tileId % columns
+    val row = tileId / columns
+
+    val x = col * tileWidth
+    val y = row * tileHeight
+
+    val width = if (flipHorizontal) -tileWidth else tileWidth
+    val height = if (flipVertical) -tileHeight else tileHeight
+
     return Rectangle(
-        (tileId % columns) * tileWidth,
-        (tileId / columns).toFloat() * tileHeight,
-        tileWidth,
-        tileHeight
+        x = x,
+        y = y,
+        width = width,
+        height = height
     )
 }
 

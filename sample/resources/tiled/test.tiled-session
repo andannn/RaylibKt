@@ -1,9 +1,9 @@
 {
     "activeFile": "test.tmj",
     "expandedProjectPaths": [
-        "tilesets",
         "template",
-        "."
+        ".",
+        "tilesets"
     ],
     "fileStates": {
         "": {
@@ -11,10 +11,10 @@
         },
         "test.tmj": {
             "scale": 4.76,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 66.70168067226892,
-                "y": 36.65966386554622
+                "x": 23.84453781512606,
+                "y": 137.07983193277312
             }
         },
         "test.tmj#Confetti (16x16)": {

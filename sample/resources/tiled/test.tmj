@@ -3,80 +3,12 @@
  "infinite":false,
  "layers":[
         {
-         "draworder":"topdown",
-         "id":3,
-         "name":"Object Layer 1",
-         "objects":[
-                {
-                 "id":1,
-                 "properties":[
-                        {
-                         "name":"template prop",
-                         "type":"string",
-                         "value":""
-                        }],
-                 "template":"template\/TestTemplate.tj",
-                 "x":219.702338766832,
-                 "y":136.428065201984
-                }, 
-                {
-                 "id":2,
-                 "template":"template\/TestTemplate.tj",
-                 "x":324.238128986534,
-                 "y":644.932671863926
-                }, 
-                {
-                 "id":4,
-                 "template":"template\/TestTemplate.tj",
-                 "x":451.807228915663,
-                 "y":33.6640680368533
-                }, 
-                {
-                 "gid":5,
-                 "height":16,
-                 "id":6,
-                 "name":"TileObj",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"asd",
-                         "type":"string",
-                         "value":"asssssdfff"
-                        }],
-                 "rotation":45,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":15.5660377358491,
-                 "y":24.0566037735849
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
          "compression":"gzip",
-         "data":"H4sIAAAAAAAAE+3RwQkAIBADwYD9l2RvPvRrA5cZSAFLkmuH6dZbU2\/jt03degEAAAAAAAAAAAAAAODvAExk3JhAOAAA",
+         "data":"H4sIAAAAAAAAE+3QMQEAMAzAoMiovPlXURM9doAECgD4wdSzAAAAAAAAAAAAAAAAXFnoZkhGQDgAAA==",
          "encoding":"base64",
          "height":60,
          "id":4,
          "name":"Tile Layer 3",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":60,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "compression":"gzip",
-         "data":"H4sIAAAAAAAAE+3PMQ0AAAgDsB3414yKhYPWQRMAAAAAmsbX19nX19fX2dfX19f39RcAAAAAAODKAqWrv1xAOAAA",
-         "encoding":"base64",
-         "height":60,
-         "id":2,
-         "name":"Tile Layer 2",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
