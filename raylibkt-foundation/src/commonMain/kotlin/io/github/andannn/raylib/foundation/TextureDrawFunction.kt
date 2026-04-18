@@ -10,7 +10,6 @@ import raylib.interop.DrawTexture
 import raylib.interop.DrawTexturePro
 import raylib.interop.DrawTextureRec
 
-
 interface TextureDrawFunction {
     fun drawTexture(
         texture: CValue<Texture2D>,
